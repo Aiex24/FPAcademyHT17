@@ -15,6 +15,10 @@ function initiateMap() {
         var lng = event.latLng.lng();
         calcWindSpeed(lat, lng);
     });
+    google.maps.event.addListener(map, 'tilesloaded', function (event) {
+        let boundsstring = map.getBounds().isEmpty();
+        alert(boundsstring);
+    });
 
 };
 
