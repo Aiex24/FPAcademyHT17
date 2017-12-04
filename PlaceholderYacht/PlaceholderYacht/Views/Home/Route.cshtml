@@ -1,2 +1,9 @@
 ﻿<link href="~/Styles/RouteStyleSheet.css" rel="stylesheet" />
-<div class="Map"></div>
+<div id="map" style="{height: 200px;}"></div>
+
+@section scripts{ 
+<script src="~/Scripts/MapIntegration.js"></script>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA9rdRh5jniAD0TYjDIRhSqQP5ZLf6p5P4&callback=initiateMap">
+</script>
+}

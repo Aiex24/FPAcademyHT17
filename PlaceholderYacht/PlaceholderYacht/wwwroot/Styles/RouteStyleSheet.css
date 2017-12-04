@@ -2,7 +2,7 @@
     background-color: red;
 }
 
-.Map {
+#map {
     height: 500px;
     background-color: blue;
     top: 100px;
