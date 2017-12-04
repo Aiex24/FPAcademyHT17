@@ -1,8 +1,8 @@
 ﻿//Google Maps API-key: AIzaSyA9rdRh5jniAD0TYjDIRhSqQP5ZLf6p5P4
 //59.209514, 19.107700, nånstans i bottniska viken.
 var map;
+
 var bounds;
-var lineSymbol;
 
 
 function initiateMap() {
@@ -16,11 +16,15 @@ function initiateMap() {
     google.maps.event.addListener(map, 'click', function (event) {
         var lat = event.latLng.lat();
         var lng = event.latLng.lng();
+        
+        calcWindSpeed(lat, lng);
+    });
+    //Rita pilar när kartan är laddad
+    google.maps.event.addListener(map, 'tilesloaded', function (event) {
+        bounds = map.getBounds().toJSON();     
+        var lineSymbol = { path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW };
         var line = new google.maps.Polyline({
-            path: [
-                { lat: bounds.north, lng: bounds.east }, { lat: bounds.north, lng: bounds.west },
-               
-            ],
+            path: [{ lat: (bounds.north - ((bounds.north - bounds.south) / 2)), lng: bounds.east }, { lat: bounds.north, lng: bounds.west }],
             icons: [{
                 icon: lineSymbol,
                 offset: '100%'
@@ -28,24 +32,33 @@ function initiateMap() {
             map: map
         });
 
-        calcWindSpeed(lat, lng);
-    });
-    google.maps.event.addListener(map, 'tilesloaded', function (event) {
-        bounds = map.getBounds().toJSON();   
-        lineSymbol = { path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW };
-        alert(bounds.north, bounds.east, bounds.south, bounds.west)
     });
 
 };
 
 function calcWindSpeed(lat, lng) {
-    var jsonLink = "http://opendata-download-metanalys.smhi.se/api/category/mesan1g/version/1/geotype/point/lon/" + Math.round(lng) + "/lat/" + Math.round(lat) + "/data.json";
-
+    //SMHI
+    //var jsonLink = "http://opendata-download-metanalys.smhi.se/api/category/mesan1g/version/1/geotype/point/lon/" + Math.round(lng) + "/lat/" + Math.round(lat) + "/data.json";
+    //Openweathermap
+    var jsonLink = "http://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lng + "&APPID=cdc3100be90cc854ac6f417f8bccc78b";
+    console.log(jsonLink);
     $.ajax({
         url: jsonLink,
         type: 'GET',
         success: function (result) {
-            alert(result.timeSeries[0].parameters[4].values[0] + " m/s");
+            let windSpeed = result.wind.speed;
+            let windDegree = result.wind.deg;
+            let windDirection;
+            if (windDegree <= 45) {windDirection = 1;}
+            else if (windDegree > 45 && windDegree <= 90) { windDirection = 2; }
+            else if (windDegree > 90 && windDegree <= 135) { windDirection = 3; }
+            else if (windDegree > 135 && windDegree <= 180) { windDirection = 4; }
+            else if (windDegree > 180 && windDegree <= 225) { windDirection = 5; }
+            else if (windDegree > 225 && windDegree <= 270) { windDirection = 6; }
+            else if (windDegree > 270 && windDegree <= 315) { windDirection = 7; }
+            else if (windDegree > 315 && windDegree <= 360) { windDirection = 8; }
+
+            alert("Windspeed: " + windSpeed + " Degrees: " + windDegree + " Direction: " + windDirection);
         }
     })
 }
