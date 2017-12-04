@@ -1,8 +1,8 @@
 ﻿//Google Maps API-key: AIzaSyA9rdRh5jniAD0TYjDIRhSqQP5ZLf6p5P4
 //59.209514, 19.107700, nånstans i bottniska viken.
 var map;
-var lineSymbol = { path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW }
 var bounds;
+var lineSymbol;
 
 
 function initiateMap() {
@@ -17,7 +17,10 @@ function initiateMap() {
         var lat = event.latLng.lat();
         var lng = event.latLng.lng();
         var line = new google.maps.Polyline({
-            path: [{ lat: lat, lng: lng }, { lat: lat, lng: lng }]
+            path: [
+                { lat: bounds.north, lng: bounds.east }, { lat: bounds.north, lng: bounds.west },
+               
+            ],
             icons: [{
                 icon: lineSymbol,
                 offset: '100%'
@@ -28,7 +31,9 @@ function initiateMap() {
         calcWindSpeed(lat, lng);
     });
     google.maps.event.addListener(map, 'tilesloaded', function (event) {
-        bounds = map.getBounds().toJSON();       
+        bounds = map.getBounds().toJSON();   
+        lineSymbol = { path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW };
+        alert(bounds.north, bounds.east, bounds.south, bounds.west)
     });
 
 };
