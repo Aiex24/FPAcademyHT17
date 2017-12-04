@@ -49,14 +49,14 @@ function calcWindSpeed(lat, lng) {
             let windSpeed = result.wind.speed;
             let windDegree = result.wind.deg;
             let windDirection;
-            if (windDegree <= 45) {windDirection = 1;}
-            else if (windDegree > 45 && windDegree <= 90) { windDirection = 2; }
-            else if (windDegree > 90 && windDegree <= 135) { windDirection = 3; }
-            else if (windDegree > 135 && windDegree <= 180) { windDirection = 4; }
-            else if (windDegree > 180 && windDegree <= 225) { windDirection = 5; }
-            else if (windDegree > 225 && windDegree <= 270) { windDirection = 6; }
-            else if (windDegree > 270 && windDegree <= 315) { windDirection = 7; }
-            else if (windDegree > 315 && windDegree <= 360) { windDirection = 8; }
+            if ((windDegree > 337.5 && windDegree <= 360) && (windDegree => 0 && windDegree <= 22.5)) { windDirection = 'N'; }
+            else if (windDegree > 22.5 && windDegree <= 67.5) { windDirection = 'NE'; }
+            else if (windDegree > 67.5 && windDegree <= 112.5) { windDirection = 'E'; }
+            else if (windDegree > 112.5 && windDegree <= 157.5) { windDirection = 'SE'; }
+            else if (windDegree > 157.5 && windDegree <= 202.5) { windDirection = 'S'; }
+            else if (windDegree > 202.5 && windDegree <= 247.5) { windDirection = 'SW'; }
+            else if (windDegree > 247.5 && windDegree <= 292.5) { windDirection = 'W'; }
+            else if (windDegree > 292.5 && windDegree <= 337.5) { windDirection = 'NW'; }
 
             alert("Windspeed: " + windSpeed + " Degrees: " + windDegree + " Direction: " + windDirection);
         }
