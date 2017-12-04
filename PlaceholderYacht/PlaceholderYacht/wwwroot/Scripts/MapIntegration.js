@@ -17,7 +17,7 @@ function initiateMap() {
         var lat = event.latLng.lat();
         var lng = event.latLng.lng();
         var line = new google.maps.Polyline({
-            path: [{ lat: lat, lng: lng }, { lat: lat, lng: lng }]
+            path: [{ lat: lat, lng: lng }, { lat: lat, lng: lng }],
             icons: [{
                 icon: lineSymbol,
                 offset: '100%'
