@@ -1,7 +1,7 @@
 ﻿//Google Maps API-key: AIzaSyA9rdRh5jniAD0TYjDIRhSqQP5ZLf6p5P4
 //59.209514, 19.107700, nånstans i bottniska viken.
 var map;
-
+var lineSymbol;
 var bounds;
 
 
@@ -22,15 +22,8 @@ function initiateMap() {
     //Rita pilar när kartan är laddad
     google.maps.event.addListener(map, 'tilesloaded', function (event) {
         bounds = map.getBounds().toJSON();     
-        var lineSymbol = { path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW };
-        var line = new google.maps.Polyline({
-            path: [{ lat: (bounds.north - ((bounds.north - bounds.south) / 2)), lng: bounds.east }, { lat: bounds.north, lng: bounds.west }],
-            icons: [{
-                icon: lineSymbol,
-                offset: '100%'
-            }],
-            map: map
-        });
+        lineSymbol = { path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW };
+        
 
     });
 
@@ -49,20 +42,39 @@ function calcWindSpeed(lat, lng) {
             let windSpeed = result.wind.speed;
             let windDegree = result.wind.deg;
             let windDirection;
-            if (windDegree <= 45) {windDirection = 1;}
-            else if (windDegree > 45 && windDegree <= 90) { windDirection = 2; }
-            else if (windDegree > 90 && windDegree <= 135) { windDirection = 3; }
-            else if (windDegree > 135 && windDegree <= 180) { windDirection = 4; }
-            else if (windDegree > 180 && windDegree <= 225) { windDirection = 5; }
-            else if (windDegree > 225 && windDegree <= 270) { windDirection = 6; }
-            else if (windDegree > 270 && windDegree <= 315) { windDirection = 7; }
-            else if (windDegree > 315 && windDegree <= 360) { windDirection = 8; }
+            if ((windDegree > 337.5 && windDegree <= 360) && (windDegree => 0 && windDegree <= 22.5)) { windDirection = 'N'; }
+            else if (windDegree > 22.5 && windDegree <= 67.5) { windDirection = 'NE'; }
+            else if (windDegree > 67.5 && windDegree <= 112.5) { windDirection = 'E'; }
+            else if (windDegree > 112.5 && windDegree <= 157.5) { windDirection = 'SE'; }
+            else if (windDegree > 157.5 && windDegree <= 202.5) { windDirection = 'S'; }
+            else if (windDegree > 202.5 && windDegree <= 247.5) { windDirection = 'SW'; }
+            else if (windDegree > 247.5 && windDegree <= 292.5) { windDirection = 'W'; }
+            else if (windDegree > 292.5 && windDegree <= 337.5) { windDirection = 'NW'; }
 
             alert("Windspeed: " + windSpeed + " Degrees: " + windDegree + " Direction: " + windDirection);
+            //Testdata - det här ska ritas på ett annat ställe och vara generellt...
+            drawArrow(bounds.north - ((bounds.north - bounds.south) / 2), bounds.east - ((bounds.east - bounds.west) / 2), 'NE');
         }
     })
+};
+
+function drawArrow(latOrigin, longOrigin, windDirection) {
+    let latEnd, longEnd;
+    let scope = bounds.north - bounds.south;
+    if (windDirection === 'NE') {
+        latEnd = latOrigin + (scope / 9); longEnd = longOrigin + (scope / 9);
+    }
+
+    let line = new google.maps.Polyline({
+        path: [{ lat: latOrigin, lng: longOrigin }, { lat: latEnd, lng: longEnd }],
+        icons: [{
+            icon: lineSymbol,
+            offset: '100%'
+        }],
+        map: map
+    });
+
 }
 
-;
 
 
