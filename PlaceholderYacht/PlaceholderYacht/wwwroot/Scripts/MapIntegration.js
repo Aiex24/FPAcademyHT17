@@ -14,4 +14,5 @@ function initiateMap() {
         var lng = event.latLng.lng();
         alert("Lat=" + lat + "; Lng=" + lng);
     });
+    
 };
