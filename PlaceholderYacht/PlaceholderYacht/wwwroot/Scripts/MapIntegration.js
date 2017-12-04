@@ -3,6 +3,9 @@
 var map;
 var lineSymbol;
 var bounds;
+var clickCounter = 0;
+var clickStart = [];
+var clickEnd = [];
 
 
 function initiateMap() {
@@ -53,7 +56,8 @@ function calcWindSpeed(lat, lng) {
 
             alert("Windspeed: " + windSpeed + " Degrees: " + windDegree + " Direction: " + windDirection);
             //Testdata - det här ska ritas på ett annat ställe och vara generellt...
-            drawArrow(bounds.north - ((bounds.north - bounds.south) / 2), bounds.east - ((bounds.east - bounds.west) / 2), 'NE');
+            drawLine(lat, lng);
+            drawArrow(lat, lng, windDirection);
         }
     })
 };
@@ -61,9 +65,29 @@ function calcWindSpeed(lat, lng) {
 function drawArrow(latOrigin, longOrigin, windDirection) {
     let latEnd, longEnd;
     let scope = bounds.north - bounds.south;
-    if (windDirection === 'NE') {
-        latEnd = latOrigin + (scope / 9); longEnd = longOrigin + (scope / 9);
-    }
+    switch (windDirection) {
+        case 'N': latEnd = latOrigin + (scope / 9); longEnd = longOrigin;
+            break;
+        case 'NE': latEnd = latOrigin + (scope / 9); longEnd = longOrigin + (scope / 9);
+            break;
+        case 'E': latEnd = latOrigin; longEnd = longOrigin + (scope / 9);
+            break;
+        case 'SE': latEnd = latOrigin - (scope / 9); longEnd = longOrigin + (scope / 9);
+            break;
+        case 'S': latEnd = latOrigin - (scope / 9); longEnd = longOrigin;
+            break;
+        case 'SW': latEnd = latOrigin - (scope / 9); longEnd = longOrigin - (scope / 9);
+            break;
+        case 'W': latEnd = latOrigin; longEnd = longOrigin - (scope / 9);
+            break;
+        case 'NW': latEnd = latOrigin + (scope / 9); longEnd = longOrigin - (scope / 9);
+            break;
+        default:
+    };
+
+    //if (windDirection === 'NE') {
+    //    latEnd = latOrigin + (scope / 9); longEnd = longOrigin + (scope / 9);
+    //}
 
     let line = new google.maps.Polyline({
         path: [{ lat: latOrigin, lng: longOrigin }, { lat: latEnd, lng: longEnd }],
@@ -74,7 +98,38 @@ function drawArrow(latOrigin, longOrigin, windDirection) {
         map: map
     });
 
-}
+    
 
+}
+function drawLine(lat, lng) {
+
+    if (clickCounter % 2 == 0) {
+        clickStart[0] = lat;
+        clickStart[1] = lng;
+    }
+    else if (clickCounter % 2 == 1) {
+        clickEnd[0] = lat;
+        clickEnd[1] = lng;
+    }
+    clickCounter++;
+
+    if (clickStart.length > 0 && clickEnd.length > 0) {
+        var lineSymbol = {
+            path: 'M 0,-1 0,1',
+            strokeOpacity: 1,
+            scale: 4
+        };
+        var line = new google.maps.Polyline({
+            path: [{ lat: clickStart[0], lng: clickStart[1] }, { lat: clickEnd[0], lng: clickEnd[1] }],
+            strokeOpacity: 0,
+            icons: [{
+                icon: lineSymbol,
+                offset: '0',
+                repeat: '20px'
+            }],
+            map: map
+        });
+    }
+}
 
 
