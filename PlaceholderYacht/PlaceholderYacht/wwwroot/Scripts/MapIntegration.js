@@ -1,7 +1,7 @@
 ﻿//Google Maps API-key: AIzaSyA9rdRh5jniAD0TYjDIRhSqQP5ZLf6p5P4
 //59.209514, 19.107700, nånstans i bottniska viken.
 var map;
-
+var lineSymbol;
 var bounds;
 
 
@@ -22,15 +22,8 @@ function initiateMap() {
     //Rita pilar när kartan är laddad
     google.maps.event.addListener(map, 'tilesloaded', function (event) {
         bounds = map.getBounds().toJSON();     
-        var lineSymbol = { path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW };
-        var line = new google.maps.Polyline({
-            path: [{ lat: (bounds.north - ((bounds.north - bounds.south) / 2)), lng: bounds.east }, { lat: bounds.north, lng: bounds.west }],
-            icons: [{
-                icon: lineSymbol,
-                offset: '100%'
-            }],
-            map: map
-        });
+        lineSymbol = { path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW };
+        
 
     });
 
@@ -59,10 +52,29 @@ function calcWindSpeed(lat, lng) {
             else if (windDegree > 292.5 && windDegree <= 337.5) { windDirection = 'NW'; }
 
             alert("Windspeed: " + windSpeed + " Degrees: " + windDegree + " Direction: " + windDirection);
+            //Testdata - det här ska ritas på ett annat ställe och vara generellt...
+            drawArrow(bounds.north - ((bounds.north - bounds.south) / 2), bounds.east - ((bounds.east - bounds.west) / 2), 'NE');
         }
     })
+};
+
+function drawArrow(latOrigin, longOrigin, windDirection) {
+    let latEnd, longEnd;
+    let scope = bounds.north - bounds.south;
+    if (windDirection === 'NE') {
+        latEnd = latOrigin + (scope / 9); longEnd = longOrigin + (scope / 9);
+    }
+
+    let line = new google.maps.Polyline({
+        path: [{ lat: latOrigin, lng: longOrigin }, { lat: latEnd, lng: longEnd }],
+        icons: [{
+            icon: lineSymbol,
+            offset: '100%'
+        }],
+        map: map
+    });
+
 }
 
-;
 
 
