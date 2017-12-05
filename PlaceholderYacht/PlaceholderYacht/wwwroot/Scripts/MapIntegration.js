@@ -1,4 +1,5 @@
 ﻿//Google Maps API-key: AIzaSyA9rdRh5jniAD0TYjDIRhSqQP5ZLf6p5P4
+//utvecklings-nyckel: AIzaSyAUJEHjY43pTfNYN8jxgDiZ23HvslS_YH0
 //59.209514, 19.107700, nånstans i bottniska viken.
 var map;
 var lineSymbol;
@@ -10,7 +11,7 @@ var clickEnd = [];
 
 function initiateMap() {
     map = new google.maps.Map(document.getElementById('Map'), {
-        center: { lat: 59.2, lng: 19.1 },
+        center: { lat: 0, lng: 19.1 },
         zoom: 9,
         gestureHandling: 'none',
         zoomControl: false,
@@ -43,63 +44,23 @@ function calcWindSpeed(lat, lng) {
             console.log(result);
             let windSpeed = result.wind.speed;
             let windDegree = result.wind.deg;
-            let windDirection;
-            if ((windDegree > 337.5 && windDegree <= 360) && (windDegree => 0 && windDegree <= 22.5)) { windDirection = 'N'; }
-            else if (windDegree > 22.5 && windDegree <= 67.5) { windDirection = 'NE'; }
-            else if (windDegree > 67.5 && windDegree <= 112.5) { windDirection = 'E'; }
-            else if (windDegree > 112.5 && windDegree <= 157.5) { windDirection = 'SE'; }
-            else if (windDegree > 157.5 && windDegree <= 202.5) { windDirection = 'S'; }
-            else if (windDegree > 202.5 && windDegree <= 247.5) { windDirection = 'SW'; }
-            else if (windDegree > 247.5 && windDegree <= 292.5) { windDirection = 'W'; }
-            else if (windDegree > 292.5 && windDegree <= 337.5) { windDirection = 'NW'; }
 
-            alert("Windspeed: " + windSpeed + " Degrees: " + windDegree + " Direction: " + windDirection);
+            alert("Windspeed: " + windSpeed + " Degrees: " + windDegree);
             //Testdata - det här ska ritas på ett annat ställe och vara generellt...
             drawLine(lat, lng);
-            drawArrow(lat, lng, windDirection);
+            drawArrow(lat, lng, windDegree, 3);
         }
     })
 };
 
-function drawArrow(latOrigin, longOrigin, windDirection) {
+function drawArrow(latOrigin, longOrigin, windDegree, mapShareForRadius) {
     let latEnd, longEnd;
-    let scope = bounds.north - bounds.south;
+    let scopeLat = bounds.north - bounds.south;
+    let scopeLong = bounds.east - bounds.west;
+    let aspectRatioXY = scopeLat / scopeLong;
 
-    latEnd = latOrigin + latEnd*
-
-    //TODO Fixa nedan kod och så drawArrow tar in degree
-    //int lonO = 50;
-    //int latO = 16;
-    //int lonE;
-    //int latE;
-    //int r = 1;
-    //double degree = 360;
-
-    lonE = lonO + Convert.ToInt32(r * Math.Sin(degree * Math.PI / 180));
-    latE = latO + Convert.ToInt32(r * Math.Cos(degree * Math.PI / 180));
-    switch (windDirection) {
-        case 'N': latEnd = latOrigin + (scope / 9); longEnd = longOrigin;
-            break;
-        case 'NE': latEnd = latOrigin + (scope / 9); longEnd = longOrigin + (scope / 9);
-            break;
-        case 'E': latEnd = latOrigin; longEnd = longOrigin + (scope / 9);
-            break;
-        case 'SE': latEnd = latOrigin - (scope / 9); longEnd = longOrigin + (scope / 9);
-            break;
-        case 'S': latEnd = latOrigin - (scope / 9); longEnd = longOrigin;
-            break;
-        case 'SW': latEnd = latOrigin - (scope / 9); longEnd = longOrigin - (scope / 9);
-            break;
-        case 'W': latEnd = latOrigin; longEnd = longOrigin - (scope / 9);
-            break;
-        case 'NW': latEnd = latOrigin + (scope / 9); longEnd = longOrigin - (scope / 9);
-            break;
-        default:
-    };
-
-    //if (windDirection === 'NE') {
-    //    latEnd = latOrigin + (scope / 9); longEnd = longOrigin + (scope / 9);
-    //}
+    longEnd = longOrigin + ((scopeLat / mapShareForRadius) * Math.sin(windDegree * (Math.PI / 180)));
+    latEnd = latOrigin + ((scopeLat / mapShareForRadius)) * Math.cos(windDegree * (Math.PI / 180));
 
     let line = new google.maps.Polyline({
         path: [{ lat: latOrigin, lng: longOrigin }, { lat: latEnd, lng: longEnd }],
