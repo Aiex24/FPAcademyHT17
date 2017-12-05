@@ -148,3 +148,20 @@ body {
 
 .dropdown:hover .dropbtn {
 }
+
+#divdata {
+    position: absolute;
+    z-index: 9;
+    transition: top 0.5s ease;
+    transition: background-color 0.5s ease;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+#divdatatable {
+    cursor: move;
+    z-index: 10;
+    background-color: #1daee1;
+    color: #fff;
+    width: 250px;
+    padding: 10px;
+}
