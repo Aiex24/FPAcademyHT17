@@ -1,5 +1,6 @@
 ﻿//Google Maps API-key: AIzaSyA9rdRh5jniAD0TYjDIRhSqQP5ZLf6p5P4
 //59.209514, 19.107700, nånstans i bottniska viken.
+//utvecklings-nyckel: AIzaSyAUJEHjY43pTfNYN8jxgDiZ23HvslS_YH0
 var map;
 var lineSymbol;
 var bounds;
