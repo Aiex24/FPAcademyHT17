@@ -1,5 +1,4 @@
 ﻿//Google Maps API-key: AIzaSyA9rdRh5jniAD0TYjDIRhSqQP5ZLf6p5P4
-//utvecklings-nyckel: AIzaSyAUJEHjY43pTfNYN8jxgDiZ23HvslS_YH0
 //59.209514, 19.107700, nånstans i bottniska viken.
 var map;
 var lineSymbol;
@@ -8,32 +7,51 @@ var clickCounter = 0;
 var clickStart = [];
 var clickEnd = [];
 
-
 function initiateMap() {
     map = new google.maps.Map(document.getElementById('Map'), {
-        center: { lat: 0, lng: 19.1 },
+        center: { lat: 59.2, lng: 19.1 },
         zoom: 9,
         gestureHandling: 'none',
         zoomControl: false,
         streetViewControl: false
+    })
+    //Rita pilar när kartan är laddad
+    google.maps.event.addListener(map, 'tilesloaded', function (event) {
+        lineSymbol = { path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW };
+        bounds = map.getBounds().toJSON();
+        var gridX = 8;
+        var gridY = 4;
+        var gridCoords = new Array(gridX * gridY);
+
+        for (var i = 0; i < gridX; i++) {
+            for (var j = 0; j < gridY; j++) {
+                gridCoords[i * gridX + j] = new Array(2);
+
+                gridCoords[i * gridX + j][0] = bounds.west + (1 + i * 2) * ((bounds.east - bounds.west) / (2 * gridX));
+                gridCoords[i * gridX + j][1] = bounds.south + (1 + j * 2) * ((bounds.north - bounds.south) / (2 * gridY));
+
+                let gridLat = gridCoords[i * gridX + j][1];
+                let gridLon = gridCoords[i * gridX + j][0];
+
+                let windDegree = calcWindSpeed(gridLat, gridLon);
+                drawArrow(gridLat, gridLon, windDegree, gridX);
+            }
+        }
     });
+
     google.maps.event.addListener(map, 'click', function (event) {
         var lat = event.latLng.lat();
         var lng = event.latLng.lng();
-        
+
         calcWindSpeed(lat, lng);
-    });
-    //Rita pilar när kartan är laddad
-    google.maps.event.addListener(map, 'tilesloaded', function (event) {
-        bounds = map.getBounds().toJSON();     
-        lineSymbol = { path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW };
+
+        drawLine(lat, lng);
+        drawArrow(lat, lng, windDirection);
     });
 };
 
 function calcWindSpeed(lat, lng) {
-    //SMHI
-    //var jsonLink = "http://opendata-download-metanalys.smhi.se/api/category/mesan1g/version/1/geotype/point/lon/" + Math.round(lng) + "/lat/" + Math.round(lat) + "/data.json";
-    //Openweathermap
+
     var jsonLink = "http://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lng + "&APPID=cdc3100be90cc854ac6f417f8bccc78b";
     console.log(jsonLink);
     $.ajax({
@@ -44,11 +62,16 @@ function calcWindSpeed(lat, lng) {
             console.log(result);
             let windSpeed = result.wind.speed;
             let windDegree = result.wind.deg;
+            console.log(windDegree);
+            return windDegree;
 
-            alert("Windspeed: " + windSpeed + " Degrees: " + windDegree);
-            //Testdata - det här ska ritas på ett annat ställe och vara generellt...
-            drawLine(lat, lng);
-            drawArrow(lat, lng, windDegree, 3);
+
+            //return {
+            //    speed: windSpeed,
+            //    degree: windDegree
+            //};
+
+            //alert("Windspeed: " + windSpeed + " Degrees: " + windDegree + " Direction: " + windDirection);
         }
     })
 };
@@ -70,10 +93,8 @@ function drawArrow(latOrigin, longOrigin, windDegree, mapShareForRadius) {
         }],
         map: map
     });
-
-    
-
 }
+
 function drawLine(lat, lng) {
 
     if (clickCounter % 2 == 0) {
