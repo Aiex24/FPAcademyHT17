@@ -26,7 +26,6 @@ function initiateMap() {
     google.maps.event.addListener(map, 'tilesloaded', function (event) {
         bounds = map.getBounds().toJSON();     
         lineSymbol = { path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW };
-        
 
     });
 
