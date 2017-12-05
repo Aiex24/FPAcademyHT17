@@ -7,8 +7,8 @@ var clickCounter = 0;
 var clickStart = [];
 var clickEnd = [];
 
-function initiateMap() {
 
+function initiateMap() {
     map = new google.maps.Map(document.getElementById('Map'), {
         center: { lat: 59.2, lng: 19.1 },
         zoom: 9,
@@ -16,19 +16,20 @@ function initiateMap() {
         zoomControl: false,
         streetViewControl: false
     });
-    //Rita pilar när kartan är laddad
-    google.maps.event.addListener(map, 'tilesloaded', function (event) {
-        bounds = map.getBounds().toJSON();
-        lineSymbol = { path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW };
-    });
-
     google.maps.event.addListener(map, 'click', function (event) {
         var lat = event.latLng.lat();
         var lng = event.latLng.lng();
-
-        drawLine(lat, lng);
+        
         calcWindSpeed(lat, lng);
     });
+    //Rita pilar när kartan är laddad
+    google.maps.event.addListener(map, 'tilesloaded', function (event) {
+        bounds = map.getBounds().toJSON();     
+        lineSymbol = { path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW };
+        
+
+    });
+
 };
 
 function calcWindSpeed(lat, lng) {
@@ -44,8 +45,6 @@ function calcWindSpeed(lat, lng) {
             let windSpeed = result.wind.speed;
             let windDegree = result.wind.deg;
             let windDirection;
-
-            //TODO, snygga till med for-loop
             if ((windDegree > 337.5 && windDegree <= 360) && (windDegree => 0 && windDegree <= 22.5)) { windDirection = 'N'; }
             else if (windDegree > 22.5 && windDegree <= 67.5) { windDirection = 'NE'; }
             else if (windDegree > 67.5 && windDegree <= 112.5) { windDirection = 'E'; }
@@ -55,8 +54,10 @@ function calcWindSpeed(lat, lng) {
             else if (windDegree > 247.5 && windDegree <= 292.5) { windDirection = 'W'; }
             else if (windDegree > 292.5 && windDegree <= 337.5) { windDirection = 'NW'; }
 
+            alert("Windspeed: " + windSpeed + " Degrees: " + windDegree + " Direction: " + windDirection);
             //Testdata - det här ska ritas på ett annat ställe och vara generellt...
-            drawArrow(bounds.north - ((bounds.north - bounds.south) / 2), bounds.east - ((bounds.east - bounds.west) / 2), 'NE');
+            drawLine(lat, lng);
+            drawArrow(lat, lng, windDirection);
         }
     })
 };
@@ -64,9 +65,29 @@ function calcWindSpeed(lat, lng) {
 function drawArrow(latOrigin, longOrigin, windDirection) {
     let latEnd, longEnd;
     let scope = bounds.north - bounds.south;
-    if (windDirection === 'NE') {
-        latEnd = latOrigin + (scope / 9); longEnd = longOrigin + (scope / 9);
-    }
+    switch (windDirection) {
+        case 'N': latEnd = latOrigin + (scope / 9); longEnd = longOrigin;
+            break;
+        case 'NE': latEnd = latOrigin + (scope / 9); longEnd = longOrigin + (scope / 9);
+            break;
+        case 'E': latEnd = latOrigin; longEnd = longOrigin + (scope / 9);
+            break;
+        case 'SE': latEnd = latOrigin - (scope / 9); longEnd = longOrigin + (scope / 9);
+            break;
+        case 'S': latEnd = latOrigin - (scope / 9); longEnd = longOrigin;
+            break;
+        case 'SW': latEnd = latOrigin - (scope / 9); longEnd = longOrigin - (scope / 9);
+            break;
+        case 'W': latEnd = latOrigin; longEnd = longOrigin - (scope / 9);
+            break;
+        case 'NW': latEnd = latOrigin + (scope / 9); longEnd = longOrigin - (scope / 9);
+            break;
+        default:
+    };
+
+    //if (windDirection === 'NE') {
+    //    latEnd = latOrigin + (scope / 9); longEnd = longOrigin + (scope / 9);
+    //}
 
     let line = new google.maps.Polyline({
         path: [{ lat: latOrigin, lng: longOrigin }, { lat: latEnd, lng: longEnd }],
@@ -76,8 +97,10 @@ function drawArrow(latOrigin, longOrigin, windDirection) {
         }],
         map: map
     });
-}
 
+    
+
+}
 function drawLine(lat, lng) {
 
     if (clickCounter % 2 == 0) {
@@ -108,3 +131,5 @@ function drawLine(lat, lng) {
         });
     }
 }
+
+
