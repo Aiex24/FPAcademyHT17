@@ -12,15 +12,15 @@ namespace PlaceholderYacht
 {
     public class Startup
     {
-        //IConfiguration conf;
-        //public Startup(IConfiguration conf)
-        //{
-        //    this.conf = conf;
-        //}
+        IConfiguration conf;
+        public Startup(IConfiguration conf)
+        {
+            this.conf = conf;
+        }
 
         public void ConfigureServices(IServiceCollection services)
         {
-            //string connstring = conf.GetConnectionString("connstring");
+            string connstring = conf.GetConnectionString("connstring");
             services.AddMvc();
         }
 

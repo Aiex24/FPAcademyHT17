@@ -18,8 +18,8 @@ function initiateMap() {
     //Rita pilar när kartan är laddad
     google.maps.event.addListener(map, 'tilesloaded', function (event) {
         bounds = map.getBounds().toJSON();
-        var gridX = 8;
         var gridY = 4;
+        var gridX = 8;
         var gridCoords = new Array(gridX * gridY);
 
         for (var i = 0; i < gridX; i++) {
@@ -33,7 +33,6 @@ function initiateMap() {
                 let gridLon = gridCoords[i * gridX + j][0];
 
                 let windDegree = calcWindSpeed(gridLat, gridLon);
-                drawArrow(gridLat, gridLon, windDegree, gridX);
             }
         }
     });
@@ -47,17 +46,33 @@ function initiateMap() {
 };
 
 function calcWindSpeed(lat, lng) {
-    var jsonLink = "http://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lng + "&APPID=cdc3100be90cc854ac6f417f8bccc78b";
+    var latRound = Math.round(lat * 1000000) / 1000000;
+    var lngRound = Math.round(lng * 1000000) / 1000000;
+    console.log(latRound);
+    console.log(lngRound);
+
+    var jsonLinkSMHI = "http://opendata-download-metanalys.smhi.se/api/category/mesan1g/version/1/geotype/point/lon/" + lngRound + "/lat/" + latRound + "/data.json";
+    console.log(jsonLinkSMHI);
+    //var jsonLinkOpenWeather = "http://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lng + "&APPID=cdc3100be90cc854ac6f417f8bccc78b";
     var windSpeed;
     var windDegree;
     $.ajax({
-        url: jsonLink,
+        url: jsonLinkSMHI,
         type: 'GET',
         success: function (result) {
-            //TODO - fixa om degree blir undefined
-            windSpeed = result.wind.speed;
-            windDegree = result.wind.deg;
-            drawArrow(lat, lng, windDegree-180, 15);
+            console.log(result);
+            for (var i = 0; i < 10; i++) {
+                windSpeed = result.timeSeries[i].parameters[4].values[0];
+                windDegree = result.timeSeries[i].parameters[3].values[0];
+                await sleep(2000);
+                console.log(windSpeed, windDegree);
+            }
+
+            drawArrow(lat, lng, windDegree - 180, 15);
+
+            ////Open Weather
+            //windSpeed = result.wind.speed;
+            //windDegree = result.wind.deg;
             //alert("Windspeed: " + windSpeed + " Degrees: " + windDegree + " Direction: " + windDirection);
         }
     });
