@@ -20,8 +20,8 @@ function initiateMap() {
     google.maps.event.addListener(map, 'tilesloaded', function (event) {
         lineSymbol = { path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW };
         bounds = map.getBounds().toJSON();
-        var gridX = 8;
-        var gridY = 4;
+        var gridX = 16;
+        var gridY = 8;
         var gridCoords = new Array(gridX * gridY);
 
         for (var i = 0; i < gridX; i++) {
@@ -46,32 +46,26 @@ function initiateMap() {
 
         calcWindSpeed(lat, lng);
 
-        drawLine(lat, lng).then(
-            drawArrow(lat, lng, windDirection);
-
-
-        ;
+        drawLine(lat, lng);
+        drawArrow(lat, lng, windDirection);
     });
 };
 
 function calcWindSpeed(lat, lng) {
-
     var jsonLink = "http://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lng + "&APPID=cdc3100be90cc854ac6f417f8bccc78b";
-    console.log(jsonLink);
+    var windSpeed;
+    var windDegree;
     $.ajax({
         url: jsonLink,
         type: 'GET',
         success: function (result) {
             //TODO - fixa om degree blir undefined
-            console.log(result);
-            let windSpeed = result.wind.speed;
-            let windDegree = result.wind.deg;
-            console.log(windDegree);
-            return windDegree;
-
-            
+            windSpeed = result.wind.speed;
+            windDegree = result.wind.deg;
+            drawArrow(lat, lng, windDegree-180, 15);
+            //alert("Windspeed: " + windSpeed + " Degrees: " + windDegree + " Direction: " + windDirection);
         }
-    })
+    });
 };
 
 function drawArrow(latOrigin, longOrigin, windDegree, mapShareForRadius) {
@@ -91,7 +85,6 @@ function drawArrow(latOrigin, longOrigin, windDegree, mapShareForRadius) {
         }],
         map: map
     });
-    
 }
 
 function drawLine(lat, lng) {
