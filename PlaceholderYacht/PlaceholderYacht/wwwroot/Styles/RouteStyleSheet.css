@@ -1,5 +1,7 @@
-﻿body {
-    background-color: red;
+﻿@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+
+body {
+    background-color: black;
 }
 
 
@@ -7,20 +9,42 @@
 .Map-container {
     height: 100%;
     background-color: yellow;
+    margin:0;
     margin-top: 50px;
     position: center;
     position: fixed;
-    width: 80%;
+    width: 100%;
     z-index: 2;
-    left: 10%;
+
 }
 .Map {
-    height: 70%;
+    height: 100%;
+    width: 100%;
     background-color: blue;
 }
 
-.Route-data {
-    height: 30%;
-    background-color: green;
+#divdata {
+    font-family: 'Open Sans', sans-serif;
+    position: absolute;
+    top: 40px;
+    transition: top 0.5s ease;
+    transition: background-color 0.5s ease;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    left: 80%;
+    font-size:24px;
 }
 
+#divdatatable {
+    font-family: 'Open Sans', sans-serif;
+    cursor: move;
+    z-index: 10;
+    background-color: #1daee1;
+    color: #fff;
+    width: 250px;
+    padding: 10px;
+}
+
+#divdatatable table{
+   
+}

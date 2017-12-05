@@ -3,11 +3,32 @@
 <div class="Map-container">
     <div class="Map" id="Map"></div>
     <div class="Route-data"></div>
+    <div id="divdata">
+        <div id="divdatatable">Route Data</div>
+        <table>
+            <tr><th>Latitude</th><td>59° 10' 49.548'' N</td>
+            <tr>
+            <tr><th>Longitude</th><td>18° 59' 3.75'' E</td>
+            <tr>
+            <tr><th>Map API</th><td>Google Maps</td>
+            <tr>
+            <tr><th>Wind API</th><td>SMHI</td>
+            <tr>
+            <tr><th>VPP</th><td>Shipman 63</td>
+            <tr>
+            <tr><th>Distance:</th><td></td>
+            <tr>
+            <tr><th>Time elapsed:</th><td></td>
+            <tr>
+        </table>
+    </div>
 </div>
 
-@section scripts{ 
-<script src="~/Scripts/MapIntegration.js"></script>
-<script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAUJEHjY43pTfNYN8jxgDiZ23HvslS_YH0&callback=initiateMap">
-</script>
+@section scripts{
+    <script src="~/Scripts/MapIntegration.js"></script>
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA9rdRh5jniAD0TYjDIRhSqQP5ZLf6p5P4&callback=initiateMap">
+
+    </script>
+<script src="~/Scripts/RouteJavaScript.js"></script>
 }
