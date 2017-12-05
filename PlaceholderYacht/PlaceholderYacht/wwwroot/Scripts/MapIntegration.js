@@ -7,7 +7,6 @@ var clickCounter = 0;
 var clickStart = [];
 var clickEnd = [];
 
-
 function initiateMap() {
     map = new google.maps.Map(document.getElementById('Map'), {
         center: { lat: 59.2, lng: 19.1 },
@@ -15,24 +14,44 @@ function initiateMap() {
         gestureHandling: 'none',
         zoomControl: false,
         streetViewControl: false
+    })
+    //Rita pilar när kartan är laddad
+    google.maps.event.addListener(map, 'tilesloaded', function (event) {
+        lineSymbol = { path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW };
+        bounds = map.getBounds().toJSON();
+        var gridX = 8;
+        var gridY = 4;
+        var gridCoords = new Array(gridX * gridY);
+
+        for (var i = 0; i < gridX; i++) {
+            for (var j = 0; j < gridY; j++) {
+                gridCoords[i * gridX + j] = new Array(2);
+
+                gridCoords[i * gridX + j][0] = bounds.west + (1 + i * 2) * ((bounds.east - bounds.west) / (2 * gridX));
+                gridCoords[i * gridX + j][1] = bounds.south + (1 + j * 2) * ((bounds.north - bounds.south) / (2 * gridY));
+
+                let gridLat = gridCoords[i * gridX + j][1];
+                let gridLon = gridCoords[i * gridX + j][0];
+
+                let windDegree = calcWindSpeed(gridLat, gridLon);
+                drawArrow(gridLat, gridLon, windDegree, gridX);
+            }
+        }
     });
+
     google.maps.event.addListener(map, 'click', function (event) {
         var lat = event.latLng.lat();
         var lng = event.latLng.lng();
-        
+
         calcWindSpeed(lat, lng);
-    });
-    //Rita pilar när kartan är laddad
-    google.maps.event.addListener(map, 'tilesloaded', function (event) {
-        bounds = map.getBounds().toJSON();     
-        lineSymbol = { path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW };
+
+        drawLine(lat, lng);
+        drawArrow(lat, lng, windDirection);
     });
 };
 
 function calcWindSpeed(lat, lng) {
-    //SMHI
-    //var jsonLink = "http://opendata-download-metanalys.smhi.se/api/category/mesan1g/version/1/geotype/point/lon/" + Math.round(lng) + "/lat/" + Math.round(lat) + "/data.json";
-    //Openweathermap
+
     var jsonLink = "http://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lng + "&APPID=cdc3100be90cc854ac6f417f8bccc78b";
     console.log(jsonLink);
     $.ajax({
@@ -43,63 +62,28 @@ function calcWindSpeed(lat, lng) {
             console.log(result);
             let windSpeed = result.wind.speed;
             let windDegree = result.wind.deg;
-            let windDirection;
-            if ((windDegree > 337.5 && windDegree <= 360) && (windDegree => 0 && windDegree <= 22.5)) { windDirection = 'N'; }
-            else if (windDegree > 22.5 && windDegree <= 67.5) { windDirection = 'NE'; }
-            else if (windDegree > 67.5 && windDegree <= 112.5) { windDirection = 'E'; }
-            else if (windDegree > 112.5 && windDegree <= 157.5) { windDirection = 'SE'; }
-            else if (windDegree > 157.5 && windDegree <= 202.5) { windDirection = 'S'; }
-            else if (windDegree > 202.5 && windDegree <= 247.5) { windDirection = 'SW'; }
-            else if (windDegree > 247.5 && windDegree <= 292.5) { windDirection = 'W'; }
-            else if (windDegree > 292.5 && windDegree <= 337.5) { windDirection = 'NW'; }
+            console.log(windDegree);
+            return windDegree;
 
-            alert("Windspeed: " + windSpeed + " Degrees: " + windDegree + " Direction: " + windDirection);
-            //Testdata - det här ska ritas på ett annat ställe och vara generellt...
-            drawLine(lat, lng);
-            drawArrow(lat, lng, windDirection);
+
+            //return {
+            //    speed: windSpeed,
+            //    degree: windDegree
+            //};
+
+            //alert("Windspeed: " + windSpeed + " Degrees: " + windDegree + " Direction: " + windDirection);
         }
     })
 };
 
-function drawArrow(latOrigin, longOrigin, windDirection) {
+function drawArrow(latOrigin, longOrigin, windDegree, mapShareForRadius) {
     let latEnd, longEnd;
-    let scope = bounds.north - bounds.south;
+    let scopeLat = bounds.north - bounds.south;
+    let scopeLong = bounds.east - bounds.west;
+    let aspectRatioXY = scopeLat / scopeLong;
 
-    latEnd = latOrigin + latEnd*
-
-    //TODO Fixa nedan kod och så drawArrow tar in degree
-    //int lonO = 50;
-    //int latO = 16;
-    //int lonE;
-    //int latE;
-    //int r = 1;
-    //double degree = 360;
-
-    lonE = lonO + Convert.ToInt32(r * Math.Sin(degree * Math.PI / 180));
-    latE = latO + Convert.ToInt32(r * Math.Cos(degree * Math.PI / 180));
-    switch (windDirection) {
-        case 'N': latEnd = latOrigin + (scope / 9); longEnd = longOrigin;
-            break;
-        case 'NE': latEnd = latOrigin + (scope / 9); longEnd = longOrigin + (scope / 9);
-            break;
-        case 'E': latEnd = latOrigin; longEnd = longOrigin + (scope / 9);
-            break;
-        case 'SE': latEnd = latOrigin - (scope / 9); longEnd = longOrigin + (scope / 9);
-            break;
-        case 'S': latEnd = latOrigin - (scope / 9); longEnd = longOrigin;
-            break;
-        case 'SW': latEnd = latOrigin - (scope / 9); longEnd = longOrigin - (scope / 9);
-            break;
-        case 'W': latEnd = latOrigin; longEnd = longOrigin - (scope / 9);
-            break;
-        case 'NW': latEnd = latOrigin + (scope / 9); longEnd = longOrigin - (scope / 9);
-            break;
-        default:
-    };
-
-    //if (windDirection === 'NE') {
-    //    latEnd = latOrigin + (scope / 9); longEnd = longOrigin + (scope / 9);
-    //}
+    longEnd = longOrigin + ((scopeLat / mapShareForRadius) * Math.sin(windDegree * (Math.PI / 180)));
+    latEnd = latOrigin + ((scopeLat / mapShareForRadius)) * Math.cos(windDegree * (Math.PI / 180));
 
     let line = new google.maps.Polyline({
         path: [{ lat: latOrigin, lng: longOrigin }, { lat: latEnd, lng: longEnd }],
@@ -109,10 +93,8 @@ function drawArrow(latOrigin, longOrigin, windDirection) {
         }],
         map: map
     });
-
-    
-
 }
+
 function drawLine(lat, lng) {
 
     if (clickCounter % 2 == 0) {
