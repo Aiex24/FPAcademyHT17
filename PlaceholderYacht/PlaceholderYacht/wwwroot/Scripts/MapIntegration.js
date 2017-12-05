@@ -26,9 +26,7 @@ function initiateMap() {
     google.maps.event.addListener(map, 'tilesloaded', function (event) {
         bounds = map.getBounds().toJSON();     
         lineSymbol = { path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW };
-
     });
-
 };
 
 function calcWindSpeed(lat, lng) {
@@ -41,6 +39,8 @@ function calcWindSpeed(lat, lng) {
         url: jsonLink,
         type: 'GET',
         success: function (result) {
+            //TODO - fixa om degree blir undefined
+            console.log(result);
             let windSpeed = result.wind.speed;
             let windDegree = result.wind.deg;
             let windDirection;
@@ -64,6 +64,19 @@ function calcWindSpeed(lat, lng) {
 function drawArrow(latOrigin, longOrigin, windDirection) {
     let latEnd, longEnd;
     let scope = bounds.north - bounds.south;
+
+    latEnd = latOrigin + latEnd*
+
+    //TODO Fixa nedan kod och så drawArrow tar in degree
+    //int lonO = 50;
+    //int latO = 16;
+    //int lonE;
+    //int latE;
+    //int r = 1;
+    //double degree = 360;
+
+    lonE = lonO + Convert.ToInt32(r * Math.Sin(degree * Math.PI / 180));
+    latE = latO + Convert.ToInt32(r * Math.Cos(degree * Math.PI / 180));
     switch (windDirection) {
         case 'N': latEnd = latOrigin + (scope / 9); longEnd = longOrigin;
             break;
