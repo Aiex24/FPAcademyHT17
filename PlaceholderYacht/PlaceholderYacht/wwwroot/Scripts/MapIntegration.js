@@ -46,8 +46,11 @@ function initiateMap() {
 
         calcWindSpeed(lat, lng);
 
-        drawLine(lat, lng);
-        drawArrow(lat, lng, windDirection);
+        drawLine(lat, lng).then(
+            drawArrow(lat, lng, windDirection);
+
+
+        ;
     });
 };
 
@@ -66,13 +69,7 @@ function calcWindSpeed(lat, lng) {
             console.log(windDegree);
             return windDegree;
 
-
-            //return {
-            //    speed: windSpeed,
-            //    degree: windDegree
-            //};
-
-            //alert("Windspeed: " + windSpeed + " Degrees: " + windDegree + " Direction: " + windDirection);
+            
         }
     })
 };
@@ -94,6 +91,7 @@ function drawArrow(latOrigin, longOrigin, windDegree, mapShareForRadius) {
         }],
         map: map
     });
+    
 }
 
 function drawLine(lat, lng) {
