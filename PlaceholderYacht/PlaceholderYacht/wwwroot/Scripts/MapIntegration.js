@@ -2,7 +2,6 @@
 //59.209514, 19.107700, nånstans i bottniska viken.
 //utvecklings-nyckel: AIzaSyAUJEHjY43pTfNYN8jxgDiZ23HvslS_YH0
 var map;
-var lineSymbol;
 var bounds;
 var clickCounter = 0;
 var clickStart = [];
@@ -18,10 +17,9 @@ function initiateMap() {
     })
     //Rita pilar när kartan är laddad
     google.maps.event.addListener(map, 'tilesloaded', function (event) {
-        lineSymbol = { path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW };
         bounds = map.getBounds().toJSON();
-        var gridX = 16;
-        var gridY = 8;
+        var gridX = 8;
+        var gridY = 4;
         var gridCoords = new Array(gridX * gridY);
 
         for (var i = 0; i < gridX; i++) {
@@ -44,10 +42,7 @@ function initiateMap() {
         var lat = event.latLng.lat();
         var lng = event.latLng.lng();
 
-        calcWindSpeed(lat, lng);
-
         drawLine(lat, lng);
-        drawArrow(lat, lng, windDirection);
     });
 };
 
@@ -77,10 +72,15 @@ function drawArrow(latOrigin, longOrigin, windDegree, mapShareForRadius) {
     longEnd = longOrigin + ((scopeLat / mapShareForRadius) * Math.sin(windDegree * (Math.PI / 180)));
     latEnd = latOrigin + ((scopeLat / mapShareForRadius)) * Math.cos(windDegree * (Math.PI / 180));
 
+    let arrowSymbol = {
+        path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+        strokeOpacity: 0.5,
+        scale: 2
+    };
     let line = new google.maps.Polyline({
         path: [{ lat: latOrigin, lng: longOrigin }, { lat: latEnd, lng: longEnd }],
         icons: [{
-            icon: lineSymbol,
+            icon: arrowSymbol,
             offset: '100%'
         }],
         map: map
@@ -103,7 +103,7 @@ function drawLine(lat, lng) {
         var lineSymbol = {
             path: 'M 0,-1 0,1',
             strokeOpacity: 1,
-            scale: 4
+            scale: 2
         };
         var line = new google.maps.Polyline({
             path: [{ lat: clickStart[0], lng: clickStart[1] }, { lat: clickEnd[0], lng: clickEnd[1] }],
