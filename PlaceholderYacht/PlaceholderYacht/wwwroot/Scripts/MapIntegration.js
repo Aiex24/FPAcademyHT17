@@ -4,8 +4,6 @@
 var map;
 var bounds;
 var clickCounter = 0;
-var clickStart = [];
-var clickEnd = [];
 
 function initiateMap() {
     map = new google.maps.Map(document.getElementById('Map'), {
@@ -40,6 +38,17 @@ function initiateMap() {
     google.maps.event.addListener(map, 'click', function (event) {
         var lat = event.latLng.lat();
         var lng = event.latLng.lng();
+
+        //Registrera klick för att rita ut linje mellan två punkter
+        if (clickCounter % 2 == 0) {
+            clickStart[0] = lat;
+            clickStart[1] = lng;
+        }
+        else if (clickCounter % 2 == 1) {
+            clickEnd[0] = lat;
+            clickEnd[1] = lng;
+        }
+        clickCounter++;
 
         drawLine(lat, lng);
     });
@@ -95,17 +104,7 @@ function drawArrow(latOrigin, longOrigin, windDegree, mapShareForRadius) {
     });
 }
 
-function drawLine(lat, lng) {
-
-    if (clickCounter % 2 == 0) {
-        clickStart[0] = lat;
-        clickStart[1] = lng;
-    }
-    else if (clickCounter % 2 == 1) {
-        clickEnd[0] = lat;
-        clickEnd[1] = lng;
-    }
-    clickCounter++;
+function drawLine(latOrg, lngOrg, latEnd, lngOrg) {
 
     if (clickStart.length > 0 && clickEnd.length > 0) {
         var lineSymbol = {
