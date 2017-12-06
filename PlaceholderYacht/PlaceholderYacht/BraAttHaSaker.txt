@@ -1,0 +1,2 @@
+﻿Scaffold-sträng utan användare och lösen:
+Scaffold-DbContext "Server=tcp:serverwindcatchers.database.windows.net,1433;Initial Catalog=WindCatchersDB;Persist Security Info=False;User ID=ANVÄNDARE;Password=LÖSEN;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;" Microsoft.EntityFrameworkCore.SqlServer -Schemas "Sai" -OutputDir "Models/Entities" -Context "WindCatchersContext" -Force
