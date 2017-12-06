@@ -15,11 +15,12 @@ function initiateMap() {
         zoomControl: false,
         streetViewControl: false
     })
+
     //Rita pilar när kartan är laddad
     google.maps.event.addListener(map, 'tilesloaded', function (event) {
         bounds = map.getBounds().toJSON();
-        var gridY = 4;
-        var gridX = 8;
+        var gridY = 12;
+        var gridX = 12;
         var gridCoords = new Array(gridX * gridY);
 
         for (var i = 0; i < gridX; i++) {
@@ -37,6 +38,7 @@ function initiateMap() {
         }
     });
 
+    // Eventhandler for map clicks
     google.maps.event.addListener(map, 'click', function (event) {
         var lat = event.latLng.lat();
         var lng = event.latLng.lng();
@@ -71,7 +73,7 @@ function calcWindSpeed(lat, lng) {
             console.log(result);
             var windSpeed = result.timeSeries[0].parameters[4].values[0];
             var windDegree = result.timeSeries[0].parameters[3].values[0];
-            drawArrow(lat, lng, windDegree - 180, 15);
+            drawArrow(lat, lng, windDegree - 180, 15, windSpeed);
             //console.log(windSpeed, windDegree);
 
             ////Open Weather
@@ -82,30 +84,50 @@ function calcWindSpeed(lat, lng) {
     });
 };
 
-function drawArrow(latOrigin, longOrigin, windDegree, mapShareForRadius) {
+function drawArrow(latOrigin, longOrigin, windDegree, mapShareForRadius, windSpeed) {
+
+    // some variables
     let latEnd, longEnd;
     let scopeLat = bounds.north - bounds.south;
     let scopeLong = bounds.east - bounds.west;
     let aspectRatioXY = scopeLat / scopeLong;
+    let arrowColor;
 
     longEnd = longOrigin + ((scopeLat / mapShareForRadius) * Math.sin(windDegree * (Math.PI / 180)));
     latEnd = latOrigin + ((scopeLat / mapShareForRadius)) * Math.cos(windDegree * (Math.PI / 180));
 
+    // Arrow coloring based on windspeed
+    if (windSpeed < 5)
+        arrowColor = 'green';
+    else if (5 < windSpeed < 10)
+        arrowColor = 'yellow';
+    else if (windSpeed > 10)
+        arrowColor = 'red';
+
+    // properties for our wind arrows
     let arrowSymbol = {
-        path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-        strokeOpacity: 0.5,
+        path: google.maps.SymbolPath.FORWARD_OPEN_ARROW,
+        strokeOpacity: 1,
+        strokeColor: arrowColor,
         scale: 2
     };
+
+    // properties for the arrow paths
     let line = new google.maps.Polyline({
         path: [{ lat: latOrigin, lng: longOrigin }, { lat: latEnd, lng: longEnd }],
+        strokeOpacity: 0.1,
+        scale: 1,
         icons: [{
             icon: arrowSymbol,
             offset: '100%'
         }],
         map: map
     });
+
+    animateCircle(line);
 }
 
+// Drawing lines 
 function drawLine(latOrg, lngOrg, latEnd, lngEnd) {
 
     var lineSymbol = {
@@ -123,6 +145,18 @@ function drawLine(latOrg, lngOrg, latEnd, lngEnd) {
         }],
         map: map
     });
+}
+
+// function for movig symbols along lines
+function animateCircle(line) {
+    var count = 0;
+    window.setInterval(function () {
+        count = (count + 1) % 100;
+
+        var icons = line.get('icons');
+        icons[0].offset = (count / 0.5) + '%';
+        line.set('icons', icons);
+    }, 20);
 }
 
 
