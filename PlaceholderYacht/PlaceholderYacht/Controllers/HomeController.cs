@@ -31,5 +31,10 @@ namespace PlaceholderYacht.Controllers
         {
             return View();
         }
+        [HttpGet]
+        public IActionResult AddBoat()
+        {
+            return View();
+        }
     }
 }
