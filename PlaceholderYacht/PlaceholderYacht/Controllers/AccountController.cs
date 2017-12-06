@@ -6,11 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using PlaceholderYacht.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace PlaceholderYacht.Controllers
 {
+    //[Authorize]
     public class AccountController : Controller
     {
         UserManager<IdentityUser> userManager;
@@ -30,9 +32,10 @@ namespace PlaceholderYacht.Controllers
             this.identityContext = identityContext;
         }
 
-        public IActionResult Index()
+        [Route("account/index/{userName}")]
+        public IActionResult Index(string userName)
         {
-            return RedirectToAction("Index", "Home");
+            return View((object)userName);
         }
 
         [HttpGet]
@@ -57,5 +60,44 @@ namespace PlaceholderYacht.Controllers
 
             return RedirectToAction(nameof(HomeController.Index), "Home");
         }
+
+        [HttpGet]
+        public IActionResult NewUser()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> NewUser(AccountNewuserVM viewModel)
+        {
+            if (!ModelState.IsValid)
+                return View();
+
+            //Kontrollera om användaren redan finns
+            IdentityUser user = await userManager.FindByNameAsync(viewModel.UserName);
+            if (user != null)
+            {
+                ModelState.AddModelError(nameof(AccountLoginVM.UserName), "Username already exists");
+                return View();
+            }
+
+            //Skapa användare
+            var newUser = new IdentityUser(viewModel.UserName);
+            var result = await userManager.CreateAsync(newUser, viewModel.Password);
+            if (!result.Succeeded)
+            {
+                ModelState.AddModelError(nameof(AccountLoginVM.UserName), "Username or password was not valid: ");
+                return View();
+            }
+
+            //Lägg till E-post om användaren matat in det
+            if (viewModel.Email != null)
+            {
+                newUser.Email = viewModel.Email;
+                await userManager.UpdateAsync(newUser);
+            }
+            return RedirectToAction(nameof(Index), new { userName = viewModel.UserName });
+        }
+
     }
 }
