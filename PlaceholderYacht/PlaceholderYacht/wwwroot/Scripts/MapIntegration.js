@@ -4,6 +4,8 @@
 var map;
 var bounds;
 var clickCounter = 0;
+var clickStart = [];
+var clickEnd = [];
 
 function initiateMap() {
     map = new google.maps.Map(document.getElementById('Map'), {
@@ -50,7 +52,7 @@ function initiateMap() {
         }
         clickCounter++;
 
-        drawLine(lat, lng);
+        drawLine(clickStart[0], clickStart[1], clickEnd[0], clickEnd[1]);
     });
 };
 
@@ -104,25 +106,23 @@ function drawArrow(latOrigin, longOrigin, windDegree, mapShareForRadius) {
     });
 }
 
-function drawLine(latOrg, lngOrg, latEnd, lngOrg) {
+function drawLine(latOrg, lngOrg, latEnd, lngEnd) {
 
-    if (clickStart.length > 0 && clickEnd.length > 0) {
-        var lineSymbol = {
-            path: 'M 0,-1 0,1',
-            strokeOpacity: 1,
-            scale: 2
-        };
-        var line = new google.maps.Polyline({
-            path: [{ lat: clickStart[0], lng: clickStart[1] }, { lat: clickEnd[0], lng: clickEnd[1] }],
-            strokeOpacity: 0,
-            icons: [{
-                icon: lineSymbol,
-                offset: '0',
-                repeat: '20px'
-            }],
-            map: map
-        });
-    }
+    var lineSymbol = {
+        path: 'M 0,-1 0,1',
+        strokeOpacity: 1,
+        scale: 2
+    };
+    var line = new google.maps.Polyline({
+        path: [{ lat: latOrg, lng: lngOrg }, { lat: latEnd, lng: lngEnd }],
+        strokeOpacity: 0,
+        icons: [{
+            icon: lineSymbol,
+            offset: '0',
+            repeat: '20px'
+        }],
+        map: map
+    });
 }
 
 

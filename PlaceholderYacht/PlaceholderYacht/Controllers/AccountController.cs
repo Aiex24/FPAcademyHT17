@@ -33,5 +33,11 @@ namespace PlaceholderYacht.Controllers
         {
             return RedirectToAction("Index", "Home");
         }
+        
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return View();
+        }
     }
 }
