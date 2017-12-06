@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using PlaceholderYacht.Models.Entities;
 
 namespace PlaceholderYacht
 {
@@ -25,7 +26,8 @@ namespace PlaceholderYacht
         {
             string connstring = conf.GetConnectionString("connstring");
             services.AddMvc();
-
+            services.AddDbContext<WindCatchersContext>(o =>
+            o.UseSqlServer(connstring));
             services.AddDbContext<IdentityDbContext>(o =>
             o.UseSqlServer(connstring));
             services.AddIdentity<IdentityUser, IdentityRole>()
