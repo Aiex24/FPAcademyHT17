@@ -6,38 +6,38 @@
     <form asp-controller="Home" asp-action="">
         <table>
             <tr>
-                <td><label asp-for="Modelname" /></td>
+                <td><label asp-for="Modelname" />Model: </td>
                 <td><input asp-for="Modelname" /></td>
                 <td><span asp-validation-for="Modelname"></span></td>
             </tr>
             <tr>
-                <td><label asp-for="Manufacturer" /></td>
+                <td><label asp-for="Manufacturer" />Manufacturer: </td>
                 <td><input asp-for="Manufacturer" /></td>
                 <td><span asp-validation-for="Manufacturer"></span></td>
             </tr>
             <tr>
-                <td><label asp-for="Boatname" /></td>
+                <td><label asp-for="Boatname" />Boat Name: </td>
                 <td><input asp-for="Boatname" /></td>
                 <td><span asp-validation-for="Boatname"></span></td>
             </tr>
         </table>
         <table id="VppInputTable">
             <tr>
-                <td><label asp-for="VppList[0].TWS" /></td>
-                <td><label asp-for="VppList[0].WindDirection" /></td>
-                <td><label asp-for="VppList[0].Knot" /></td>
+                <td><label asp-for="VppList[0].TWS" />TWS: </td>
+                <td><label asp-for="VppList[0].WindDirection" />Wind Direction: </td>
+                <td><label asp-for="VppList[0].Knot" />Knots: </td>
             </tr>
-            <tr id="AngleTwsKnotInputFirst">
+            <tr class="RowToSelect">
                 <td><input asp-for="VppList[0].TWS" /></td>
                 <td><input asp-for="VppList[0].WindDirection" /></td>
                 <td><input asp-for="VppList[0].Knot" /></td>
             </tr>
-            <tr>
+            <tr class="RowToSelect">
                 <td><span asp-validation-for="VppList[0].TWS"></span></td>
                 <td><span asp-validation-for="VppList[0].WindDirection"></span></td>
                 <td><span asp-validation-for="VppList[0].Knot"></span></td>
             </tr>
-            <tr>
+            <tr id="ButtonRow">
                 <td><input type="button" value="Add row" id="AddRowButton" /></td>
                 <td><input type="submit" value="Save" /></td>
             </tr>
