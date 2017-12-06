@@ -6,15 +6,226 @@ var bounds;
 var clickCounter = 0;
 var clickStart = [];
 var clickEnd = [];
+const hr = (new Date()).getHours();
+const isDayTime = hours > 8 && hours < 15;
 
 function initiateMap() {
+    // Create a new StyledMapType object, passing it an array of styles,
+    // and the name to be displayed on the map type control.
+
+    // Some map styles
+    let darkMapType = new google.maps.StyledMapType(
+    [
+        {
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "color": "#212121"
+                }
+            ]
+        },
+        {
+            "elementType": "labels.icon",
+            "stylers": [
+                {
+                    "visibility": "off"
+                }
+            ]
+        },
+        {
+            "elementType": "labels.text.fill",
+            "stylers": [
+                {
+                    "color": "#757575"
+                }
+            ]
+        },
+        {
+            "elementType": "labels.text.stroke",
+            "stylers": [
+                {
+                    "color": "#212121"
+                }
+            ]
+        },
+        {
+            "featureType": "administrative",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "color": "#757575"
+                }
+            ]
+        },
+        {
+            "featureType": "administrative.country",
+            "elementType": "labels.text.fill",
+            "stylers": [
+                {
+                    "color": "#9e9e9e"
+                }
+            ]
+        },
+        {
+            "featureType": "administrative.land_parcel",
+            "stylers": [
+                {
+                    "visibility": "off"
+                }
+            ]
+        },
+        {
+            "featureType": "administrative.locality",
+            "elementType": "labels.text.fill",
+            "stylers": [
+                {
+                    "color": "#bdbdbd"
+                }
+            ]
+        },
+        {
+            "featureType": "poi",
+            "elementType": "labels.text.fill",
+            "stylers": [
+                {
+                    "color": "#757575"
+                }
+            ]
+        },
+        {
+            "featureType": "poi.park",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "color": "#181818"
+                }
+            ]
+        },
+        {
+            "featureType": "poi.park",
+            "elementType": "labels.text.fill",
+            "stylers": [
+                {
+                    "color": "#616161"
+                }
+            ]
+        },
+        {
+            "featureType": "poi.park",
+            "elementType": "labels.text.stroke",
+            "stylers": [
+                {
+                    "color": "#1b1b1b"
+                }
+            ]
+        },
+        {
+            "featureType": "road",
+            "elementType": "geometry.fill",
+            "stylers": [
+                {
+                    "color": "#2c2c2c"
+                }
+            ]
+        },
+        {
+            "featureType": "road",
+            "elementType": "labels.text.fill",
+            "stylers": [
+                {
+                    "color": "#8a8a8a"
+                }
+            ]
+        },
+        {
+            "featureType": "road.arterial",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "color": "#373737"
+                }
+            ]
+        },
+        {
+            "featureType": "road.highway",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "color": "#3c3c3c"
+                }
+            ]
+        },
+        {
+            "featureType": "road.highway.controlled_access",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "color": "#4e4e4e"
+                }
+            ]
+        },
+        {
+            "featureType": "road.local",
+            "elementType": "labels.text.fill",
+            "stylers": [
+                {
+                    "color": "#616161"
+                }
+            ]
+        },
+        {
+            "featureType": "transit",
+            "elementType": "labels.text.fill",
+            "stylers": [
+                {
+                    "color": "#757575"
+                }
+            ]
+        },
+        {
+            "featureType": "water",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "color": "#000000"
+                }
+            ]
+        },
+        {
+            "featureType": "water",
+            "elementType": "labels.text.fill",
+            "stylers": [
+                {
+                    "color": "#3d3d3d"
+                }
+            ]
+        }
+        ],
+    { name: 'Dark map' });
+
     map = new google.maps.Map(document.getElementById('Map'), {
         center: { lat: 59.2, lng: 19.1 },
         zoom: 9,
         gestureHandling: 'none',
         zoomControl: false,
-        streetViewControl: false
-    })
+        streetViewControl: false,
+        mapTypeControlOptions: {
+            mapTypeIds: ['roadmap',
+                'satellite',
+                'hybrid',
+                'terrain',
+                'Dark map']
+        }
+    });
+
+    // Sets mapstyle depending on night/day 
+    if (!isDayTime)
+    {
+       //Associate the styled map with the MapTypeId and set it to display.
+       map.mapTypes.set('Dark map', darkMapType);
+       map.setMapTypeId('Dark map');
+    }
+    
 
     //Rita pilar när kartan är laddad
     google.maps.event.addListener(map, 'tilesloaded', function (event) {
@@ -40,8 +251,8 @@ function initiateMap() {
 
     // Eventhandler for map clicks
     google.maps.event.addListener(map, 'click', function (event) {
-        var lat = event.latLng.lat();
-        var lng = event.latLng.lng();
+        let lat = event.latLng.lat();
+        let lng = event.latLng.lng();
 
         //Registrera klick för att rita ut linje mellan två punkter
         if (clickCounter % 2 == 0) {
@@ -59,13 +270,13 @@ function initiateMap() {
 };
 
 function calcWindSpeed(lat, lng) {
-    var latRound = Math.round(lat * 1000000) / 1000000;
-    var lngRound = Math.round(lng * 1000000) / 1000000;
+    let latRound = Math.round(lat * 1000000) / 1000000;
+    let lngRound = Math.round(lng * 1000000) / 1000000;
     console.log(latRound);
     console.log(lngRound);
 
-    var jsonLinkSMHI = "http://opendata-download-metanalys.smhi.se/api/category/mesan1g/version/1/geotype/point/lon/" + lngRound + "/lat/" + latRound + "/data.json";
-    //var jsonLinkOpenWeather = "http://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lng + "&APPID=cdc3100be90cc854ac6f417f8bccc78b";
+    let jsonLinkSMHI = "http://opendata-download-metanalys.smhi.se/api/category/mesan1g/version/1/geotype/point/lon/" + lngRound + "/lat/" + latRound + "/data.json";
+    let jsonLinkOpenWeather = "http://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lng + "&APPID=cdc3100be90cc854ac6f417f8bccc78b";
     $.ajax({
         url: jsonLinkSMHI,
         type: 'GET',
@@ -74,16 +285,17 @@ function calcWindSpeed(lat, lng) {
             var windSpeed = result.timeSeries[0].parameters[4].values[0];
             var windDegree = result.timeSeries[0].parameters[3].values[0];
             drawArrow(lat, lng, windDegree - 180, 15, windSpeed);
-            //console.log(windSpeed, windDegree);
+            
 
             ////Open Weather
             //windSpeed = result.wind.speed;
             //windDegree = result.wind.deg;
-            //alert("Windspeed: " + windSpeed + " Degrees: " + windDegree + " Direction: " + windDirection);
+            
         }
     });
 };
 
+// Draw supercool arrows
 function drawArrow(latOrigin, longOrigin, windDegree, mapShareForRadius, windSpeed) {
 
     // some variables
@@ -116,6 +328,7 @@ function drawArrow(latOrigin, longOrigin, windDegree, mapShareForRadius, windSpe
     let line = new google.maps.Polyline({
         path: [{ lat: latOrigin, lng: longOrigin }, { lat: latEnd, lng: longEnd }],
         strokeOpacity: 0.1,
+        strokeColor: arrowColor,
         scale: 1,
         icons: [{
             icon: arrowSymbol,
@@ -130,12 +343,19 @@ function drawArrow(latOrigin, longOrigin, windDegree, mapShareForRadius, windSpe
 // Drawing lines 
 function drawLine(latOrg, lngOrg, latEnd, lngEnd) {
 
-    var lineSymbol = {
-        path: 'M 0,-1 0,1',
+
+    var startLatLng = { lat: latOrg, lng: lngOrg };
+    var endLatLng = { lat: latEnd, lng: lngEnd };
+
+    // 
+    let lineSymbol = {
+        path: google.maps.SymbolPath.CIRCLE,
         strokeOpacity: 1,
         scale: 2
     };
-    var line = new google.maps.Polyline({
+
+   
+    let line = new google.maps.Polyline({
         path: [{ lat: latOrg, lng: lngOrg }, { lat: latEnd, lng: lngEnd }],
         strokeOpacity: 0,
         icons: [{
@@ -144,6 +364,18 @@ function drawLine(latOrg, lngOrg, latEnd, lngEnd) {
             repeat: '20px'
         }],
         map: map
+    });   
+
+    var startMarker = new google.maps.Marker({
+        position: startLatLng,
+        map: map,
+        title: 'Starting point'
+    });
+
+    var endMarker = new google.maps.Marker({
+        position: endLatLng,
+        map: map,
+        title: 'Destination'
     });
 }
 
