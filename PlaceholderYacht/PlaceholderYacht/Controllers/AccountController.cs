@@ -61,6 +61,13 @@ namespace PlaceholderYacht.Controllers
             return RedirectToAction(nameof(HomeController.Index), "Home");
         }
 
+        [Authorize]
+        public IActionResult Logout()
+        {
+            signInManager.SignOutAsync();
+            return RedirectToAction("index", "Home");
+        }
+
         [HttpGet]
         public IActionResult NewUser()
         {

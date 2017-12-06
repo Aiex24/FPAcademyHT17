@@ -43,10 +43,21 @@
             <li class="contact"><a href="/home/contact" id="Contact">Contact</a></li>
             <li class=""><a href="/home/about" id="About">About</a></li>
         </ul>
+        @if (User.Identity.IsAuthenticated)
+        {
         <ul class="menu" id="right">
-            <li><a href="/account/newuser"><i class="fa fa-user-plus" aria-hidden="true"></i> Sign Up</a></li>
-            <li><a href="/account/login"><i class="fa fa-sign-in" aria-hidden="true"></i> Log in</a></li>
+            <li><a href="/Home/index">@User.Identity.Name</a></li>
+            <li><a href="/account/logout"><i class="fa fa-sign-out" aria-hidden="true"></i> Log out</a></li>
         </ul>
+
+        }
+        else
+        {
+            <ul class="menu" id="right">
+                <li><a href="/account/newuser"><i class="fa fa-user-plus" aria-hidden="true"></i> Sign Up</a></li>
+                <li><a href="/account/login"><i class="fa fa-sign-in" aria-hidden="true"></i> Log in</a></li>
+            </ul>
+        }
         <ul class="icons" id="right">
             <li><a href="https://www.linkedin.com/"><i class="fa fa-linkedin-square fa-2x" aria-hidden="true"></i></a></li>
             <li><a href="https://www.facebook.com/"><i class="fa fa-facebook-square fa-2x" aria-hidden="true"></i></a></li>

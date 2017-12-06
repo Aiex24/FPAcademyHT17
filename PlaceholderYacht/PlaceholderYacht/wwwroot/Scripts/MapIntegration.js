@@ -6,8 +6,8 @@ var bounds;
 var clickCounter = 0;
 var clickStart = [];
 var clickEnd = [];
-const hr = (new Date()).getHours();
-const isDayTime = hours > 8 && hours < 15;
+var hr = (new Date()).getHours();
+var isDayTime = hours > 8 && hours < 15;
 
 function initiateMap() {
     // Create a new StyledMapType object, passing it an array of styles,
@@ -205,9 +205,9 @@ function initiateMap() {
 
     map = new google.maps.Map(document.getElementById('Map'), {
         center: { lat: 59.2, lng: 19.1 },
-        zoom: 9,
+        zoom: 7,
         gestureHandling: 'none',
-        zoomControl: false,
+        zoomControl: true,
         streetViewControl: false,
         mapTypeControlOptions: {
             mapTypeIds: ['roadmap',
