@@ -27,6 +27,7 @@
                 <td><label asp-for="VppList[0].WindDirection" />Wind Direction: </td>
                 <td><label asp-for="VppList[0].Knot" />Knots: </td>
             </tr>
+            @* Step beror på vad man vill ha för exakthet på input-värdet. Det får mattegänget bestämma. *@
             <tr class="RowToSelect" data-row="0">
                 <td><input asp-for="VppList[0].TWS" type="number" step="0.01" /></td>
                 <td><input asp-for="VppList[0].WindDirection" /></td>
