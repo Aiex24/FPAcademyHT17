@@ -1,6 +1,7 @@
 ﻿//TODO: funktionalitet för att ta bort rader och få rätt nummer och sånt.
 
 $(document).ready(function () {
+    //Körs bara en gång för att lagra den kod vi behöver och inte plocka med inmatad data i början.
     let rowId = 1;
     let pureHTMLRow = "";
     //Plockar ut de element vi vill ha in i den nya raden
@@ -19,11 +20,10 @@ $(document).ready(function () {
     $("#VppInputTable").on("click", ".RemoveRowButton", (e) => {
         let thisButton = e.target;
         let thisButtonRowNumber = thisButton.dataset.row;
-        //TODO: Generell selektor istället för den här
-        let followingSiblings = $(thisButton).parent().parent().next().nextAll(".RowToSelect");
+        let thisRow = $(`tr[data-row = "${thisButtonRowNumber}"]`)
+        let followingSiblings = thisRow.last().nextAll(".RowToSelect");
         //tar bort den aktuella raden (och valideringsraden)
-        $(`tr[data-row = "${thisButtonRowNumber}"]`).remove();
-
+        thisRow.remove();
 
         followingSiblings.each((index, trElement) => {
             let row = trElement.dataset.row;
