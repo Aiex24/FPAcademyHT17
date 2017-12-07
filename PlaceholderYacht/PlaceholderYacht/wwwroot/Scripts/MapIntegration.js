@@ -338,11 +338,11 @@ function initiateMap() {
         let lng = event.latLng.lng();
 
         //Registrera klick för att rita ut linje mellan två punkter
-        if (clickCounter % 2 == 0) {
+        if (clickCounter % 2 === 0) {
             clickStart[0] = lat;
             clickStart[1] = lng;
         }
-        else if (clickCounter % 2 == 1) {
+        else if (clickCounter % 2 === 1) {
             clickEnd[0] = lat;
             clickEnd[1] = lng;
         }
