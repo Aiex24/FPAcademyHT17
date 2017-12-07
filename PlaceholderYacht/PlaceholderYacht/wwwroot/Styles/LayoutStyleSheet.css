@@ -4,9 +4,22 @@ body {
     margin: 0;
     background-color: black;
 }
-.Nav-Index .logo #red{
-    color:red;
+
+html {
+    box-sizing: border-box;
 }
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+.NavBarDiv{
+    height: 50px;
+}
+
+.Nav-Index .logo #red {
+    color: red;
+}
+
 .Nav-Index {
     position: fixed;
     display: block;
@@ -19,26 +32,29 @@ body {
     background-color: rgba(0, 0, 0, 0.3);
 }
 
-.Nav-Index a {
-    font-family: 'Open Sans', sans-serif;
-    font-size: 16px;
-    text-decoration: none;
-    top: 30%;
-    position: relative;
-}
-.Nav-Index #left{
-    float:left;
-}
-.Nav-Index #right {
-    float: right;
-}
-.Nav-Index .menu a:hover:not(.active) {
-    color: #1daee1
-}
+    .Nav-Index a {
+        font-family: 'Open Sans', sans-serif;
+        font-size: 16px;
+        text-decoration: none;
+        top: 30%;
+        position: relative;
+    }
 
-.Nav-Index .menu a:hover:not(.active) {
-    color: #1daee1
-}
+    .Nav-Index #left {
+        float: left;
+    }
+
+    .Nav-Index #right {
+        float: right;
+    }
+
+    .Nav-Index .menu a:hover:not(.active) {
+        color: #1daee1
+    }
+
+    .Nav-Index .menu a:hover:not(.active) {
+        color: #1daee1
+    }
 
 
     .Nav-Index li {
@@ -47,14 +63,15 @@ body {
     }
 
 
-.icons a ,.menu a, .logo a{
+.icons a, .menu a, .logo a {
     text-decoration: none;
     color: white;
 }
-    .Nav-Index .menu a {
-        padding-left: 10px;
-        padding-right: 10px;
-    }
+
+.Nav-Index .menu a {
+    padding-left: 10px;
+    padding-right: 10px;
+}
 
 .Nav-Index u {
     margin: 0;
@@ -71,8 +88,8 @@ body {
 .icons {
     font-size: 18px;
     margin: 10px;
-    
 }
+
     .icons a {
         padding-left: 8px;
     }
@@ -93,7 +110,7 @@ body {
     color: #3b5998;
 }
 
-.active a{
+.active a {
     color: #1daee1 !important;
 }
 
@@ -115,7 +132,7 @@ body {
     position: relative;
     display: inline-block;
     top: 10px;
-    float:left;
+    float: left;
 }
 
 .dropdown-content {
