@@ -3,7 +3,7 @@
     <link href="~/Styles/AddBoatStyleSheet.css" rel="stylesheet" />
 }
 <div class="AddBoatDiv">
-    <form asp-controller="Home" asp-action="">
+    <form asp-controller="Home" asp-action="AddBoatToDatabase">
         <table>
             <tr>
                 <td><label asp-for="Modelname" />Model: </td>
@@ -27,10 +27,11 @@
                 <td><label asp-for="VppList[0].WindDirection" />Wind Direction: </td>
                 <td><label asp-for="VppList[0].Knot" />Knots: </td>
             </tr>
+            @* Step beror på vad man vill ha för exakthet på input-värdet. Det får mattegänget bestämma. *@
             <tr class="RowToSelect" data-row="0">
-                <td><input asp-for="VppList[0].TWS" /></td>
+                <td><input asp-for="VppList[0].TWS" type="number" step="0.01" /></td>
                 <td><input asp-for="VppList[0].WindDirection" /></td>
-                <td><input asp-for="VppList[0].Knot" /></td>
+                <td><input asp-for="VppList[0].Knot" type="number" step="0.05" /></td>
                 <td><input type="button" value="Remove row" class="RemoveRowButton" data-row="0" /></td>
             </tr>
             <tr class="RowToSelect" data-row="0">

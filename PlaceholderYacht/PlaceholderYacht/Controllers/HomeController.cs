@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using PlaceholderYacht.Models.ViewModels;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -35,6 +36,11 @@ namespace PlaceholderYacht.Controllers
         public IActionResult AddBoat()
         {
             return View();
+        }
+        [HttpPost]
+        public IActionResult AddBoatToDatabase(AddBoatVM model)
+        {
+            return RedirectToAction(nameof(AddBoat));
         }
     }
 }
