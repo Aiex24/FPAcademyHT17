@@ -10,19 +10,29 @@ $(document).ready(function () {
 
     $("#AddRowButton").click(
         () => {
-            let htmlRow = pureHTMLRow.replace(/0/g, rowId);            rowId++;
+            let htmlRow = pureHTMLRow.replace(/0/g, rowId);
+            rowId++;
             $("#ButtonRow").before(htmlRow);
         }
     );
 
     $("#VppInputTable").on("click", ".RemoveRowButton", (e) => {
         let thisButton = e.target;
-        let row = thisButton.dataset.row;
-        console.log(row);
+        let thisButtonRowNumber = thisButton.dataset.row;
+        //TODO: Generell selektor istället för den här
+        let followingSiblings = $(thisButton).parent().parent().next().nextAll(".RowToSelect");
+        //tar bort den aktuella raden (och valideringsraden)
+        $(`tr[data-row = "${thisButtonRowNumber}"]`).remove();
 
-        let followingSiblings = $(thisButton).parent().parent().nextAll(".RowToSelect");
-        console.log(followingSiblings);
+
+        followingSiblings.each((index, trElement) => {
+            let row = trElement.dataset.row;
+            let rowReplacing = row - 1;
+            let regExVar = new RegExp(row, "g");
+            trElement.outerHTML = trElement.outerHTML.replace(regExVar, rowReplacing);
+        });
         //console.log(e.target.dataset.row);
+        rowId--;
 
     });
 });

@@ -27,13 +27,13 @@
                 <td><label asp-for="VppList[0].WindDirection" />Wind Direction: </td>
                 <td><label asp-for="VppList[0].Knot" />Knots: </td>
             </tr>
-            <tr class="RowToSelect">
+            <tr class="RowToSelect" data-row="0">
                 <td><input asp-for="VppList[0].TWS" /></td>
                 <td><input asp-for="VppList[0].WindDirection" /></td>
                 <td><input asp-for="VppList[0].Knot" /></td>
                 <td><input type="button" value="Remove row" class="RemoveRowButton" data-row="0" /></td>
             </tr>
-            <tr class="RowToSelect">
+            <tr class="RowToSelect" data-row="0">
                 <td><span asp-validation-for="VppList[0].TWS"></span></td>
                 <td><span asp-validation-for="VppList[0].WindDirection"></span></td>
                 <td><span asp-validation-for="VppList[0].Knot"></span></td>
