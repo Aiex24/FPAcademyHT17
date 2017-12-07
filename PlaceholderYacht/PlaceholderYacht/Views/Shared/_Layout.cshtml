@@ -38,7 +38,7 @@
         <ul class="menu" id="left">
             <li class="index"><a href="/home/index">Home</a></li>
             <li class="Route"><a href="/home/Route" id="Route">Route</a></li>
-            <li class="AddBoat"><a href="/home/AddBoat" id="AddBoat">Add Boat</a></li>
+            <li class="AddBoat"><a href="/home/BoatPage" id="AddBoat">Add Boat</a></li>
             <li class="Vpp"><a href="/home/Vpp" id="Vpp">VPP</a></li>
             <li class="contact"><a href="/home/contact" id="Contact">Contact</a></li>
             <li class=""><a href="/home/about" id="About">About</a></li>
@@ -46,7 +46,7 @@
         @if (User.Identity.IsAuthenticated)
         {
         <ul class="menu" id="right">
-            <li><a href="/account/UserPage">@User.Identity.Name</a></li>
+            <li><a href="/account/UserPage/@User.Identity.Name">@User.Identity.Name</a></li>
             <li><a href="/account/logout"><i class="fa fa-sign-out" aria-hidden="true"></i> Log out</a></li>
         </ul>
 

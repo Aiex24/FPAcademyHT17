@@ -15,6 +15,11 @@ namespace PlaceholderYacht.Models
             this.context = context;
         }
 
+        public BoatPageVM GetBoatPageVM(int BoatID)
+        {
+            throw new NotImplementedException();
+        }
+
         public AccountBoatItemVM[] GetUsersBoatsByUID(string UID)
         {
             throw new NotImplementedException();

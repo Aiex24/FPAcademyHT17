@@ -9,11 +9,8 @@ using PlaceholderYacht.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using PlaceholderYacht.Models;
 
-// For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace PlaceholderYacht.Controllers
 {
-    //[Authorize]
     public class AccountController : Controller
     {
         IBoatRepository repository;
@@ -64,7 +61,7 @@ namespace PlaceholderYacht.Controllers
 
             return RedirectToAction(nameof(AccountController.UserPage), "Account");
         }
-        
+
         [Authorize]
         public IActionResult Logout()
         {
@@ -112,18 +109,53 @@ namespace PlaceholderYacht.Controllers
 
         [Authorize]
         [HttpGet]
-        public async Task<IActionResult> UserPage()
+        [Route("account/UserPage/{title}")]
+        public async Task<IActionResult> UserPage(string title)
         {
             //Hämta info om användaren som är inloggad
             string userID = userManager.GetUserId(HttpContext.User);
             IdentityUser user = await userManager.FindByIdAsync(userID);
 
+            if (title == "Updated")
+                title = $"{user.UserName} has been updated";
+            else if (title == user.UserName)
+                title = $"Userpage {user.UserName}";
+            else if (title == "error")
+                title = $"Something went wrong, {user.UserName} was not updated";
+
             return View(new AccountUserpageVM
             {
                 BoatItem = repository.GetUsersBoatsByUID(userID),
                 UserName = user.UserName,
-                Email = user.Email
+                Email = user.Email,
+                Title = title
             });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> UpdateUser(AccountUserpageVM viewModel)
+        {
+            if (!ModelState.IsValid)
+                return RedirectToAction(nameof(UserPage), new { title = "error" });
+
+            //Hämta info om användaren som är inloggad
+            string userID = userManager.GetUserId(HttpContext.User);
+            IdentityUser user = await userManager.FindByIdAsync(userID);
+
+            //Uppdatera användaren om det finns någon förändring i username eller mail
+            if (viewModel.UserName != user.UserName || viewModel.Email != user.Email)
+            {
+                user.UserName = viewModel.UserName;
+                user.Email = viewModel.Email;
+
+                var result = await userManager.UpdateAsync(user);
+                if (!result.Succeeded)
+                    return RedirectToAction(nameof(UserPage), new { title = "error" });
+
+                return RedirectToAction(nameof(UserPage), new{title = "Updated"});
+            }
+            return RedirectToAction(nameof(UserPage), new { title = "error" });
         }
     }
 }

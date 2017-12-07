@@ -3,14 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using PlaceholderYacht.Models.ViewModels;
+using PlaceholderYacht.Models;
 
 namespace PlaceholderYacht.Controllers
 {
     public class HomeController : Controller
     {
-        // GET: /<controller>/
+        IBoatRepository repository;
+        public HomeController(IBoatRepository repository)
+        {
+            this.repository = repository;
+        }
         public IActionResult Index()
         {
             return View();
@@ -32,8 +36,11 @@ namespace PlaceholderYacht.Controllers
             return View();
         }
         [HttpGet]
-        public IActionResult AddBoat()
+        public IActionResult BoatPage(int id)
         {
+            if (id > 0)
+                return View(repository.GetBoatPageVM(id));
+
             return View();
         }
     }

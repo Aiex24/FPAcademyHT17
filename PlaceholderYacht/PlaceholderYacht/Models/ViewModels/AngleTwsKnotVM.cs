@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PlaceholderYacht.Models.ViewModels
 {
-    [Bind(Prefix =nameof(AddBoatVM.VppList))]
+    [Bind(Prefix =nameof(BoatPageVM.VppList))]
     public class AngleTwsKnotVM
     {
         public int WindDirection { get; set; }
