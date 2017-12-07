@@ -1,0 +1,154 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace WindCatchersMathLibrary
+{
+    public static class InterpolationLogic
+    {
+        //Det här ska göras med varje specifik TWS.
+        public static void VppInterpolation(double[] inputArray)
+        {
+            //Vpp diagram with values for one TWN for each angle from 0 to 180 [degrees]
+            double[] Vpp = inputArray;
+
+            //the lowest angle the yacht can sail towards the wind
+            int minDeg = 30;
+
+            //// Här ska värdena in från ViewModel
+            //Vpp[31] = 0;
+            //Vpp[60] = 5;
+            //Vpp[90] = 10;
+            //Vpp[120] = 15;
+            //Vpp[150] = 2;
+            ////-------------------
+
+            // y0 = knot1 , y1 = knot2, x0 = degree1, x1 = degree2   =>  interpolate to find y for each x
+            double y0 = 0;
+            double y1 = 0;
+            int x0 = 0;
+            int x1 = 0;
+
+            //First angle that have a defined value, based on what data the User has given 
+            int firstDeg = 0;
+            double firstKn = 0;
+
+            //Second angle that have a value, based on what the User has given
+            int secondDeg = 0;
+            double secondKn = 0;
+
+            //Temp variable for the loop to only find the first value once
+            bool b = false;
+            //Checks if a value is defined for the first angle towards the wind that the yacht can sail towards
+            bool first = false;
+
+            int lastx0 = 0;
+            double lasty0 = 0;
+
+            //Checks if value for the first angle towards the wind a yacht can sail towards, is defined
+            if (Vpp[minDeg + 1] == 0)
+            {
+                first = true;
+            }
+
+            //Creates values for each degree from 0 to 180 and store those in the VPP diagram (array)
+            for (int i = minDeg + 1; i < 180 + 1; i++)
+            {
+                if (Vpp[i] != 0)
+                {
+                    //Will execute each time a y value is found, that is over zero except the first time
+                    if (b)
+                    {
+                        y1 = Vpp[i];
+                        x1 = i;
+                        double[] yArr = new double[x1 - x0 - 1];
+
+                        yArr = Interpolate(x0, x1, y0, y1);
+                        for (int j = 0; j < yArr.Length; j++)
+                        {
+                            Vpp[j + 1 + x0] = yArr[j];
+                        }
+                        lastx0 = x0;
+                        lasty0 = y0;
+                        y0 = y1;
+                        x0 = x1;
+                        if (first)
+                        {
+                            secondDeg = x1;
+                            secondKn = y1;
+                            first = false;
+                        }
+                    }
+
+                    //Will only execute for the first time a y value is found that is over zero
+                    else
+                    {
+                        y0 = Vpp[i];
+                        x0 = i;
+                        b = true;
+
+                        if (first)
+                        {
+                            firstDeg = x0;
+                            firstKn = y0;
+                        }
+                    }
+                }
+            }
+
+            //If the graph is not defined for the end point, each y1 value will be calculated
+            if (Vpp[180] == 0)
+            {
+                int x = x1;
+                double y = y1;
+                x0 = lastx0;
+                y0 = lasty0;
+
+                //Interpolation Finds all y1 values for x1 based on the linear equation between x0 and x if am end value was not defined
+                for (int x11 = 131; x11 < 181; x11++)
+                {
+                    double value = Vpp[x11] = (x * y0 - x0 * y + x11 * y - x11 * y0) / (x - x0);
+
+                    if (value <= 0)
+                    {
+                        value = 0;
+                    }
+                    Vpp[x11] = value;
+                }
+            }
+
+            //Interpolation Finds all y0 values for x0 based on the linear equation between x and x1 if a start value was not defined
+            if (Vpp[minDeg + 1] == 0)
+            {
+                double y = firstKn;
+                y1 = secondKn;
+                int x = firstDeg;
+                x1 = secondDeg;
+
+                for (int x01 = minDeg + 1; x01 < x; x01++)
+                {
+
+                    double value = (x01 * y + x * y1 - x01 * y1 - x1 * y) / (x - x1);
+                    if (value <= 0)
+                    {
+                        value = 0;
+                    }
+                    Vpp[x01] = value;
+                }
+
+            }
+        }
+
+        private static double[] Interpolate(int x0, int x1, double y0, double y1)
+        {
+            double[] resArr = new double[x1 - x0 - 1];
+
+            for (int x = x0 + 1; x < resArr.Length + x0 + 1; x++)
+            {
+                resArr[x - x0 - 1] = (x * y0 - x * y1 + x0 * y1 - x1 * y0) / (x0 - x1);
+            }
+
+            return resArr;
+        }
+    }
+}

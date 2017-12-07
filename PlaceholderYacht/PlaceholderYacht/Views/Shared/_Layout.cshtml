@@ -5,51 +5,68 @@
     <meta name="viewport" content="width=device-width" />
     <title>@ViewBag.Title</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<link href="~/Styles/LayoutStyleSheet.css" rel="stylesheet" />
+    <link href="~/Styles/LayoutStyleSheet.css" rel="stylesheet" />
+    @RenderSection("styles", false)
+
+
 </head>
 <body>
-    <nav class="Nav-Index">
+    <div class="NavBarDiv">
+        <nav class="Nav-Index">
 
 
-        <div class="dropdown">
-            <button class="dropbtn"><i class="fa fa-bars fa-2x" aria-hidden="true"></i></button>
-            <div class="dropdown-content">
-                <a href="/home/index"><i class="fa fa-home fa-2x"></i></a>
-                <a href="/home/Route"><i class="fa fa-bar-chart fa-2x"></i></a>
-                <a href="/home/Vpp"><i class="fa fa-globe fa-2x"></i></a>
-                <a href="/home/contact"><i class="fa fa-address-card-o fa-2x"></i></a>
-                <a href="/home/about"><i class="fa fa-info-circle fa-2x"></i></a>
-                <a href="/home/newuser"><i class="fa fa-user-plus fa-2x"></i></a>
-                <a href="/home/login"><i class="fa fa-user fa-2x"></i></a>
-                <a href="https://www.linkedin.com/"><i class="fa fa-linkedin-square fa-2x" aria-hidden="true"></i></a>
-                <a href="https://www.facebook.com/"><i class="fa fa-facebook-square fa-2x" aria-hidden="true"></i></a>
-                <a href="https://www.twitter.com/"><i class="fa fa-twitter-square fa-2x" aria-hidden="true"></i></a>
-                <a href="https://www.youtube.com/"><i class="fa fa-youtube-square fa-2x" aria-hidden="true"></i></a>
+            <div class="dropdown">
+                <button class="dropbtn"><i class="fa fa-bars fa-2x" aria-hidden="true"></i></button>
+                <div class="dropdown-content">
+                    <a href="/home/index"><i class="fa fa-home fa-2x"></i></a>
+                    <a href="/home/Route"><i class="fa fa-bar-chart fa-2x"></i></a>
+                    <a href="/home/Vpp"><i class="fa fa-globe fa-2x"></i></a>
+                    <a href="/home/contact"><i class="fa fa-address-card-o fa-2x"></i></a>
+                    <a href="/home/about"><i class="fa fa-info-circle fa-2x"></i></a>
+                    <a href="/home/newuser"><i class="fa fa-user-plus fa-2x"></i></a>
+                    <a href="/account/login"><i class="fa fa-user fa-2x"></i></a>
+                    <a href="https://www.linkedin.com/"><i class="fa fa-linkedin-square fa-2x" aria-hidden="true"></i></a>
+                    <a href="https://www.facebook.com/"><i class="fa fa-facebook-square fa-2x" aria-hidden="true"></i></a>
+                    <a href="https://www.twitter.com/"><i class="fa fa-twitter-square fa-2x" aria-hidden="true"></i></a>
+                    <a href="https://www.youtube.com/"><i class="fa fa-youtube-square fa-2x" aria-hidden="true"></i></a>
+                </div>
             </div>
-        </div>
 
 
-        <ul class="logo" id="left">
-            <li><a href="/home/index"><span>Wind</span><span id="red">Catchahz</span></a></li>
-        </ul>
-        <ul class="menu" id="left">
-            <li class="index"><a href="/home/index">Home</a></li>
-            <li class="Route"><a href="/home/Route" id="Route">Route</a></li>
-            <li class="Vpp"><a href="/home/Vpp" id="Vpp">VPP</a></li>
-            <li class="contact"><a href="/home/contact" id="Contact">Contact</a></li>
-            <li class=""><a href="/home/about" id="About">About</a></li>
-        </ul>
-        <ul class="menu" id="right">
-            <li><a href="/home/newuser"><i class="fa fa-user-plus" aria-hidden="true"></i> Sign Up</a></li>
-            <li><a href="/home/login"><i class="fa fa-sign-in" aria-hidden="true"></i> Log in</a></li>
-        </ul>
-        <ul class="icons" id="right">
-            <li><a href="https://www.linkedin.com/"><i class="fa fa-linkedin-square fa-2x" aria-hidden="true"></i></a></li>
-            <li><a href="https://www.facebook.com/"><i class="fa fa-facebook-square fa-2x" aria-hidden="true"></i></a></li>
-            <li><a href="https://www.twitter.com/"><i class="fa fa-twitter-square fa-2x" aria-hidden="true"></i></a></li>
-            <li><a href="https://www.youtube.com/"><i class="fa fa-youtube-square fa-2x" aria-hidden="true"></i></a></li>
-        </ul>
-    </nav>
+            <ul class="logo" id="left">
+                <li><a href="/home/index"><span>Wind</span><span id="red">Catchahz</span></a></li>
+            </ul>
+            <ul class="menu" id="left">
+                <li class="index"><a href="/home/index">Home</a></li>
+                <li class="Route"><a href="/home/Route" id="Route">Route</a></li>
+                <li class="AddBoat"><a href="/home/AddBoat" id="AddBoat">Add Boat</a></li>
+                <li class="Vpp"><a href="/home/Vpp" id="Vpp">VPP</a></li>
+                <li class="contact"><a href="/home/contact" id="Contact">Contact</a></li>
+                <li class=""><a href="/home/about" id="About">About</a></li>
+            </ul>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <ul class="menu" id="right">
+                    <li><a href="/account/UserPage">@User.Identity.Name</a></li>
+                    <li><a href="/account/logout"><i class="fa fa-sign-out" aria-hidden="true"></i> Log out</a></li>
+                </ul>
+
+            }
+            else
+            {
+                <ul class="menu" id="right">
+                    <li><a href="/account/newuser"><i class="fa fa-user-plus" aria-hidden="true"></i> Sign Up</a></li>
+                    <li><a href="/account/login"><i class="fa fa-sign-in" aria-hidden="true"></i> Log in</a></li>
+                </ul>
+            }
+            <ul class="icons" id="right">
+                <li><a href="https://www.linkedin.com/"><i class="fa fa-linkedin-square fa-2x" aria-hidden="true"></i></a></li>
+                <li><a href="https://www.facebook.com/"><i class="fa fa-facebook-square fa-2x" aria-hidden="true"></i></a></li>
+                <li><a href="https://www.twitter.com/"><i class="fa fa-twitter-square fa-2x" aria-hidden="true"></i></a></li>
+                <li><a href="https://www.youtube.com/"><i class="fa fa-youtube-square fa-2x" aria-hidden="true"></i></a></li>
+            </ul>
+        </nav>
+    </div>
     <div class="image-background">
         <div>
             @RenderBody()
