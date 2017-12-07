@@ -6,33 +6,40 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using PlaceholderYacht.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using PlaceholderYacht.Models;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace PlaceholderYacht.Controllers
 {
+    //[Authorize]
     public class AccountController : Controller
     {
+        IBoatRepository repository;
         UserManager<IdentityUser> userManager;
         SignInManager<IdentityUser> signInManager;
         RoleManager<IdentityRole> roleManager;
         IdentityDbContext identityContext;
 
         public AccountController(
+        IBoatRepository repository,
         UserManager<IdentityUser> userManager,
         SignInManager<IdentityUser> signInManager,
         RoleManager<IdentityRole> roleManager,
         IdentityDbContext identityContext)
         {
+            this.repository = repository;
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.roleManager = roleManager;
             this.identityContext = identityContext;
         }
 
-        public IActionResult Index()
+        [Route("account/index/{userName}")]
+        public IActionResult Index(string userName)
         {
-            return RedirectToAction("Index", "Home");
+            return View((object)userName);
         }
 
         [HttpGet]
@@ -53,9 +60,70 @@ namespace PlaceholderYacht.Controllers
             {
                 ModelState.AddModelError(nameof(AccountLoginVM.UserName), "Wrong username or password");
                 return View();
+            };
+
+            return RedirectToAction(nameof(AccountController.UserPage), "Account");
+        }
+        
+        [Authorize]
+        public IActionResult Logout()
+        {
+            signInManager.SignOutAsync();
+            return RedirectToAction("index", "Home");
+        }
+
+        [HttpGet]
+        public IActionResult NewUser()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> NewUser(AccountNewuserVM viewModel)
+        {
+            if (!ModelState.IsValid)
+                return View();
+
+            //Kontrollera om användaren redan finns
+            IdentityUser user = await userManager.FindByNameAsync(viewModel.UserName);
+            if (user != null)
+            {
+                ModelState.AddModelError(nameof(AccountLoginVM.UserName), "Username already exists");
+                return View();
             }
 
-            return RedirectToAction(nameof(HomeController.Index), "Home");
+            //Skapa användare
+            var newUser = new IdentityUser(viewModel.UserName);
+            var result = await userManager.CreateAsync(newUser, viewModel.Password);
+            if (!result.Succeeded)
+            {
+                ModelState.AddModelError(nameof(AccountLoginVM.UserName), "Username or password was not valid: ");
+                return View();
+            }
+
+            //Lägg till E-post om användaren matat in det
+            if (viewModel.Email != null)
+            {
+                newUser.Email = viewModel.Email;
+                await userManager.UpdateAsync(newUser);
+            }
+            return RedirectToAction(nameof(Index), new { userName = viewModel.UserName });
+        }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> UserPage()
+        {
+            //Hämta info om användaren som är inloggad
+            string userID = userManager.GetUserId(HttpContext.User);
+            IdentityUser user = await userManager.FindByIdAsync(userID);
+
+            return View(new AccountUserpageVM
+            {
+                BoatItem = repository.GetUsersBoatsByUID(userID),
+                UserName = user.UserName,
+                Email = user.Email
+            });
         }
     }
 }

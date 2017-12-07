@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using PlaceholderYacht.Models.Entities;
+using PlaceholderYacht.Models;
 
 namespace PlaceholderYacht
 {
@@ -33,11 +34,15 @@ namespace PlaceholderYacht
             services.AddIdentity<IdentityUser, IdentityRole>()
             .AddEntityFrameworkStores<IdentityDbContext>()
             .AddDefaultTokenProviders();
+
+            services.AddTransient<IBoatRepository, BoatDevRepository>();
+            services.AddSession();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseSession();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

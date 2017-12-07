@@ -27,3 +27,7 @@ create table Sai.Boat
 	Manufacturer varchar(50) not null,
 	Boatname varchar(50) default 'Standard'
 )
+
+select * from AspNetUsers
+select * from sai.Boat 
+insert into Sai.Boat ([UID], Modelname, Manufacturer) values ('c835a93e-eee9-4c37-bb76-3b05d49d44f2', 'Nacra17', 'NACRA')
