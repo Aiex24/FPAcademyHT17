@@ -4,6 +4,7 @@
 var map;
 var bounds;
 var markers = []; // array för att hålla koll på kartmarkörer
+var arrows = []; // en array för att hålla koll på våra pilar
 var clickCounter = 0;
 var clickStart = [];
 var clickEnd = [];
@@ -270,7 +271,7 @@ function initiateMap() {
     map = new google.maps.Map(document.getElementById('Map'), {
         center: { lat: 59.2, lng: 19.1 },
         zoom: 9,
-        gestureHandling: 'none',
+        //gestureHandling: 'none',
         zoomControl: false,
         streetViewControl: false,
         mapTypeControl: false,
@@ -287,12 +288,11 @@ function initiateMap() {
     // Create the DIV to hold the control and call the CenterControl()
     // constructor passing in this DIV.
     var centerControlDiv = document.createElement('div');
-
     var centerControl = new CenterControl(centerControlDiv, map);
     centerControlDiv.index = 1;
     map.controls[google.maps.ControlPosition.LEFT_CENTER].push(centerControlDiv);
 
-    // Sets mapstyle depending on night/day 
+    // Sets mapstyle depending on night/day - numera trasig :/
     if (!isDayTime) {
         //Associate the styled map with the MapTypeId and set it to display.
         map.mapTypes.set('Dark map', darkMapType);
@@ -320,6 +320,16 @@ function initiateMap() {
                 calcWindSpeed(gridLat, gridLon);
             }
         }
+    });
+
+    // När användaren zoomar in/ut på kartan så tar vi bort de gamla pilarna
+    google.maps.event.addListener(map, 'zoom_changed', function (event) {
+        deleteArrows();
+    });
+
+    // När användaren släppt kartan efter att ha dragit så tar vi bort de gamla pilarna 
+    google.maps.event.addListener(map, 'dragend', function (event) {
+        deleteArrows();
     });
 
     // Eventhandler for map clicks
@@ -370,6 +380,7 @@ function calcWindSpeed(lat, lng) {
     });
 };
 
+// eget anrop för att få info om en punkt
 function calcWindSpeedForPoint(lat, lng) {
     let latRound = Math.round(lat * 1000000) / 1000000;
     let lngRound = Math.round(lng * 1000000) / 1000000;
@@ -406,15 +417,15 @@ function drawArrow(latOrigin, longOrigin, windDegree, mapShareForRadius, windSpe
     let scopeLat = bounds.north - bounds.south;
     let scopeLong = bounds.east - bounds.west;
     let aspectRatioXY = scopeLat / scopeLong;
-    let arrowColor;
+    let arrowColor = 'blue';
 
     longEnd = longOrigin + ((scopeLat / mapShareForRadius) * Math.sin(windDegree * (Math.PI / 180)));
     latEnd = latOrigin + ((scopeLat / mapShareForRadius)) * Math.cos(windDegree * (Math.PI / 180));
 
     // Arrow coloring based on windspeed
-    if (windSpeed < 5)
+    if (windSpeed > 1 && windSpeed <= 5)
         arrowColor = 'green';
-    else if (5 < windSpeed < 10)
+    else if (5 < windSpeed <= 10)
         arrowColor = 'yellow';
     else if (windSpeed > 10)
         arrowColor = 'red';
@@ -439,8 +450,9 @@ function drawArrow(latOrigin, longOrigin, windDegree, mapShareForRadius, windSpe
         }],
         map: map
     });
-
+    arrows.push(line); // lägg till pilar i arrayen
     animateCircle(line);
+    
 }
 
 // Drawing lines 
@@ -549,6 +561,31 @@ function showMarkers() {
 function deleteMarkers() {
     clearMarkers();
     markers = [];
+}
+
+
+
+// Sets the map on all markers in the array.
+function setMapOnAllArrows(map) {
+    for (var i = 0; i < arrows.length; i++) {
+        arrows[i].setMap(map);
+    }
+}
+
+// Removes the markers from the map, but keeps them in the array.
+function clearArrows() {
+    setMapOnAllArrows(null);
+}
+
+// Shows any markers currently in the array.
+function showArrows() {
+    setMapOnAllArrows(map);
+}
+
+// Deletes all markers in the array by removing references to them.
+function deleteArrows() {
+    clearArrows();
+    arrows = [];
 }
 
 
