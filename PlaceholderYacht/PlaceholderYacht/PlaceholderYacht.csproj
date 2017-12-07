@@ -6,14 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Views\Home\NewFolder\**" />
-    <Content Remove="Views\Home\NewFolder\**" />
-    <EmbeddedResource Remove="Views\Home\NewFolder\**" />
-    <None Remove="Views\Home\NewFolder\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="Models\" />
+    <Folder Include="Views\Home\NewFolder\" />
   </ItemGroup>
 
   <ItemGroup>
