@@ -29,13 +29,17 @@ namespace PlaceholderYacht.Models
 
         public void InterpolateVpp(AddBoatVM viewModel)
         {
+            //Plockar ut alla distinkta tws-värden.
             var twsEs = viewModel.VppList
                 .Select(b => b.TWS)
                 .Distinct();
 
+            //Gör om VppList från array till lista för att enklare kunna lägga till värden.
             var VppListAsList = viewModel.VppList.ToList();
+            //Anropar interpolationslogik för varje unik tws som lagts till.
             foreach (var tws in twsEs)
             {
+                //De här värdena används när vi interpolerar.
                 var degreesAndKnots = viewModel.VppList
                     .Where(b => b.TWS == tws)
                     .Select(b => new
@@ -43,16 +47,17 @@ namespace PlaceholderYacht.Models
                         degrees = b.WindDirection,
                         knots = b.Knot
                     });
+                //Den här används i sista for-loopen för att inte använda samma värden två gånger.
                 var degreesOnly = degreesAndKnots
                     .Select(d => d.degrees);
-
+                //Krävs för interpolationsmetoden, se klassbiblioteket för mer info.
                 double[] interpolationInfo = new double[180 + 1];
                 foreach (var degreeAndKnot in degreesAndKnots)
                 {
                     interpolationInfo[degreeAndKnot.degrees] = degreeAndKnot.knots;
                 }
                 InterpolationLogic.VppInterpolation(interpolationInfo);
-                //TODO: Fixa den här!
+                //Lägger till de nya värden som fåtts ut i Vpp-listan.
                 for (int i = 0; i < interpolationInfo.Length; i++)
                 {
                     if (!degreesOnly.Contains(i))
@@ -66,6 +71,7 @@ namespace PlaceholderYacht.Models
                     }
                 }
             }
+            //Ersätter den lista som skickades in med den nya som innehåller värden för alla grader vi behöver.
             viewModel.VppList = VppListAsList.ToArray();
         }
     }
