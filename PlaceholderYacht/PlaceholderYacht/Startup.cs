@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using PlaceholderYacht.Models.Entities;
 using PlaceholderYacht.Models;
+using System.Globalization;
 
 namespace PlaceholderYacht
 {
@@ -49,6 +50,10 @@ namespace PlaceholderYacht
             }
             app.UseAuthentication();
             app.UseStaticFiles();
+            var cultureInfo = new CultureInfo("en-US");
+
+            CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+            CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
             app.UseMvcWithDefaultRoute();
         }
     }
