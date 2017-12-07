@@ -3,6 +3,7 @@
 //utvecklings-nyckel: AIzaSyAUJEHjY43pTfNYN8jxgDiZ23HvslS_YH0
 var map;
 var bounds;
+var markers = []; // array för att hålla koll på kartmarkörer
 var clickCounter = 0;
 var clickStart = [];
 var clickEnd = [];
@@ -296,7 +297,7 @@ function initiateMap() {
         //Associate the styled map with the MapTypeId and set it to display.
         map.mapTypes.set('Dark map', darkMapType);
         map.setMapTypeId('Dark map');
-        
+
     }
 
     //Rita pilar när kartan är laddad
@@ -337,12 +338,11 @@ function initiateMap() {
         }
         clickCounter++;
 
-        drawLine(clickStart[0], clickStart[1], clickEnd[0], clickEnd[1]);
+        //drawLine(clickStart[0], clickStart[1], clickEnd[0], clickEnd[1]);
+        calcWindSpeedForPoint(lat, lng);
     });
 
 };
-
-
 
 // hämta ut data från valfri tjänst (läs: smhi/OWM)
 function calcWindSpeed(lat, lng) {
@@ -366,7 +366,34 @@ function calcWindSpeed(lat, lng) {
             ////Open Weather
             //windSpeed = result.wind.speed;
             //windDegree = result.wind.deg;
+        }
+    });
+};
 
+function calcWindSpeedForPoint(lat, lng) {
+    let latRound = Math.round(lat * 1000000) / 1000000;
+    let lngRound = Math.round(lng * 1000000) / 1000000;
+    console.log(latRound);
+    console.log(lngRound);
+    let windSpeed;
+    let windDegree;
+
+    let jsonLinkSMHI = "http://opendata-download-metanalys.smhi.se/api/category/mesan1g/version/1/geotype/point/lon/" + lngRound + "/lat/" + latRound + "/data.json";
+    let jsonLinkOpenWeather = "http://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lng + "&APPID=cdc3100be90cc854ac6f417f8bccc78b";
+    $.ajax({
+        url: jsonLinkSMHI,
+        type: 'GET',
+        success: function (result) {
+            console.log(result);
+            windSpeed = result.timeSeries[time].parameters[4].values[0];
+            windDegree = result.timeSeries[time].parameters[3].values[0];
+
+
+            DisplayWindData(latRound, lngRound, windSpeed, windDegree);
+
+            ////Open Weather
+            //windSpeed = result.wind.speed;
+            //windDegree = result.wind.deg;
         }
     });
 };
@@ -465,6 +492,63 @@ function animateCircle(line) {
         icons[0].offset = (count / 0.5) + '%';
         line.set('icons', icons);
     }, 20);
+}
+
+function DisplayWindData(lat, lng, windSpeed, windDegree) {
+
+    // datan vi vill visa i infoboxen
+    let contentString =
+        '<p><strong>Wind speed:</strong> ' + windSpeed + '</p>' +
+        '<p><strong>Wind degree:</strong>' + windDegree + '<p>';
+
+    // position
+    let latLng = { lat: lat, lng: lng };
+    // brassa in en skön inforuta
+    let info = new google.maps.InfoWindow({
+        content: contentString
+    });
+
+    // tillfällig marker
+    let marker = new google.maps.Marker({
+        position: latLng,
+        map: map,
+        title: 'Vinddata för position:' + lat + ',' + lng
+    });
+
+    if (markers.length < 1)
+        markers.push(marker);
+    else {
+        deleteMarkers();
+        markers.push(marker);
+    }
+
+    // lägg till ett klick-event på vår markör
+    marker.addListener('click', function () {
+        info.open(map, marker);
+    });
+}
+
+// Sets the map on all markers in the array.
+function setMapOnAll(map) {
+    for (var i = 0; i < markers.length; i++) {
+        markers[i].setMap(map);
+    }
+}
+
+// Removes the markers from the map, but keeps them in the array.
+function clearMarkers() {
+    setMapOnAll(null);
+}
+
+// Shows any markers currently in the array.
+function showMarkers() {
+    setMapOnAll(map);
+}
+
+// Deletes all markers in the array by removing references to them.
+function deleteMarkers() {
+    clearMarkers();
+    markers = [];
 }
 
 
