@@ -17,6 +17,19 @@ namespace PlaceholderYacht.Models
 
         public AccountBoatItemVM[] GetUsersBoatsByUID(string UID)
         {
+            return context.Boat
+                .Where(b => b.Uid == UID)
+                .Select(b => new AccountBoatItemVM
+                {
+                    BoatID = b.Id,
+                    BoatName = b.Boatname,
+                    Manufacturer = b.Manufacturer,
+                    ModelName = b.Modelname
+                }).ToArray();
+        }
+
+        public void InterpolateVpp(AddBoatVM viewModel)
+        {
             throw new NotImplementedException();
         }
     }
