@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using PlaceholderYacht.Models.ViewModels;
-using PlaceholderYacht.Models;
 
 namespace PlaceholderYacht.Controllers
 {
@@ -42,6 +40,11 @@ namespace PlaceholderYacht.Controllers
                 return View(repository.GetBoatPageVM(id));
 
             return View();
+        }
+        [HttpPost]
+        public IActionResult AddBoatToDatabase(AddBoatVM model)
+        {
+            return RedirectToAction(nameof(AddBoat));
         }
     }
 }

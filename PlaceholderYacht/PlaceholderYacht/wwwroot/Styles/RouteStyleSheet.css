@@ -10,7 +10,6 @@ body {
     height: 100%;
     background-color: yellow;
     margin:0;
-    margin-top: 50px;
     position: center;
     position: fixed;
     width: 100%;
@@ -45,6 +44,6 @@ body {
     padding: 10px;
 }
 
-#divdatatable table{
+/*#divdatatable table{
    
-}
+}*/
