@@ -130,7 +130,7 @@ html {
 
 .dropdown {
     position: relative;
-    display: inline-block;
+    /*display: inline-block;*/
     top: 10px;
     float: left;
 }
@@ -163,8 +163,8 @@ html {
     display: block;
 }
 
-.dropdown:hover .dropbtn {
-}
+/*.dropdown:hover .dropbtn {
+}*/
 
 #divdata {
     position: absolute;
