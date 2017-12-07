@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using PlaceholderYacht.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using PlaceholderYacht.Models;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -15,17 +16,20 @@ namespace PlaceholderYacht.Controllers
     //[Authorize]
     public class AccountController : Controller
     {
+        IBoatRepository repository;
         UserManager<IdentityUser> userManager;
         SignInManager<IdentityUser> signInManager;
         RoleManager<IdentityRole> roleManager;
         IdentityDbContext identityContext;
 
         public AccountController(
+        IBoatRepository repository,
         UserManager<IdentityUser> userManager,
         SignInManager<IdentityUser> signInManager,
         RoleManager<IdentityRole> roleManager,
         IdentityDbContext identityContext)
         {
+            this.repository = repository;
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.roleManager = roleManager;
@@ -56,11 +60,11 @@ namespace PlaceholderYacht.Controllers
             {
                 ModelState.AddModelError(nameof(AccountLoginVM.UserName), "Wrong username or password");
                 return View();
-            }
+            };
 
-            return RedirectToAction(nameof(HomeController.Index), "Home");
+            return RedirectToAction(nameof(AccountController.UserPage), "Account");
         }
-
+        
         [Authorize]
         public IActionResult Logout()
         {
@@ -106,5 +110,20 @@ namespace PlaceholderYacht.Controllers
             return RedirectToAction(nameof(Index), new { userName = viewModel.UserName });
         }
 
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> UserPage()
+        {
+            //Hämta info om användaren som är inloggad
+            string userID = userManager.GetUserId(HttpContext.User);
+            IdentityUser user = await userManager.FindByIdAsync(userID);
+
+            return View(new AccountUserpageVM
+            {
+                BoatItem = repository.GetUsersBoatsByUID(userID),
+                UserName = user.UserName,
+                Email = user.Email
+            });
+        }
     }
 }
