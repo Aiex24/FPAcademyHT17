@@ -20,7 +20,7 @@ $(document).ready(function () {
     $("#VppInputTable").on("click", ".RemoveRowButton", (e) => {
         let thisButton = e.target;
         let thisButtonRowNumber = thisButton.dataset.row;
-        let thisRow = $(`tr[data-row = "${thisButtonRowNumber}"]`)
+        let thisRow = $(`tr[data-row = "${thisButtonRowNumber}"]`);
         let followingSiblings = thisRow.last().nextAll(".RowToSelect");
         //tar bort den aktuella raden (och valideringsraden)
         thisRow.remove();
