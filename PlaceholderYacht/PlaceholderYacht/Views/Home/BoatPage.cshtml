@@ -32,24 +32,19 @@
                 @for (int i = 0; i < Model.VppList.Length; i++)
                 {
                     <tr class="RowToSelect" data-row="@i">
-                        <td><input asp-for="VppList[i].TWS" class="colUserInput" data-row="@i"/></td>
-                        <td><input asp-for="VppList[i].WindDegree" class="colUserInput" data-row="@i"/></td>
-                        <td><input asp-for="VppList[i].Knot" class="colUserInput" data-row="@i"/></td>
+                        <td><input asp-for="VppList[i].TWS" class="colUserInput" data-row="@i"/><span asp-validation-for="VppList[i].TWS"></span></td>
+                        <td><input asp-for="VppList[i].WindDegree" class="colUserInput" data-row="@i"/><span asp-validation-for="VppList[i].WindDegree"></span></td>
+                        <td><input asp-for="VppList[i].Knot" class="colUserInput" data-row="@i"/><span asp-validation-for="VppList[i].Knot"></span></td>
                         <td><input type="button" value="Remove row" class="RemoveRowButton" data-row="@i" /></td>
-                    </tr>
-                    <tr class="RowToSelect" data-row="@i">
-                        <td><span asp-validation-for="VppList[i].TWS"></span></td>
-                        <td><span asp-validation-for="VppList[i].WindDegree"></span></td>
-                        <td><span asp-validation-for="VppList[i].Knot"></span></td>
                     </tr>
                 }
             }
             else
             {
                 <tr class="RowToSelect" data-row="0">
-                    <td><input asp-for="VppList[0].TWS" /></td>
-                    <td><input asp-for="VppList[0].WindDegree" /></td>
-                    <td><input asp-for="VppList[0].Knot" /></td>
+                    <td><input asp-for="VppList[0].TWS" class="colUserInput" data-row="0"/></td>
+                    <td><input asp-for="VppList[0].WindDegree" class="colUserInput" data-row="0"/></td>
+                    <td><input asp-for="VppList[0].Knot" class="colUserInput" data-row="0"/></td>
                     <td><input type="button" value="Remove row" class="RemoveRowButton" data-row="0" /></td>
                 </tr>
                 <tr class="RowToSelect" data-row="0">
@@ -75,20 +70,26 @@
             let rowId = $(".RowToSelect").length / 2;
 
             //Plockar ut de element vi vill ha in i den nya raden
-            let htmlOfFirst = document.querySelectorAll(".RowToSelect");
+            //let inputsOfFirstRow = $(elementOfFirstRow + " .colUserInput");
 
-            let TdToChange = $(htmlOfFirst).children();
-            console.log(TdToChange.children());
-            
+            let elementOfFirstRow = $(".RowToSelect:nth-child(2)").clone();
+            console.log($(elementOfFirstRow).find(".colUserInput"))
+
+            $(elementOfFirstRow).find(".colUserInput").each((index, element) => { 
+                $(element).val(999);
+            })
+
+            let pureHTMLRow = $(elementOfFirstRow).prop('outerHTML');
+            console.log(pureHTMLRow)
             //Smackar in första raden i en enda sträng!
-            let pureHTMLRow = htmlOfFirst[0].outerHTML;
-            pureHTMLRow += htmlOfFirst[1].outerHTML;
+            //console.log(pureHTMLRow);
+            //pureHTMLRow += htmlOfFirst[1].html;
 
             $("#AddRowButton").click(
                 () => {
                     let htmlRow = pureHTMLRow.replace(/0/g, rowId);
                     $("#ButtonRow").before(htmlRow);
-                    $(".colUserInput[data-row=" + rowId + "]").val("");
+                    //$(".colUserInput[data-row=" + rowId + "]").val("test");
                     rowId++;
                 }
             );
@@ -97,7 +98,9 @@
                 let thisButton = e.target;
                 let thisButtonRowNumber = thisButton.dataset.row;
                 let thisRow = $(`tr[data-row = "${thisButtonRowNumber}"]`)
+                console.log(thisRow)
                 let followingSiblings = thisRow.last().nextAll(".RowToSelect");
+                console.log(followingSiblings);
                 //tar bort den aktuella raden (och valideringsraden)
                 thisRow.remove();
 
