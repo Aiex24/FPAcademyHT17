@@ -24,7 +24,7 @@
         <table id="VppInputTable">
             <tr>
                 <td><label asp-for="VppList[0].TWS" />TWS: </td>
-                <td><label asp-for="VppList[0].WindDirection" />Wind Direction: </td>
+                <td><label asp-for="VppList[0].WindDegree" />Wind Direction: </td>
                 <td><label asp-for="VppList[0].Knot" />Knots: </td>
             </tr>
             @if (Model != null)
@@ -33,13 +33,13 @@
                 {
                     <tr class="RowToSelect" data-row="@i">
                         <td><input asp-for="VppList[i].TWS" class="colUserInput" /></td>
-                        <td><input asp-for="VppList[i].WindDirection" /></td>
+                        <td><input asp-for="VppList[i].WindDegree" /></td>
                         <td><input asp-for="VppList[i].Knot" /></td>
                         <td><input type="button" value="Remove row" class="RemoveRowButton" data-row="@i" /></td>
                     </tr>
                     <tr class="RowToSelect" data-row="@i">
                         <td><span asp-validation-for="VppList[i].TWS"></span></td>
-                        <td><span asp-validation-for="VppList[i].WindDirection"></span></td>
+                        <td><span asp-validation-for="VppList[i].WindDegree"></span></td>
                         <td><span asp-validation-for="VppList[i].Knot"></span></td>
                     </tr>
                 }
@@ -48,13 +48,13 @@
             {
                 <tr class="RowToSelect" data-row="0">
                     <td><input asp-for="VppList[0].TWS" /></td>
-                    <td><input asp-for="VppList[0].WindDirection" /></td>
+                    <td><input asp-for="VppList[0].WindDegree" /></td>
                     <td><input asp-for="VppList[0].Knot" /></td>
                     <td><input type="button" value="Remove row" class="RemoveRowButton" data-row="0" /></td>
                 </tr>
                 <tr class="RowToSelect" data-row="0">
                     <td><span asp-validation-for="VppList[0].TWS"></span></td>
-                    <td><span asp-validation-for="VppList[0].WindDirection"></span></td>
+                    <td><span asp-validation-for="VppList[0].WindDegree"></span></td>
                     <td><span asp-validation-for="VppList[0].Knot"></span></td>
                 </tr>
             }

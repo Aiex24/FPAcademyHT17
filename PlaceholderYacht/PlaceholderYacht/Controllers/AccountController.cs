@@ -59,7 +59,7 @@ namespace PlaceholderYacht.Controllers
                 return View();
             };
 
-            return RedirectToAction(nameof(AccountController.UserPage), "Account");
+            return RedirectToAction(nameof(AccountController.UserPage), "Account", new { title = viewModel.UserName });
         }
 
         [Authorize]

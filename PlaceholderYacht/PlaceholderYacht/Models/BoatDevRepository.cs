@@ -33,7 +33,7 @@ namespace PlaceholderYacht.Models
             }).ToArray();
         }
 
-        public void InterpolateVpp(AddBoatVM viewModel)
+        public void InterpolateVpp(BoatPageVM viewModel)
         {
             //Plockar ut alla distinkta tws-värden.
             var twsEs = viewModel.VppList
@@ -80,7 +80,7 @@ namespace PlaceholderYacht.Models
             //Ersätter den lista som skickades in med den nya som innehåller värden för alla grader vi behöver.
             viewModel.VppList = VppListAsList.ToArray();
         }
-        public void SaveBoat(AddBoatVM model)
+        public void SaveBoat(BoatPageVM model)
         {
             var boat = new Boat { Boatname = model.Boatname, Manufacturer = model.Manufacturer, Modelname = model.Modelname};
             foreach (var vpp in model.VppList)
@@ -104,9 +104,9 @@ namespace PlaceholderYacht.Models
                 Modelname = boat.Modelname,
                 VppList = vpp.Select(v => new AngleTwsKnotVM
                 {
-                    Knot = (double)v.Knot,
-                    TWS = (double)v.Knot,
-                    WindDirection = v.WindDegree
+                    Knot = v.Knot,
+                    TWS = v.Tws,
+                    WindDegree = v.WindDegree
                 }).ToArray()
             };
         }

@@ -47,7 +47,7 @@ namespace PlaceholderYacht.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult AddBoatToDatabase(AddBoatVM model)
+        public IActionResult AddBoatToDatabase(BoatPageVM model)
         {
             repository.InterpolateVpp(model);
             repository.SaveBoat(model);
