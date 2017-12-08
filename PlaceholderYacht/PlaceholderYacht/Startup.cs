@@ -36,7 +36,7 @@ namespace PlaceholderYacht
             .AddEntityFrameworkStores<IdentityDbContext>()
             .AddDefaultTokenProviders();
 
-            services.AddTransient<IBoatRepository, BoatDevRepository>();
+            services.AddTransient<IBoatRepository, BoatDbRepository>();
             services.AddSession();
         }
 

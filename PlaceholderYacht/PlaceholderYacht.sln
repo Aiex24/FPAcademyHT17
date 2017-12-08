@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2009
+VisualStudioVersion = 15.0.27004.2010
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlaceholderYacht", "PlaceholderYacht\PlaceholderYacht.csproj", "{F49FBC2E-00C6-4AC5-8419-86A3C893302E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlaceholderYacht", "PlaceholderYacht\PlaceholderYacht.csproj", "{F49FBC2E-00C6-4AC5-8419-86A3C893302E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindCatchersMathLibrary", "WindCatchersMathLibrary\WindCatchersMathLibrary.csproj", "{E5241C64-829A-47B2-B79B-DC5A354F9001}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{F49FBC2E-00C6-4AC5-8419-86A3C893302E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F49FBC2E-00C6-4AC5-8419-86A3C893302E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F49FBC2E-00C6-4AC5-8419-86A3C893302E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5241C64-829A-47B2-B79B-DC5A354F9001}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5241C64-829A-47B2-B79B-DC5A354F9001}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5241C64-829A-47B2-B79B-DC5A354F9001}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5241C64-829A-47B2-B79B-DC5A354F9001}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
