@@ -1,8 +1,7 @@
 ﻿//Google Maps API-key: AIzaSyA9rdRh5jniAD0TYjDIRhSqQP5ZLf6p5P4
 //59.209514, 19.107700, nånstans i bottniska viken.
 //utvecklings-nyckel: AIzaSyAUJEHjY43pTfNYN8jxgDiZ23HvslS_YH0
-var map;
-var bounds;
+var map, bounds, infoWindow;
 var markers = []; // array för att hålla koll på kartmarkörer
 var arrows = []; // en array för att hålla koll på våra pilar
 var clickCounter = 0;
@@ -10,7 +9,7 @@ var clickStart = [];
 var clickEnd = [];
 var time = 0;
 var hr = (new Date()).getHours();
-var isDayTime = hours > 8 && hours < 15;
+var isDayTime = hr > 8 && hr < 15;
 
 
 function CenterControl(controlDiv, map) {
@@ -298,6 +297,35 @@ function initiateMap() {
         map.mapTypes.set('Dark map', darkMapType);
         map.setMapTypeId('Dark map');
 
+    }
+
+    // skapa ny inforuta
+    infoWindow = new google.maps.InfoWindow;
+
+    // Hitta användarens position (kräver att användaren godkänner geolokalisering)
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+            // sparar positionen i en variabel
+            var pos = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            };
+
+            // sätter ut en markör på användarens position
+            infoWindow.setPosition(pos);
+            infoWindow.setContent('This is your position');
+            infoWindow.open(map);
+
+            // centrerar kartan på denna position
+            map.setCenter(pos);
+        }, function () {
+
+            // anropar metoden som hanterar geolokaliseringfel
+            handleLocationError(true, infoWindow, map.getCenter());
+        });
+    } else {
+        // Om servern ej kan hantera geolokalisering
+        handleLocationError(false, infoWindow, map.getCenter());
     }
 
     //Rita pilar när kartan är laddad
@@ -588,4 +616,11 @@ function deleteArrows() {
     arrows = [];
 }
 
-
+// Hanterar fel vid geolokalisering
+function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+    infoWindow.setPosition(pos);
+    infoWindow.setContent(browserHasGeolocation ?
+        'Error: The Geolocation service failed.' :
+        'Error: Your browser doesn\'t support geolocation.');
+    infoWindow.open(map);
+}

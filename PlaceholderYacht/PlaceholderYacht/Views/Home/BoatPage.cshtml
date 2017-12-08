@@ -63,6 +63,7 @@
 @section scripts{
     <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.14.0/jquery.validate.min.js"></script>
     <script src="http://ajax.aspnetcdn.com/ajax/mvc/5.2.3/jquery.validate.unobtrusive.min.js"></script>
+    @*TODO: Lägg till unobtrusive-validering för de genererade elementen.*@
     <script>
         $(document).ready(function () {
 
@@ -93,7 +94,7 @@
                     rowId++;
                 }
             );
-
+            //TODO: Putsa Regexen så den inte ändrar några tabellvärden.
             $("#VppInputTable").on("click", ".RemoveRowButton", (e) => {
                 let thisButton = e.target;
                 let thisButtonRowNumber = thisButton.dataset.row;
