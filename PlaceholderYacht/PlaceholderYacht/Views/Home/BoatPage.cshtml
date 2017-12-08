@@ -32,9 +32,9 @@
                 @for (int i = 0; i < Model.VppList.Length; i++)
                 {
                     <tr class="RowToSelect" data-row="@i">
-                        <td><input asp-for="VppList[i].TWS" class="colUserInput" /></td>
-                        <td><input asp-for="VppList[i].WindDegree" /></td>
-                        <td><input asp-for="VppList[i].Knot" /></td>
+                        <td><input asp-for="VppList[i].TWS" class="colUserInput" data-row="@i"/></td>
+                        <td><input asp-for="VppList[i].WindDegree" class="colUserInput" data-row="@i"/></td>
+                        <td><input asp-for="VppList[i].Knot" class="colUserInput" data-row="@i"/></td>
                         <td><input type="button" value="Remove row" class="RemoveRowButton" data-row="@i" /></td>
                     </tr>
                     <tr class="RowToSelect" data-row="@i">
@@ -76,29 +76,15 @@
             //Plockar ut de element vi vill ha in i den nya raden
             let htmlOfFirst = document.querySelectorAll(".RowToSelect");
 
-            let TdToChange = $(htmlOfFirst).children();
-            console.log(TdToChange.children());
-            
             //Smackar in första raden i en enda sträng!
             let pureHTMLRow = htmlOfFirst[0].outerHTML;
             pureHTMLRow += htmlOfFirst[1].outerHTML;
-
-
 
             $("#AddRowButton").click(
                 () => {
                     let htmlRow = pureHTMLRow.replace(/0/g, rowId);
                     $("#ButtonRow").before(htmlRow);
-
-                    let inputIDArray = [];
-                    inputIDArray[0] = "#VppList_" + rowId + "__TWS";
-                    inputIDArray[1] = "#VppList_" + rowId + "__WindDirection";
-                    inputIDArray[2] = "#VppList_" + rowId + "__Knot";
-
-                    for (var i = 0; i < inputIDArray.length; i++) {
-                        $(inputIDArray[i]).val(""); 
-                    }
-
+                    $(".colUserInput[data-row=" + rowId + "]").val("");
                     rowId++;
                 }
             );
