@@ -49,6 +49,10 @@ namespace PlaceholderYacht.Controllers
         [HttpPost]
         public IActionResult AddBoatToDatabase(BoatPageVM model)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(nameof(BoatPage), model);
+            }
             repository.InterpolateVpp(model);
             repository.SaveBoat(model);
             return RedirectToAction(nameof(Route));

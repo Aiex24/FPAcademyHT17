@@ -3,7 +3,7 @@
     <link href="~/Styles/AddBoatStyleSheet.css" rel="stylesheet" />
 }
 <div class="AddBoatDiv">
-    <form asp-controller="Home" asp-action="">
+    <form asp-controller="Home" asp-action="AddBoatToDatabase">
         <table>
             <tr>
                 <td><label asp-for="Modelname" />Model: </td>
@@ -66,7 +66,8 @@
     </form>
 </div>
 @section scripts{
-
+    <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.14.0/jquery.validate.min.js"></script>
+    <script src="http://ajax.aspnetcdn.com/ajax/mvc/5.2.3/jquery.validate.unobtrusive.min.js"></script>
     <script>
         $(document).ready(function () {
 
@@ -78,7 +79,7 @@
 
             let TdToChange = $(htmlOfFirst).children();
             console.log(TdToChange.children());
-            
+
             //Smackar in första raden i en enda sträng!
             let pureHTMLRow = htmlOfFirst[0].outerHTML;
             pureHTMLRow += htmlOfFirst[1].outerHTML;
@@ -96,7 +97,7 @@
                     inputIDArray[2] = "#VppList_" + rowId + "__Knot";
 
                     for (var i = 0; i < inputIDArray.length; i++) {
-                        $(inputIDArray[i]).val(""); 
+                        $(inputIDArray[i]).val("");
                     }
 
                     rowId++;
