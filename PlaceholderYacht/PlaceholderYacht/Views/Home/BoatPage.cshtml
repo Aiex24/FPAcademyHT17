@@ -32,7 +32,7 @@
                 @for (int i = 0; i < Model.VppList.Length; i++)
                 {
                     <tr class="RowToSelect" data-row="@i">
-                        <td><input asp-for="VppList[i].TWS" /></td>
+                        <td><input asp-for="VppList[i].TWS" class="colUserInput" /></td>
                         <td><input asp-for="VppList[i].WindDirection" /></td>
                         <td><input asp-for="VppList[i].Knot" /></td>
                         <td><input type="button" value="Remove row" class="RemoveRowButton" data-row="@i" /></td>
@@ -43,21 +43,9 @@
                         <td><span asp-validation-for="VppList[i].Knot"></span></td>
                     </tr>
                 }
-                <tr class="RowToSelect" data-row="0">
-                    <td><input asp-for="VppList[0].TWS" /></td>
-                    <td><input asp-for="VppList[0].WindDirection" /></td>
-                    <td><input asp-for="VppList[0].Knot" /></td>
-                    <td><input type="button" value="Remove row" class="RemoveRowButton" data-row="0" /></td>
-                </tr>
-                <tr class="RowToSelect" data-row="0">
-                    <td><span asp-validation-for="VppList[0].TWS"></span></td>
-                    <td><span asp-validation-for="VppList[0].WindDirection"></span></td>
-                    <td><span asp-validation-for="VppList[0].Knot"></span></td>
-                </tr>
             }
             else
             {
-
                 <tr class="RowToSelect" data-row="0">
                     <td><input asp-for="VppList[0].TWS" /></td>
                     <td><input asp-for="VppList[0].WindDirection" /></td>
@@ -81,21 +69,37 @@
 
     <script>
         $(document).ready(function () {
+
             //Körs bara en gång för att lagra den kod vi behöver och inte plocka med inmatad data i början.
-            let rowId = 1;
-            let pureHTMLRow = "";
+            let rowId = $(".RowToSelect").length / 2;
+
             //Plockar ut de element vi vill ha in i den nya raden
             let htmlOfFirst = document.querySelectorAll(".RowToSelect");
-            //smackar in hela kalaset i en enda sträng!
-            htmlOfFirst.forEach((node) => pureHTMLRow += node.outerHTML);
 
-            let rows = $("#VppInputTable tr").length;
+            let TdToChange = $(htmlOfFirst).children();
+            console.log(TdToChange.children());
+            
+            //Smackar in första raden i en enda sträng!
+            let pureHTMLRow = htmlOfFirst[0].outerHTML;
+            pureHTMLRow += htmlOfFirst[1].outerHTML;
+
+
 
             $("#AddRowButton").click(
                 () => {
                     let htmlRow = pureHTMLRow.replace(/0/g, rowId);
-                    rowId++;
                     $("#ButtonRow").before(htmlRow);
+
+                    let inputIDArray = [];
+                    inputIDArray[0] = "#VppList_" + rowId + "__TWS";
+                    inputIDArray[1] = "#VppList_" + rowId + "__WindDirection";
+                    inputIDArray[2] = "#VppList_" + rowId + "__Knot";
+
+                    for (var i = 0; i < inputIDArray.length; i++) {
+                        $(inputIDArray[i]).val(""); 
+                    }
+
+                    rowId++;
                 }
             );
 

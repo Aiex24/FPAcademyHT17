@@ -45,8 +45,7 @@ namespace PlaceholderYacht.Models
                     Knot = (double)v.Knot,
                     TWS = (double)v.Knot,
                     WindDirection = v.WindDegree
-                }).ToArray(),
-                VppCount = vpp.Where(v => v.BoatId == BoatID).Count()
+                }).ToArray()
             };
         }
     }
