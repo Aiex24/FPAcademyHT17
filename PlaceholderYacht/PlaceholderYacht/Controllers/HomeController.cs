@@ -6,8 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using PlaceholderYacht.Models.ViewModels;
 using PlaceholderYacht.Models;
 
-// For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace PlaceholderYacht.Controllers
 {
     public class HomeController : Controller
@@ -41,12 +39,15 @@ namespace PlaceholderYacht.Controllers
             return View();
         }
         [HttpGet]
-        public IActionResult AddBoat()
+        public IActionResult BoatPage(int id)
         {
+            if (id > 0)
+                return View(repository.GetBoatPageVM(id));
+
             return View();
         }
         [HttpPost]
-        public IActionResult AddBoatToDatabase(AddBoatVM model)
+        public IActionResult AddBoatToDatabase(BoatPageVM model)
         {
             repository.InterpolateVpp(model);
             repository.SaveBoat(model);

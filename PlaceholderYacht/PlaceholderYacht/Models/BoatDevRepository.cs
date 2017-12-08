@@ -13,7 +13,13 @@ namespace PlaceholderYacht.Models
         static List<Boat> boats = new List<Boat>
         {
             new Boat{Id = 1, Uid = "c835a93e-eee9-4c37-bb76-3b05d49d44f2", Modelname = "Nacra17", Manufacturer = "NACRA", Boatname = "Testbåt" },
-            new Boat{Id = 1, Uid = "c835a93e-eee9-4c37-bb76-3b05d49d44f2", Manufacturer = "Sigma", Modelname = "Nimbus2000", Boatname = "Testbåt2" }
+            new Boat{Id = 2, Uid = "c835a93e-eee9-4c37-bb76-3b05d49d44f2", Manufacturer = "Sigma", Modelname = "Nimbus2000", Boatname = "Testbåt2" }
+        };
+
+        static List<Vpp> vpp = new List<Vpp>
+        {
+            new Vpp{ Id = 1, Boat = boats[0], BoatId = 1, Knot = 10, Tws = 2, WindDegree=45 },
+            new Vpp{ Id = 1, Boat = boats[0], BoatId = 1, Knot = 8, Tws = 2, WindDegree=90 }
         };
 
         public AccountBoatItemVM[] GetUsersBoatsByUID(string UID)
@@ -27,7 +33,7 @@ namespace PlaceholderYacht.Models
             }).ToArray();
         }
 
-        public void InterpolateVpp(AddBoatVM viewModel)
+        public void InterpolateVpp(BoatPageVM viewModel)
         {
             //Plockar ut alla distinkta tws-värden.
             var twsEs = viewModel.VppList
@@ -74,7 +80,7 @@ namespace PlaceholderYacht.Models
             //Ersätter den lista som skickades in med den nya som innehåller värden för alla grader vi behöver.
             viewModel.VppList = VppListAsList.ToArray();
         }
-        public void SaveBoat(AddBoatVM model)
+        public void SaveBoat(BoatPageVM model)
         {
             var boat = new Boat { Boatname = model.Boatname, Manufacturer = model.Manufacturer, Modelname = model.Modelname};
             foreach (var vpp in model.VppList)
@@ -86,6 +92,23 @@ namespace PlaceholderYacht.Models
                     Knot = vpp.Knot
                 });
             }
+        }
+
+        public BoatPageVM GetBoatPageVM(int BoatID)
+        {
+            var boat = boats.FirstOrDefault(b => b.Id == BoatID);
+            return new BoatPageVM
+            {
+                Boatname = boat.Boatname,
+                Manufacturer = boat.Manufacturer,
+                Modelname = boat.Modelname,
+                VppList = vpp.Select(v => new AngleTwsKnotVM
+                {
+                    Knot = v.Knot,
+                    TWS = v.Tws,
+                    WindDegree = v.WindDegree
+                }).ToArray()
+            };
         }
     }
 }

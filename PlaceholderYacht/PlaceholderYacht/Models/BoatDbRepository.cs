@@ -16,6 +16,11 @@ namespace PlaceholderYacht.Models
             this.context = context;
         }
 
+        public BoatPageVM GetBoatPageVM(int BoatID)
+        {
+            throw new NotImplementedException();
+        }
+
         public AccountBoatItemVM[] GetUsersBoatsByUID(string UID)
         {
             return context.Boat
@@ -29,7 +34,7 @@ namespace PlaceholderYacht.Models
                 }).ToArray();
         }
 
-        public void InterpolateVpp(AddBoatVM viewModel)
+        public void InterpolateVpp(BoatPageVM viewModel)
         {
             //Plockar ut alla distinkta tws-värden.
             var twsEs = viewModel.VppList
@@ -77,7 +82,7 @@ namespace PlaceholderYacht.Models
             viewModel.VppList = VppListAsList.ToArray();
         }
 
-        public void SaveBoat(AddBoatVM model)
+        public void SaveBoat(BoatPageVM model)
         {
             var boat = new Boat { Boatname = model.Boatname, Manufacturer = model.Manufacturer, Modelname = model.Modelname };
             foreach (var vpp in model.VppList)

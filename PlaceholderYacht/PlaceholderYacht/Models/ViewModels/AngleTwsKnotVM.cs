@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PlaceholderYacht.Models.ViewModels
 {
-    [Bind(Prefix =nameof(AddBoatVM.VppList))]
+    [Bind(Prefix =nameof(BoatPageVM.VppList))]
     public class AngleTwsKnotVM
     {
         [Required(ErrorMessage = "Please enter the wind degree")]

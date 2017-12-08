@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PlaceholderYacht.Models.ViewModels
 {
-    public class AddBoatVM
+    public class BoatPageVM
     {
         public string Uid { get; set; }
         [Required(ErrorMessage = "Please enter a Model Name")]
