@@ -9,8 +9,8 @@ namespace PlaceholderYacht.Models.ViewModels
     [Bind(Prefix =nameof(AddBoatVM.VppList))]
     public class AngleTwsKnotVM
     {
-        public int WindDirection { get; set; }
-        public double TWS { get; set; }
-        public double Knot { get; set; }
+        public int WindDegree { get; set; }
+        public int TWS { get; set; }
+        public decimal Knot { get; set; }
     }
 }

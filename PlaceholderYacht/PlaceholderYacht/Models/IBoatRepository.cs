@@ -6,5 +6,6 @@ namespace PlaceholderYacht.Models
     {
         AccountBoatItemVM[] GetUsersBoatsByUID(string UID);
         void InterpolateVpp(AddBoatVM boatVM);
+        void SaveBoat(AddBoatVM model);
     }
 }

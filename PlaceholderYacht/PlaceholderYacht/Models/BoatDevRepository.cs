@@ -44,14 +44,14 @@ namespace PlaceholderYacht.Models
                     .Where(b => b.TWS == tws)
                     .Select(b => new
                     {
-                        degrees = b.WindDirection,
+                        degrees = b.WindDegree,
                         knots = b.Knot
                     });
                 //Den här används i sista for-loopen för att inte använda samma värden två gånger.
                 var degreesOnly = degreesAndKnots
                     .Select(d => d.degrees);
                 //Krävs för interpolationsmetoden, se klassbiblioteket för mer info.
-                double[] interpolationInfo = new double[180 + 1];
+                decimal[] interpolationInfo = new decimal[180 + 1];
                 foreach (var degreeAndKnot in degreesAndKnots)
                 {
                     interpolationInfo[degreeAndKnot.degrees] = degreeAndKnot.knots;
@@ -65,7 +65,7 @@ namespace PlaceholderYacht.Models
                         VppListAsList.Add(new AngleTwsKnotVM
                         {
                             TWS = tws,
-                            WindDirection = i,
+                            WindDegree = i,
                             Knot = interpolationInfo[i]
                         });
                     }
@@ -73,6 +73,19 @@ namespace PlaceholderYacht.Models
             }
             //Ersätter den lista som skickades in med den nya som innehåller värden för alla grader vi behöver.
             viewModel.VppList = VppListAsList.ToArray();
+        }
+        public void SaveBoat(AddBoatVM model)
+        {
+            var boat = new Boat { Boatname = model.Boatname, Manufacturer = model.Manufacturer, Modelname = model.Modelname};
+            foreach (var vpp in model.VppList)
+            {
+                boat.Vpp.Add(new Vpp
+                {
+                    Tws = vpp.TWS,
+                    WindDegree = vpp.WindDegree,
+                    Knot = vpp.Knot
+                });
+            }
         }
     }
 }

@@ -12,7 +12,7 @@ namespace WindCatchersMathLibrary
         /// The vpp array should have a length of 181 to account for each degree needed.
         /// </summary>
         /// <param name="vpp"></param>
-        public static void VppInterpolation(double[] vpp)
+        public static void VppInterpolation(decimal[] vpp)
         {
             //Vpp diagram with values for one TWN for each angle from 0 to 180 [degrees]
 
@@ -28,18 +28,18 @@ namespace WindCatchersMathLibrary
             ////-------------------
 
             // y0 = knot1 , y1 = knot2, x0 = degree1, x1 = degree2   =>  interpolate to find y for each x
-            double y0 = 0;
-            double y1 = 0;
+            decimal y0 = 0;
+            decimal y1 = 0;
             int x0 = 0;
             int x1 = 0;
 
             //First angle that have a defined value, based on what data the User has given 
             int firstDeg = 0;
-            double firstKn = 0;
+            decimal firstKn = 0;
 
             //Second angle that have a value, based on what the User has given
             int secondDeg = 0;
-            double secondKn = 0;
+            decimal secondKn = 0;
 
             //Temp variable for the loop to only find the first value once
             bool b = false;
@@ -47,7 +47,7 @@ namespace WindCatchersMathLibrary
             bool first = false;
 
             int lastx0 = 0;
-            double lasty0 = 0;
+            decimal lasty0 = 0;
 
             //Checks if value for the first angle towards the wind a yacht can sail towards, is defined
             if (vpp[minDeg + 1] == 0)
@@ -65,7 +65,7 @@ namespace WindCatchersMathLibrary
                     {
                         y1 = vpp[i];
                         x1 = i;
-                        double[] yArr = new double[x1 - x0 - 1];
+                        decimal[] yArr = new decimal[x1 - x0 - 1];
 
                         yArr = Interpolate(x0, x1, y0, y1);
                         for (int j = 0; j < yArr.Length; j++)
@@ -104,14 +104,14 @@ namespace WindCatchersMathLibrary
             if (vpp[180] == 0)
             {
                 int x = x1;
-                double y = y1;
+                decimal y = y1;
                 x0 = lastx0;
                 y0 = lasty0;
 
                 //Interpolation Finds all y1 values for x1 based on the linear equation between x0 and x if an end value was not defined
                 for (int x11 = lastx0 + 1; x11 < 180 + 1; x11++)
                 {
-                    double value = vpp[x11] = (x * y0 - x0 * y + x11 * y - x11 * y0) / (x - x0);
+                    decimal value = vpp[x11] = (x * y0 - x0 * y + x11 * y - x11 * y0) / (x - x0);
 
                     if (value <= 0)
                     {
@@ -124,7 +124,7 @@ namespace WindCatchersMathLibrary
             //Interpolation Finds all y0 values for x0 based on the linear equation between x and x1 if a start value was not defined
             if (vpp[minDeg + 1] == 0)
             {
-                double y = firstKn;
+                decimal y = firstKn;
                 y1 = secondKn;
                 int x = firstDeg;
                 x1 = secondDeg;
@@ -132,7 +132,7 @@ namespace WindCatchersMathLibrary
                 for (int x01 = minDeg + 1; x01 < x; x01++)
                 {
 
-                    double value = (x01 * y + x * y1 - x01 * y1 - x1 * y) / (x - x1);
+                    decimal value = (x01 * y + x * y1 - x01 * y1 - x1 * y) / (x - x1);
                     if (value <= 0)
                     {
                         value = 0;
@@ -143,9 +143,9 @@ namespace WindCatchersMathLibrary
             }
         }
 
-        private static double[] Interpolate(int x0, int x1, double y0, double y1)
+        private static decimal[] Interpolate(int x0, int x1, decimal y0, decimal y1)
         {
-            double[] resArr = new double[x1 - x0 - 1];
+            decimal[] resArr = new decimal[x1 - x0 - 1];
 
             for (int x = x0 + 1; x < resArr.Length + x0 + 1; x++)
             {
