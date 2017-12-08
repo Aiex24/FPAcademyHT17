@@ -108,8 +108,8 @@ namespace WindCatchersMathLibrary
                 x0 = lastx0;
                 y0 = lasty0;
 
-                //Interpolation Finds all y1 values for x1 based on the linear equation between x0 and x if am end value was not defined
-                for (int x11 = 131; x11 < 181; x11++)
+                //Interpolation Finds all y1 values for x1 based on the linear equation between x0 and x if an end value was not defined
+                for (int x11 = lastx0 + 1; x11 < 180 + 1; x11++)
                 {
                     double value = vpp[x11] = (x * y0 - x0 * y + x11 * y - x11 * y0) / (x - x0);
 
