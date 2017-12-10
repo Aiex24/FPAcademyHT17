@@ -1,7 +1,6 @@
 ﻿$(document).ready(function () {
     $(window).bind("scroll", function () {
-        var distance = 1;
-        if ($(window).scrollTop() > distance) {
+        if ($(window).scrollTop() > 1) {
             $(".Nav-Index").addClass("scrolled");
         }
         else {
