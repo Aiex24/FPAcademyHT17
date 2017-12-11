@@ -4,6 +4,19 @@ GO
 create schema Sai
 
 GO
+drop table Sai.VPPUserInput
+GO
+create table Sai.VPPUserInput
+(
+	ID int identity primary key,
+	BoatID int foreign key references sai.Boat(ID),
+	TWS int not null,
+	WindDegree int not null,
+	Knot decimal(4,2) not null,
+	constraint vppuser_uq unique nonclustered(BoatID, TWS, WindDegree)
+)
+
+GO
 drop table Sai.VPP
 GO
 create table Sai.VPP

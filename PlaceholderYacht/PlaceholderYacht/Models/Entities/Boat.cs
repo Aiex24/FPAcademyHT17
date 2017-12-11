@@ -8,6 +8,7 @@ namespace PlaceholderYacht.Models.Entities
         public Boat()
         {
             Vpp = new HashSet<Vpp>();
+            VppuserInput = new HashSet<VppuserInput>();
         }
 
         public int Id { get; set; }
@@ -17,5 +18,6 @@ namespace PlaceholderYacht.Models.Entities
         public string Boatname { get; set; }
 
         public ICollection<Vpp> Vpp { get; set; }
+        public ICollection<VppuserInput> VppuserInput { get; set; }
     }
 }
