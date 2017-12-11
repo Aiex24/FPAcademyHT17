@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace PlaceholderYacht.Models.Entities
 {
-    public partial class Vpp
+    public partial class VppuserInput
     {
         public int Id { get; set; }
         public int BoatId { get; set; }

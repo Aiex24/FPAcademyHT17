@@ -48,14 +48,20 @@ namespace PlaceholderYacht.Controllers
         {
             if (id > 0)
             {
+                BoatPageVM boat = repository.GetBoatPageVM(id);
+                if (boat.VppList.Count() < 1)
+                    boat = repository.AddEmptyVPP(boat);
+
                 ViewBag.ActionName = "UpdateBoat";
                 ViewBag.SaveBtnName = "Update Boat";
-                return View(repository.GetBoatPageVM(id));
+                return View(boat);
             }
-
-            ViewBag.SaveBtnName = "Add Boat";
-            ViewBag.ActionName = "AddBoatToDatabase";
-            return View();
+            else
+            {
+                ViewBag.SaveBtnName = "Add Boat";
+                ViewBag.ActionName = "AddBoatToDatabase";
+                return View();
+            }
         }
         [HttpPost]
         public IActionResult AddBoatToDatabase(BoatPageVM model)
@@ -67,6 +73,16 @@ namespace PlaceholderYacht.Controllers
             repository.InterpolateVpp(model);
             repository.SaveBoat(model);
             return RedirectToAction(nameof(Route));
+        }
+        [HttpPost]
+        public IActionResult UpdateBoat(BoatPageVM model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(nameof(BoatPage), model);
+            }
+            repository.UpdateBoat(model);
+            return RedirectToAction(nameof(BoatPage), new { id = model.BoatID });
         }
     }
 }
