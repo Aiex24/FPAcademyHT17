@@ -552,6 +552,7 @@ function DisplayWindData(lat, lng, windSpeed, windDegree) {
     let marker = new google.maps.Marker({
         position: latLng,
         map: map,
+        animation: google.maps.Animation.DROP,
         title: 'Vinddata för position:' + lat + ',' + lng
     });
 

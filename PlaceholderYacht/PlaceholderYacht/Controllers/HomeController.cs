@@ -10,6 +10,7 @@ namespace PlaceholderYacht.Controllers
 {
     public class HomeController : Controller
     {
+        // obs håll koll på reposen, den ska vara interface
         IBoatRepository repository;
 
         public HomeController(IBoatRepository repository)
@@ -20,6 +21,9 @@ namespace PlaceholderYacht.Controllers
         // GET: /<controller>/
         public IActionResult Index()
         {
+            double latitude1 = 59.39496;
+            double longitude1 = 19.33388;
+            repository.GetTime(latitude1, longitude1, 90, 1, 45);
             return View();
         }
         public IActionResult Route()
@@ -45,7 +49,9 @@ namespace PlaceholderYacht.Controllers
             {
                 BoatPageVM boat = repository.GetBoatPageVM(id);
                 if (boat.VppList.Count() < 1)
+                    
                     boat = repository.AddEmptyVPP(boat);
+
 
                 ViewBag.ActionName = "UpdateBoat";
                 ViewBag.SaveBtnName = "Update Boat";

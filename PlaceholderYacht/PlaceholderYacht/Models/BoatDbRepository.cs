@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using PlaceholderYacht.Models.ViewModels;
 using WindCatchersMathLibrary;
+using System.Net.Http;
+using Newtonsoft.Json;
 using Microsoft.EntityFrameworkCore;
 
 namespace PlaceholderYacht.Models
@@ -198,8 +200,7 @@ namespace PlaceholderYacht.Models
             //    Console.WriteLine($"{method.ToUpper()} Distance: {Math.Round(distance[0], 3)} [{unit}] Bearing: {Math.Round(distance[1], 0)}°");
             return 1;
         }
-
-        private static double[] CalcDistance(double latitude1, double longitude1, double latitude2, double longitude2, string unit, string method, int minAngle)
+        private double[] CalcDistance(double latitude1, double longitude1, double latitude2, double longitude2, string unit, string method, int minAngle)
         {
             double φ1 = Rad(latitude1);  //latitude starting point in radian
             double λ1 = Rad(longitude1); //longitude starting point in radian
@@ -209,15 +210,22 @@ namespace PlaceholderYacht.Models
             double Δλ = λ2 - λ1;         //Difference in longitude
             string u = unit;             //Unit either [km] or [Nm]
             string m = method;           //Haversine or tangential
-            double φa = φ1 + (Δφ / 2);   //Average latitude
             double Ra = 6378.1370;       //Equatorial radius
             double Rb = 6356.7523;       //Polar radius
             double L = 0;                  //Total length to destination in km
             double θ = 0;                //Initial bearing
             int θmin = minAngle;
-            // Calculates radius R(φ) [km] where R is a function of the linear average of the latitudes of latitude1 and latitude2
-            double Rφ = Math.Sqrt((Math.Pow(Math.Pow(Ra, 2) * Math.Cos(φa), 2) + Math.Pow(Math.Pow(Rb, 2) * Math.Sin(φa), 2)) /
-                (Math.Pow(Ra * Math.Cos(φa), 2) + Math.Pow(Rb * Math.Sin(φa), 2)));
+
+            // Calculates radius R(φ) [km] where R is a function of the center of the latitudes of latitude1 and latitude2
+            double Bx = Math.Cos(φ2) * Math.Cos(λ2 - λ1);
+            double By = Math.Cos(φ2) * Math.Sin(λ2 - λ1);
+            double φm = Math.Atan2(Math.Sin(φ1) + Math.Sin(φ2),
+                        Math.Sqrt((Math.Cos(φ1) + Bx) * (Math.Cos(φ1) + Bx) + By * By));
+
+            double Rφ = Math.Sqrt((Math.Pow(Math.Pow(Ra, 2) * Math.Cos(φm), 2) +
+                Math.Pow(Math.Pow(Rb, 2) * Math.Sin(φm), 2)) /
+                (Math.Pow(Ra * Math.Cos(φm), 2) + Math.Pow(Rb * Math.Sin(φm), 2)));
+
             //Converts from kilometers to Nautical miles if unit = "Nm"
             if (u == "Nm") Rφ = Rφ / 1.852;
 
@@ -268,7 +276,7 @@ namespace PlaceholderYacht.Models
         }
 
         //Calculates the initial bearing θ using tangential
-        private static double InitialBearing(double φ1, double λ1, double φ2, double λ2)
+        private double InitialBearing(double φ1, double λ1, double φ2, double λ2)
         {
             double Δφ = φ2 - φ1;
             double Δλ = λ2 - λ1;
@@ -279,21 +287,32 @@ namespace PlaceholderYacht.Models
             return θ;
         }
 
-        private static int GetTime(double latitude, double longitude, double bearing, double ΔL, int minAngle)
+        public int GetTime(double latitude, double longitude, double bearing, double ΔL, int minAngle)
         {
+            SmhiApi smhi = new SmhiApi();
+
+            // för att få async i .core än så länge
+            Task.Run(async () =>
+            {
+                smhi = await CallWebApi();
+            }).GetAwaiter().GetResult();
+
+
             double θmin = (double)minAngle;
             double L = ΔL;
             double x0, x, x1, y0, y, y1, penalty;
             double θ = 0;
-            double θSMHI = 140; //█████vindriktning 140 [grader] ska ersättas med värde från API i (latitude,longitude) █████
-            double TwsAPI = 5; //█████vindstyrka  5.1 [m/s] ska ersättas med värde från API i (latitude,longitude) █████
+            double θSMHI = smhi.timeSeries[0].parameters[3].values[0];
+            double TwsAPI = smhi.timeSeries[0].parameters[4].values[0];
+                
             double θrelative = Math.Abs(θSMHI - θ); //Difference in degrees between winddirection and bearing 
 
             θrelative = Math.Abs(θrelative - 2 * (θrelative % 180)); //Normalize the relative winddirection to fit the right side of the polardiagram
             double v; // v [knot]
             double vms; //v [m/s]
             bool tacking = false;
-
+            Boat boat = new Boat();
+            int[] TWS = null;
             //Penalty for tacking
             if (θrelative < 0)
             {
@@ -301,20 +320,45 @@ namespace PlaceholderYacht.Models
                 tacking = true;
             }
 
-            int[] TWS = new int[] { 5, 6, 8, 10 }; //Hämta in för vilka definierade TWS databasen har VPP-diagram för (i detta fall 5,6,8 och 10 m/s)
+            // för att få async i .core än så länge
+            Task.Run(async () =>
+            {
+                boat = await GetTwsByBoatId(1);
+            }).GetAwaiter().GetResult();
+
+            TWS = boat.Vpp
+                 .Select(t =>t.Tws)
+                 .ToArray();
+
+
+            //new int[] { 5, 6, 8, 10 }; //Hämta in för vilka definierade TWS databasen har VPP-diagram för (i detta fall 5,6,8 och 10 m/s)
 
             if (TWS.SingleOrDefault(t => t == TwsAPI) != 0) //Will be executed if there is a diagram that correlates to the exact windspeed retrieved from the API
             {
-                //█████Get v from table where TWS = TwsAPI at position θrelative
-                v = 2;
+
+                var knot = boat.Vpp
+                    .Where(t => t.Tws == TwsAPI && t.WindDegree == θrelative)
+                    .Select(t => t.Knot).SingleOrDefault();
+                    //█████Get v from table where TWS = TwsAPI at position θrelative
+                v = (double)knot;
             }
             else if (TwsAPI < TWS.Min()) //The actual windspeed is lower than the lowest defined VPP-diagram
             {
                 x0 = TwsAPI;
                 x = TWS[0];
                 x1 = TWS[1];
-                y = 5.4; //█████ Replace 5.4 with value from database where ID = TWS[0] at position θrelative█████
-                y1 = 6.2; //█████ Replace 6.2 with value from database where ID = TWS[1] at position θrelative█████
+
+                var knotY = boat.Vpp
+                    .Where(t => t.Tws == x && t.WindDegree == θrelative)
+                    .Select(t => t.Knot).SingleOrDefault();
+                var knotY1 = boat.Vpp
+                    .Where(t => t.Tws == x1 && t.WindDegree == θrelative)
+                    .Select(t => t.Knot).SingleOrDefault();
+
+                y = (double)knotY;
+                //5.4; //█████ Replace 5.4 with value from database where ID = TWS[0] at position θrelative█████
+                y1 = (double)knotY1;
+                //6.2; //█████ Replace 6.2 with value from database where ID = TWS[1] at position θrelative█████
                 v = (x0 * y + x * y1 - x0 * y1 - x1 * y) / (x - x1);
             }
             else if (TwsAPI > TWS.Max())//The actual windspeed is higher than the highest defined VPP-diagram
@@ -345,14 +389,38 @@ namespace PlaceholderYacht.Models
 
         }
 
-        private static double Rad(double valueToCast)
+        // måste vara async, databasen är hyfsat seg
+        public async Task<Boat> GetTwsByBoatId(int boatId)
+        {
+            var boat = await context.Boat
+                .Include(b => b.Vpp)
+                .FirstOrDefaultAsync(b => b.Id == boatId);
+
+            //var tws = boat.Vpp
+            //     .Select(v => v.Tws)
+            //     .Distinct().ToArray();
+
+            return boat;
+        }
+
+        private double Rad(double valueToCast)
         {
             return valueToCast * Math.PI / 180;
         }
-
-        private static double Degree(double valueToCast)
+        private double Degree(double valueToCast)
         {
             return valueToCast * 180 / Math.PI;
+        }
+
+        // en äkta skön api-metod
+        private async Task<SmhiApi> CallWebApi()
+        {
+            var url = @"http://opendata-download-metanalys.smhi.se/api/category/mesan1g/version/1/geotype/point/lon/18.068581/lat/59.329323/data.json";
+            var client = new HttpClient();
+
+            var json = await client.GetStringAsync(url);
+            var smhi = JsonConvert.DeserializeObject<SmhiApi>(json);
+            return smhi;
         }
 
     }
