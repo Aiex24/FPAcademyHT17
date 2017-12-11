@@ -66,7 +66,8 @@ namespace PlaceholderYacht.Models.Entities
                 entity.HasOne(d => d.Boat)
                     .WithMany(p => p.Vpp)
                     .HasForeignKey(d => d.BoatId)
-                    .HasConstraintName("FK__VPP__BoatID__02FC7413");
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__VPP__BoatID__25518C17");
             });
 
             modelBuilder.Entity<VppuserInput>(entity =>
@@ -88,7 +89,8 @@ namespace PlaceholderYacht.Models.Entities
                 entity.HasOne(d => d.Boat)
                     .WithMany(p => p.VppuserInput)
                     .HasForeignKey(d => d.BoatId)
-                    .HasConstraintName("FK__VPPUserIn__BoatI__09A971A2");
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__VPPUserIn__BoatI__2180FB33");
             });
         }
     }
