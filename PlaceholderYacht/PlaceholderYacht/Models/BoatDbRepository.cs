@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using PlaceholderYacht.Models.ViewModels;
 using WindCatchersMathLibrary;
+using Microsoft.EntityFrameworkCore;
 
 namespace PlaceholderYacht.Models
 {
@@ -18,8 +19,9 @@ namespace PlaceholderYacht.Models
 
         public BoatPageVM GetBoatPageVM(int BoatID)
         {
-            var boat = context.Boat.FirstOrDefault(b => b.Id == BoatID);
-            return new BoatPageVM
+            Boat boat = context.Boat.Include(b => b.Vpp).FirstOrDefault(b => b.Id == BoatID);
+
+            var baten = new BoatPageVM
             {
                 Boatname = boat.Boatname,
                 Manufacturer = boat.Manufacturer,
@@ -33,6 +35,7 @@ namespace PlaceholderYacht.Models
                     ID = v.Id
                 }).ToArray()
             };
+            return baten;
         }
 
         public AccountBoatItemVM[] GetUsersBoatsByUID(string UID)
@@ -296,7 +299,7 @@ namespace PlaceholderYacht.Models
 
         public void UpdateBoat(BoatPageVM viewModel)
         {
-            Boat boatToUpdate = context.Boat.FirstOrDefault(b => b.Id == viewModel.BoatID);
+            Boat boatToUpdate = context.Boat.Include(b => b.Vpp).FirstOrDefault(b => b.Id == viewModel.BoatID);
             boatToUpdate.Boatname = viewModel.Boatname;
             boatToUpdate.Manufacturer = viewModel.Manufacturer;
             boatToUpdate.Modelname = viewModel.Modelname;
@@ -329,7 +332,8 @@ namespace PlaceholderYacht.Models
 
         public BoatPageVM AddEmptyVPP(BoatPageVM boat)
         {
-            throw new NotImplementedException();
+            boat.VppList = new AngleTwsKnotVM[] { new AngleTwsKnotVM { } };
+            return boat;
         }
     }
 }
