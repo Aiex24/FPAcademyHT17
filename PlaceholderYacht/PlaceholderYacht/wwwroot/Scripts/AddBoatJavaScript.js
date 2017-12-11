@@ -58,4 +58,11 @@
         $.validator.unobtrusive.parse(form);
       
     }
+
+
+    $("#VppInputTable").on("input", ".colUserInput", (e) => {
+        //Av någon anlendning måste man sätta value i htmlen när något händer.
+        let valueString = e.target.value;
+        $(e.target).attr('value', `${valueString}`);
+    });
 });
