@@ -1,26 +1,31 @@
-﻿//TODO: funktionalitet för att ta bort rader och få rätt nummer och sånt.
+﻿$(document).ready(function () {
 
-$(document).ready(function () {
     //Körs bara en gång för att lagra den kod vi behöver och inte plocka med inmatad data i början.
-    let rowId = 1;
-    let pureHTMLRow = "";
+    let rowId = $(".RowToSelect").length;
+
     //Plockar ut de element vi vill ha in i den nya raden
-    let htmlOfFirst = document.querySelectorAll(".RowToSelect");
-    //smackar in hela kalaset i en enda sträng!
-    htmlOfFirst.forEach((node) => pureHTMLRow += node.outerHTML);
+    let elementOfFirstRow = $(".RowToSelect:first").clone();
+
+    //Plockar ut input elementen i första raden och sätter deras värde till en tom sträng
+    $(elementOfFirstRow).find(".colUserInput").each((index, element) => {
+        $(element).attr('value', '');
+    })
+
+    //Smackar in första radens HTML kod i en enda sträng!
+    let pureHTMLRow = $(elementOfFirstRow).prop('outerHTML');
 
     $("#AddRowButton").click(
         () => {
             let htmlRow = pureHTMLRow.replace(/0/g, rowId);
-            rowId++;
             $("#ButtonRow").before(htmlRow);
+            rowId++;
         }
     );
-
+    //TODO: Putsa Regexen så den inte ändrar några tabellvärden.
     $("#VppInputTable").on("click", ".RemoveRowButton", (e) => {
         let thisButton = e.target;
         let thisButtonRowNumber = thisButton.dataset.row;
-        let thisRow = $(`tr[data-row = "${thisButtonRowNumber}"]`);
+        let thisRow = $(`tr[data-row = "${thisButtonRowNumber}"]`)
         let followingSiblings = thisRow.last().nextAll(".RowToSelect");
         //tar bort den aktuella raden (och valideringsraden)
         thisRow.remove();
@@ -31,7 +36,6 @@ $(document).ready(function () {
             let regExVar = new RegExp(row, "g");
             trElement.outerHTML = trElement.outerHTML.replace(regExVar, rowReplacing);
         });
-        //console.log(e.target.dataset.row);
         rowId--;
 
     });

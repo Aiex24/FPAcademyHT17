@@ -3,68 +3,64 @@
     <link href="~/Styles/AddBoatStyleSheet.css" rel="stylesheet" />
 }
 
-
-
-
-
-    <div class="AddBoatDiv">
-        <form asp-controller="Home" asp-action="AddBoatToDatabase">
-            <table id="AddBoatTable">
-                <tr>
-                    <td><label asp-for="Modelname" />Model: </td>
-                    <td><input asp-for="Modelname" /></td>
-                    <td><span asp-validation-for="Modelname"></span></td>
-                </tr>
-                <tr>
-                    <td><label asp-for="Manufacturer" />Manufacturer: </td>
-                    <td><input asp-for="Manufacturer" /></td>
-                    <td><span asp-validation-for="Manufacturer"></span></td>
-                </tr>
-                <tr>
-                    <td><label asp-for="Boatname" />Boat Name: </td>
-                    <td><input asp-for="Boatname" /></td>
-                    <td><span asp-validation-for="Boatname"></span></td>
-                </tr>
-            </table>
-            <table id="VppInputTable">
-                <tr>
-                    <td><label asp-for="VppList[0].TWS" />TWS: </td>
-                    <td><label asp-for="VppList[0].WindDegree" />Wind Direction: </td>
-                    <td><label asp-for="VppList[0].Knot" />Knots: </td>
-                </tr>
-                @if (Model != null)
+<div class="AddBoatDiv">
+    <form asp-controller="Home" asp-action="@ViewBag.ActionName">
+        <table id="AddBoatTable">
+            <tr>
+                <td><label asp-for="Modelname" />Model: </td>
+                <td><input asp-for="Modelname" /></td>
+                <td><span asp-validation-for="Modelname"></span></td>
+            </tr>
+            <tr>
+                <td><label asp-for="Manufacturer" />Manufacturer: </td>
+                <td><input asp-for="Manufacturer" /></td>
+                <td><span asp-validation-for="Manufacturer"></span></td>
+            </tr>
+            <tr>
+                <td><label asp-for="Boatname" />Boat Name: </td>
+                <td><input asp-for="Boatname" /></td>
+                <td><span asp-validation-for="Boatname"></span></td>
+            </tr>
+        </table>
+        <table id="VppInputTable">
+            <tr>
+                <td><label asp-for="VppList[0].TWS" />TWS: </td>
+                <td><label asp-for="VppList[0].WindDegree" />Wind Direction: </td>
+                <td><label asp-for="VppList[0].Knot" />Knots: </td>
+            </tr>
+            @if (Model != null)
             {
-                    @for (int i = 0; i < Model.VppList.Length; i++)
+                @for (int i = 0; i < Model.VppList.Length; i++)
                 {
-                        <tr class="RowToSelect" data-row="@i">
-                            <td><input asp-for="VppList[i].TWS" class="colUserInput" data-row="@i" /><span asp-validation-for="VppList[i].TWS"></span></td>
-                            <td><input asp-for="VppList[i].WindDegree" class="colUserInput" data-row="@i" /><span asp-validation-for="VppList[i].WindDegree"></span></td>
-                            <td><input asp-for="VppList[i].Knot" class="colUserInput" data-row="@i" /><span asp-validation-for="VppList[i].Knot"></span></td>
-                            <td><input type="button" value="Remove row" class="RemoveRowButton" data-row="@i" /></td>
-                        </tr>
-                    }
-                }
-                else
-                {
-                    <tr class="RowToSelect" data-row="0">
-                        <td><input asp-for="VppList[0].TWS" class="colUserInput" data-row="0" /></td>
-                        <td><input asp-for="VppList[0].WindDegree" class="colUserInput" data-row="0" /></td>
-                        <td><input asp-for="VppList[0].Knot" class="colUserInput" data-row="0" /></td>
-                        <td><input type="button" value="Remove row" class="RemoveRowButton" data-row="0" /></td>
-                    </tr>
-                    <tr class="RowToSelect" data-row="0">
-                        <td><span asp-validation-for="VppList[0].TWS"></span></td>
-                        <td><span asp-validation-for="VppList[0].WindDegree"></span></td>
-                        <td><span asp-validation-for="VppList[0].Knot"></span></td>
+                    <tr class="RowToSelect" data-row="@i">
+                        <td><input asp-for="VppList[i].TWS" class="colUserInput" data-row="@i" /><span asp-validation-for="VppList[i].TWS"></span></td>
+                        <td><input asp-for="VppList[i].WindDegree" class="colUserInput" data-row="@i" /><span asp-validation-for="VppList[i].WindDegree"></span></td>
+                        <td><input asp-for="VppList[i].Knot" class="colUserInput" data-row="@i" /><span asp-validation-for="VppList[i].Knot"></span></td>
+                        <td><input type="button" value="Remove row" class="RemoveRowButton" data-row="@i" /></td>
                     </tr>
                 }
-                <tr id="ButtonRow">
-                    <td><input type="button" value="Add row" id="AddRowButton" /></td>
-                    <td><input type="submit" value="Save" /></td>
+            }
+            else
+            {
+                <tr class="RowToSelect" data-row="0">
+                    <td><input asp-for="VppList[0].TWS" class="colUserInput" data-row="0" /></td>
+                    <td><input asp-for="VppList[0].WindDegree" class="colUserInput" data-row="0" /></td>
+                    <td><input asp-for="VppList[0].Knot" class="colUserInput" data-row="0" /></td>
+                    <td><input type="button" value="Remove row" class="RemoveRowButton" data-row="0" /></td>
                 </tr>
-            </table>
-        </form>
-    </div>
+                        <tr class="RowToSelect" data-row="0">
+                            <td><span asp-validation-for="VppList[0].TWS"></span></td>
+                            <td><span asp-validation-for="VppList[0].WindDegree"></span></td>
+                            <td><span asp-validation-for="VppList[0].Knot"></span></td>
+                        </tr>
+            }
+            <tr id="ButtonRow">
+                <td><input type="button" value="Add row" id="AddRowButton" /></td>
+                <td><input type="submit" value="@ViewBag.SaveBtnName" /></td>
+            </tr>
+        </table>
+    </form>
+</div>
 <div class="image-background">
     <img src="~/Images/Nauticalchart.jpg" style="width:100%" />
 </div>
@@ -72,62 +68,5 @@
     <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.14.0/jquery.validate.min.js"></script>
     <script src="http://ajax.aspnetcdn.com/ajax/mvc/5.2.3/jquery.validate.unobtrusive.min.js"></script>
     @*TODO: Lägg till unobtrusive-validering för de genererade elementen.*@
-    <script>
-        $(document).ready(function () {
-
-            //Körs bara en gång för att lagra den kod vi behöver och inte plocka med inmatad data i början.
-            let rowId = $(".RowToSelect").length / 2;
-
-            //Plockar ut de element vi vill ha in i den nya raden
-            //let inputsOfFirstRow = $(elementOfFirstRow + " .colUserInput");
-
-            let elementOfFirstRow = $(".RowToSelect:first").clone();
-            console.log($(elementOfFirstRow).find(".colUserInput"))
-
-            $(elementOfFirstRow).find(".colUserInput").each((index, element) => { 
-                $(element).val(999);
-                console.log($(element).val());
-            })
-
-            let pureHTMLRow = $(elementOfFirstRow).prop('outerHTML');
-            console.log(pureHTMLRow)
-            //Smackar in första raden i en enda sträng!
-            //console.log(pureHTMLRow);
-            //pureHTMLRow += htmlOfFirst[1].html;
-
-            $("#AddRowButton").click(
-                () => {
-                    let htmlRow = pureHTMLRow.replace(/0/g, rowId);
-                    $("#ButtonRow").before(htmlRow);
-                    //$(".colUserInput[data-row=" + rowId + "]").val("test");
-                    rowId++;
-                }
-            );
-            //TODO: Putsa Regexen så den inte ändrar några tabellvärden.
-            $("#VppInputTable").on("click", ".RemoveRowButton", (e) => {
-                let thisButton = e.target;
-                let thisButtonRowNumber = thisButton.dataset.row;
-                let thisRow = $(`tr[data-row = "${thisButtonRowNumber}"]`)
-                console.log(thisRow)
-                let followingSiblings = thisRow.last().nextAll(".RowToSelect");
-                console.log(followingSiblings);
-                //tar bort den aktuella raden (och valideringsraden)
-                thisRow.remove();
-
-                followingSiblings.each((index, trElement) => {
-                    let row = trElement.dataset.row;
-                    let rowReplacing = row - 1;
-                    let regExVar = new RegExp(row, "g");
-                    trElement.outerHTML = trElement.outerHTML.replace(regExVar, rowReplacing);
-                });
-                //console.log(e.target.dataset.row);
-                rowId--;
-
-            });
-        });
-
-    </script>
-
-
-    @*<script src="~/Scripts/AddBoatJavaScript.js"></script>*@
+    <script src="~/Scripts/AddBoatJavaScript.js"></script>
 }

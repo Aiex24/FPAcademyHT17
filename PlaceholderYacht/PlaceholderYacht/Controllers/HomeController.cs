@@ -42,8 +42,14 @@ namespace PlaceholderYacht.Controllers
         public IActionResult BoatPage(int id)
         {
             if (id > 0)
+            {
+                ViewBag.ActionName = "UpdateBoat";
+                ViewBag.SaveBtnName = "Update Boat";
                 return View(repository.GetBoatPageVM(id));
+            }
 
+            ViewBag.SaveBtnName = "Add Boat";
+            ViewBag.ActionName = "AddBoatToDatabase";
             return View();
         }
         [HttpPost]
