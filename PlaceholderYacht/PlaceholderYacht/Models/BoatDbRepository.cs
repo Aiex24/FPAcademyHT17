@@ -19,7 +19,7 @@ namespace PlaceholderYacht.Models
 
         public BoatPageVM GetBoatPageVM(int BoatID)
         {
-            Boat boat = context.Boat.Include(b => b.Vpp).FirstOrDefault(b => b.Id == BoatID);
+            Boat boat = context.Boat.Include(b => b.VppuserInput).FirstOrDefault(b => b.Id == BoatID);
 
             var baten = new BoatPageVM
             {
@@ -27,7 +27,7 @@ namespace PlaceholderYacht.Models
                 Manufacturer = boat.Manufacturer,
                 Modelname = boat.Modelname,
                 BoatID = boat.Id,
-                VppList = boat.Vpp.Select(v => new AngleTwsKnotVM
+                VppList = boat.VppuserInput.Select(v => new AngleTwsKnotVM
                 {
                     Knot = v.Knot,
                     TWS = v.Tws,
@@ -97,6 +97,24 @@ namespace PlaceholderYacht.Models
             }
             //Lägger in de interpolerade värdena i databaslistan som aldrig ses av användaren
             viewModel.VppDBList = VppListAsList.ToArray();
+        }
+
+        public void UpdateBoat(BoatPageVM viewModel)
+        {
+            Boat boatToUpdate = context.Boat.Include(b => b.VppuserInput).Include(b => b.VppuserInput).FirstOrDefault(b => b.Id == viewModel.BoatID);
+            boatToUpdate.Boatname = viewModel.Boatname;
+            boatToUpdate.Manufacturer = viewModel.Manufacturer;
+            boatToUpdate.Modelname = viewModel.Modelname;
+
+            
+
+            context.SaveChanges();
+        }
+
+        public BoatPageVM AddEmptyVPP(BoatPageVM boat)
+        {
+            boat.VppList = new AngleTwsKnotVM[] { new AngleTwsKnotVM { } };
+            return boat;
         }
 
         public void SaveBoat(BoatPageVM model)
@@ -309,43 +327,5 @@ namespace PlaceholderYacht.Models
             return valueToCast * 180 / Math.PI;
         }
 
-        public void UpdateBoat(BoatPageVM viewModel)
-        {
-            Boat boatToUpdate = context.Boat.Include(b => b.Vpp).FirstOrDefault(b => b.Id == viewModel.BoatID);
-            boatToUpdate.Boatname = viewModel.Boatname;
-            boatToUpdate.Manufacturer = viewModel.Manufacturer;
-            boatToUpdate.Modelname = viewModel.Modelname;
-
-            foreach (AngleTwsKnotVM item in viewModel.VppList)
-            {
-                //Uppdatera VPP'n om den redan finns.
-                if (item.ID > 0)
-                {
-                    var boatVPP = boatToUpdate.Vpp.FirstOrDefault(v => v.Id == item.ID);
-                    boatVPP.Knot = item.Knot;
-                    boatVPP.Tws = item.TWS;
-                    boatVPP.WindDegree = item.WindDegree;
-                }
-                //Om VPP'n inte finns så lägg till.
-                else
-                {
-                    boatToUpdate.Vpp.Add(new Vpp
-                    {
-                        Boat = boatToUpdate,
-                        BoatId = viewModel.BoatID,
-                        Knot = item.Knot,
-                        Tws = item.TWS,
-                        WindDegree = item.WindDegree
-                    });
-                }
-                context.SaveChanges();
-            }
-        }
-
-        public BoatPageVM AddEmptyVPP(BoatPageVM boat)
-        {
-            boat.VppList = new AngleTwsKnotVM[] { new AngleTwsKnotVM { } };
-            return boat;
-        }
     }
 }
