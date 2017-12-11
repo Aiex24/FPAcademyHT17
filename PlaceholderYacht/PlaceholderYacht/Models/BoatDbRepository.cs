@@ -20,7 +20,7 @@ namespace PlaceholderYacht.Models
         public BoatPageVM GetBoatPageVM(int BoatID)
         {
             Boat boat = context.Boat.Include(b => b.VppuserInput).FirstOrDefault(b => b.Id == BoatID);
-
+                
             var baten = new BoatPageVM
             {
                 Boatname = boat.Boatname,
@@ -101,12 +101,33 @@ namespace PlaceholderYacht.Models
 
         public void UpdateBoat(BoatPageVM viewModel)
         {
-            Boat boatToUpdate = context.Boat.Include(b => b.VppuserInput).Include(b => b.VppuserInput).FirstOrDefault(b => b.Id == viewModel.BoatID);
+            Boat boatToUpdate = context.Boat.Include(b => b.VppuserInput).Include(b => b.Vpp).FirstOrDefault(b => b.Id == viewModel.BoatID);
             boatToUpdate.Boatname = viewModel.Boatname;
             boatToUpdate.Manufacturer = viewModel.Manufacturer;
             boatToUpdate.Modelname = viewModel.Modelname;
 
-            
+            boatToUpdate.VppuserInput.Clear();
+            foreach (var vpp in viewModel.VppList)
+            {
+                boatToUpdate.VppuserInput.Add(new VppuserInput
+                {
+                    Tws = vpp.TWS,
+                    WindDegree = vpp.WindDegree,
+                    Knot = vpp.Knot
+                });
+            }
+
+            InterpolateVpp(viewModel);
+            boatToUpdate.Vpp.Clear();
+            foreach (var vpp in viewModel.VppDBList)
+            {
+                boatToUpdate.Vpp.Add(new Vpp
+                {
+                    Tws = vpp.TWS,
+                    WindDegree = vpp.WindDegree,
+                    Knot = vpp.Knot
+                });
+            }
 
             context.SaveChanges();
         }
