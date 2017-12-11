@@ -4,7 +4,7 @@
 }
 
 <div class="AddBoatDiv">
-    <form asp-controller="Home" asp-action="@ViewBag.ActionName">
+    <form asp-controller="Home" asp-action="@ViewBag.ActionName" id="boatForm">
         <table id="AddBoatTable">
             <tr>
                 <td><label asp-for="Modelname" />Model: </td>
@@ -43,16 +43,11 @@
             else
             {
                 <tr class="RowToSelect" data-row="0">
-                    <td><input asp-for="VppList[0].TWS" class="colUserInput" data-row="0" /></td>
-                    <td><input asp-for="VppList[0].WindDegree" class="colUserInput" data-row="0" /></td>
-                    <td><input asp-for="VppList[0].Knot" class="colUserInput" data-row="0" /></td>
+                    <td><input asp-for="VppList[0].TWS" class="colUserInput" data-row="0" /><span asp-validation-for="VppList[0].TWS"></span></td>
+                    <td><input asp-for="VppList[0].WindDegree" class="colUserInput" data-row="0" /><span asp-validation-for="VppList[0].WindDegree"></span></td>
+                    <td><input asp-for="VppList[0].Knot" class="colUserInput" data-row="0" /><span asp-validation-for="VppList[0].Knot"></span></td>
                     <td><input type="button" value="Remove row" class="RemoveRowButton" data-row="0" /></td>
                 </tr>
-                        <tr class="RowToSelect" data-row="0">
-                            <td><span asp-validation-for="VppList[0].TWS"></span></td>
-                            <td><span asp-validation-for="VppList[0].WindDegree"></span></td>
-                            <td><span asp-validation-for="VppList[0].Knot"></span></td>
-                        </tr>
             }
             <tr id="ButtonRow">
                 <td><input type="button" value="Add row" id="AddRowButton" /></td>
