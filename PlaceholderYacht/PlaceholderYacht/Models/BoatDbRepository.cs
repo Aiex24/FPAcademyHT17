@@ -210,15 +210,22 @@ namespace PlaceholderYacht.Models
             double Δλ = λ2 - λ1;         //Difference in longitude
             string u = unit;             //Unit either [km] or [Nm]
             string m = method;           //Haversine or tangential
-            double φa = φ1 + (Δφ / 2);   //Average latitude
             double Ra = 6378.1370;       //Equatorial radius
             double Rb = 6356.7523;       //Polar radius
             double L = 0;                  //Total length to destination in km
             double θ = 0;                //Initial bearing
             int θmin = minAngle;
-            // Calculates radius R(φ) [km] where R is a function of the linear average of the latitudes of latitude1 and latitude2
-            double Rφ = Math.Sqrt((Math.Pow(Math.Pow(Ra, 2) * Math.Cos(φa), 2) + Math.Pow(Math.Pow(Rb, 2) * Math.Sin(φa), 2)) /
-                (Math.Pow(Ra * Math.Cos(φa), 2) + Math.Pow(Rb * Math.Sin(φa), 2)));
+
+            // Calculates radius R(φ) [km] where R is a function of the center of the latitudes of latitude1 and latitude2
+            double Bx = Math.Cos(φ2) * Math.Cos(λ2 - λ1);
+            double By = Math.Cos(φ2) * Math.Sin(λ2 - λ1);
+            double φm = Math.Atan2(Math.Sin(φ1) + Math.Sin(φ2),
+                        Math.Sqrt((Math.Cos(φ1) + Bx) * (Math.Cos(φ1) + Bx) + By * By));
+
+            double Rφ = Math.Sqrt((Math.Pow(Math.Pow(Ra, 2) * Math.Cos(φm), 2) +
+                Math.Pow(Math.Pow(Rb, 2) * Math.Sin(φm), 2)) /
+                (Math.Pow(Ra * Math.Cos(φm), 2) + Math.Pow(Rb * Math.Sin(φm), 2)));
+
             //Converts from kilometers to Nautical miles if unit = "Nm"
             if (u == "Nm") Rφ = Rφ / 1.852;
 
@@ -296,8 +303,8 @@ namespace PlaceholderYacht.Models
             double x0, x, x1, y0, y, y1, penalty;
             double θ = 0;
             double θSMHI = smhi.timeSeries[0].parameters[3].values[0];
-            double TwsAPI = 3;
-                //smhi.timeSeries[0].parameters[4].values[0];
+            double TwsAPI = smhi.timeSeries[0].parameters[4].values[0];
+                
             double θrelative = Math.Abs(θSMHI - θ); //Difference in degrees between winddirection and bearing 
 
             θrelative = Math.Abs(θrelative - 2 * (θrelative % 180)); //Normalize the relative winddirection to fit the right side of the polardiagram
@@ -321,7 +328,7 @@ namespace PlaceholderYacht.Models
 
             TWS = boat.Vpp
                  .Select(t =>t.Tws)
-                 .Distinct().ToArray();
+                 .ToArray();
 
 
             //new int[] { 5, 6, 8, 10 }; //Hämta in för vilka definierade TWS databasen har VPP-diagram för (i detta fall 5,6,8 och 10 m/s)
