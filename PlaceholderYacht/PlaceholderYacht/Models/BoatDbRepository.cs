@@ -95,14 +95,24 @@ namespace PlaceholderYacht.Models
                     }
                 }
             }
-            //Ersätter den lista som skickades in med den nya som innehåller värden för alla grader vi behöver.
-            viewModel.VppList = VppListAsList.ToArray();
+            //Lägger in de interpolerade värdena i databaslistan som aldrig ses av användaren
+            viewModel.VppDBList = VppListAsList.ToArray();
         }
 
         public void SaveBoat(BoatPageVM model)
         {
             var boat = new Boat { Boatname = model.Boatname, Manufacturer = model.Manufacturer, Modelname = model.Modelname };
             foreach (var vpp in model.VppList)
+            {
+                boat.VppuserInput.Add(new VppuserInput
+                {
+                    Tws = vpp.TWS,
+                    WindDegree = vpp.WindDegree,
+                    Knot = vpp.Knot
+                });
+            }
+
+            foreach (var vpp in model.VppDBList)
             {
                 boat.Vpp.Add(new Vpp
                 {
@@ -115,6 +125,7 @@ namespace PlaceholderYacht.Models
             context.SaveChanges();
         }
         //Här börjar Calcmetoderna. Insatta från sandbox2 måndag 11/12
+
         public int RouteCalculation(int BoatID)
         {
             string unit = "km";
@@ -141,6 +152,7 @@ namespace PlaceholderYacht.Models
             //    Console.WriteLine($"{method.ToUpper()} Distance: {Math.Round(distance[0], 3)} [{unit}] Bearing: {Math.Round(distance[1], 0)}°");
             return 1;
         }
+
         private static double[] CalcDistance(double latitude1, double longitude1, double latitude2, double longitude2, string unit, string method, int minAngle)
         {
             double φ1 = Rad(latitude1);  //latitude starting point in radian
