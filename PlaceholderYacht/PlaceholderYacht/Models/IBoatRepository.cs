@@ -12,5 +12,7 @@ namespace PlaceholderYacht.Models
         BoatPageVM GetBoatPageVM(int BoatID);
         Task<Boat> GetTwsByBoatId(int v);
         int GetTime(double latitude, double longitude, double bearing, double ΔL, int minAngle);
+        BoatPageVM AddEmptyVPP(BoatPageVM boat);
+        void UpdateBoat(BoatPageVM model);
     }
 }

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using PlaceholderYacht.Models.ViewModels;
 using PlaceholderYacht.Models;
 
+
 namespace PlaceholderYacht.Controllers
 {
     public class HomeController : Controller
