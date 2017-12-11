@@ -59,7 +59,14 @@ namespace PlaceholderYacht.Models
                 .Distinct();
 
             //Gör om VppList från array till lista för att enklare kunna lägga till värden.
-            var VppListAsList = viewModel.VppList.ToList();
+            var VppListAsList = viewModel.VppList
+                .Select(v => new AngleTwsKnotDBVM {
+                    ID = v.ID,
+                    TWS = v.TWS,
+                    WindDegree = v.WindDegree,
+                    Knot = v.Knot
+                })
+                .ToList();
             //Anropar interpolationslogik för varje unik tws som lagts till.
             foreach (var tws in twsEs)
             {
@@ -86,7 +93,7 @@ namespace PlaceholderYacht.Models
                 {
                     if (!degreesOnly.Contains(i))
                     {
-                        VppListAsList.Add(new AngleTwsKnotVM
+                        VppListAsList.Add(new AngleTwsKnotDBVM
                         {
                             TWS = tws,
                             WindDegree = i,

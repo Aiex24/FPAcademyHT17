@@ -18,6 +18,6 @@ namespace PlaceholderYacht.Models.ViewModels
         public string Boatname { get; set; }
         public int MinAngle { get; set; }
         public AngleTwsKnotVM[] VppList { get; set; }
-        public AngleTwsKnotVM[] VppDBList { get; set; }
+        public AngleTwsKnotDBVM[] VppDBList { get; set; }
     }
 }

@@ -21,7 +21,10 @@
                 <td><input asp-for="Boatname" /></td>
                 <td><span asp-validation-for="Boatname"></span></td>
 
-                <td><input asp-for="BoatID" hidden /></td>
+                @if (Model != null)
+                {
+                    <td><input asp-for="BoatID" hidden /></td>
+                }
             </tr>
         </table>
         <table id="VppInputTable">
