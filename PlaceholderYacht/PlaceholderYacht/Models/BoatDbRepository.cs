@@ -198,7 +198,7 @@ namespace PlaceholderYacht.Models
 
             if (m == "haversine") L = 2 * Rφ * Math.Sqrt(h);
             else if (m == "tangential") { double c = 2 * Math.Atan2(Math.Sqrt(h), Math.Sqrt(1 - h)); L = Rφ * c; }
-            else Console.WriteLine("[Error] Wrong method requested");
+            //else Console.WriteLine("[Error] Wrong method requested");
 
             //Equations for Rhumb-lines (constant compass direction) which gives a longer distance compared to a non static bearing https://en.wikipedia.org/wiki/Rhumb_line
             double Δψ = Math.Log(Math.Tan(Math.PI / 4 + φ2 / 2) / Math.Tan(Math.PI / 4 + φ1 / 2));
