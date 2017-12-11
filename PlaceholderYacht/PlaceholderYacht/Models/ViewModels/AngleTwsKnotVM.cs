@@ -10,6 +10,7 @@ namespace PlaceholderYacht.Models.ViewModels
     [Bind(Prefix =nameof(BoatPageVM.VppList))]
     public class AngleTwsKnotVM
     {
+        public int ID { get; set; }
         [Required(ErrorMessage = "Please enter the wind degree")]
         public int WindDegree { get; set; }
         [Required(ErrorMessage = "Please enter the true wind speed")]

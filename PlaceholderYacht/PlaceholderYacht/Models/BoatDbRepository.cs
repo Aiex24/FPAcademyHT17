@@ -97,5 +97,10 @@ namespace PlaceholderYacht.Models
             context.Boat.Add(boat);
             context.SaveChanges();
         }
+
+        public void UpdateBoat(BoatPageVM model)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
