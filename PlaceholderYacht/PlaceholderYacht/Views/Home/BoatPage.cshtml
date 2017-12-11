@@ -38,9 +38,9 @@
                         <td><input asp-for="VppList[i].TWS" class="colUserInput" data-row="@i" /><span asp-validation-for="VppList[i].TWS"></span></td>
                         <td><input asp-for="VppList[i].WindDegree" class="colUserInput" data-row="@i" /><span asp-validation-for="VppList[i].WindDegree"></span></td>
                         <td><input asp-for="VppList[i].Knot" class="colUserInput" data-row="@i" /><span asp-validation-for="VppList[i].Knot"></span></td>
-                        <td><input asp-for="VppList[i].ID" hidden /></td>
                         <td><input type="button" value="Remove row" class="RemoveRowButton" data-row="@i" /></td>
                     </tr>
+                    <input asp-for="VppList[i].ID" hidden />
                 }
             }
             else

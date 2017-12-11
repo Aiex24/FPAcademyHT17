@@ -18,7 +18,21 @@ namespace PlaceholderYacht.Models
 
         public BoatPageVM GetBoatPageVM(int BoatID)
         {
-            throw new NotImplementedException();
+            var boat = context.Boat.FirstOrDefault(b => b.Id == BoatID);
+            return new BoatPageVM
+            {
+                Boatname = boat.Boatname,
+                Manufacturer = boat.Manufacturer,
+                Modelname = boat.Modelname,
+                BoatID = boat.Id,
+                VppList = boat.Vpp.Select(v => new AngleTwsKnotVM
+                {
+                    Knot = v.Knot,
+                    TWS = v.Tws,
+                    WindDegree = v.WindDegree,
+                    ID = v.Id
+                }).ToArray()
+            };
         }
 
         public AccountBoatItemVM[] GetUsersBoatsByUID(string UID)
@@ -274,9 +288,48 @@ namespace PlaceholderYacht.Models
         {
             return valueToCast * Math.PI / 180;
         }
+
         private static double Degree(double valueToCast)
         {
             return valueToCast * 180 / Math.PI;
+        }
+
+        public void UpdateBoat(BoatPageVM viewModel)
+        {
+            Boat boatToUpdate = context.Boat.FirstOrDefault(b => b.Id == viewModel.BoatID);
+            boatToUpdate.Boatname = viewModel.Boatname;
+            boatToUpdate.Manufacturer = viewModel.Manufacturer;
+            boatToUpdate.Modelname = viewModel.Modelname;
+
+            foreach (AngleTwsKnotVM item in viewModel.VppList)
+            {
+                //Uppdatera VPP'n om den redan finns.
+                if (item.ID > 0)
+                {
+                    var boatVPP = boatToUpdate.Vpp.FirstOrDefault(v => v.Id == item.ID);
+                    boatVPP.Knot = item.Knot;
+                    boatVPP.Tws = item.TWS;
+                    boatVPP.WindDegree = item.WindDegree;
+                }
+                //Om VPP'n inte finns så lägg till.
+                else
+                {
+                    boatToUpdate.Vpp.Add(new Vpp
+                    {
+                        Boat = boatToUpdate,
+                        BoatId = viewModel.BoatID,
+                        Knot = item.Knot,
+                        Tws = item.TWS,
+                        WindDegree = item.WindDegree
+                    });
+                }
+                context.SaveChanges();
+            }
+        }
+
+        public BoatPageVM AddEmptyVPP(BoatPageVM boat)
+        {
+            throw new NotImplementedException();
         }
     }
 }

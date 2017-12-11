@@ -9,5 +9,6 @@ namespace PlaceholderYacht.Models
         void SaveBoat(BoatPageVM model);
         BoatPageVM GetBoatPageVM(int BoatID);
         void UpdateBoat(BoatPageVM model);
+        BoatPageVM AddEmptyVPP(BoatPageVM boat);
     }
 }

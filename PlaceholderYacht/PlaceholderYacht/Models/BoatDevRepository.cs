@@ -131,19 +131,37 @@ namespace PlaceholderYacht.Models
             boatToUpdate.Boatname = viewModel.Boatname;
             boatToUpdate.Manufacturer = viewModel.Manufacturer;
             boatToUpdate.Modelname = viewModel.Modelname;
-            var viewModelVPPs = viewModel.VppList;
 
-            //foreach (AngleTwsKnotVM item in viewModel.VppList)
-            //{
-            //    vpp.Add(new Vpp
-            //    {
-            //        Boat = boats.FirstOrDefault(b => b.Id == viewModel.BoatID),
-            //        BoatId = viewModel.BoatID,
-            //        Knot = item.Knot,
-            //        Tws = item.TWS,
-            //        WindDegree = item.WindDegree
-            //    });
-            //}
+            foreach (AngleTwsKnotVM item in viewModel.VppList)
+            {
+                //Uppdatera VPP'n om den redan finns.
+                if (item.ID > 0)
+                {
+                    var boatVPP = boatToUpdate.Vpp.FirstOrDefault(v => v.Id == item.ID);
+                    boatVPP.Knot = item.Knot;
+                    boatVPP.Tws = item.TWS;
+                    boatVPP.WindDegree = item.WindDegree;
+                }
+                //Om VPP'n inte finns så lägg till.
+                else
+                {
+                    boatToUpdate.Vpp.Add(new Vpp
+                    {
+                        Boat = boatToUpdate,
+                        BoatId = viewModel.BoatID,
+                        Knot = item.Knot,
+                        Tws = item.TWS,
+                        WindDegree = item.WindDegree,
+                        Id = vppList[vppList.Count - 1].Id
+                    });
+                }
+            }
+        }
+
+        public BoatPageVM AddEmptyVPP(BoatPageVM boat)
+        {
+            boat.VppList = new AngleTwsKnotVM[] { new AngleTwsKnotVM { } };
+            return boat;
         }
     }
 }
