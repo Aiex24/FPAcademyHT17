@@ -1,4 +1,6 @@
-﻿using PlaceholderYacht.Models.ViewModels;
+﻿using System.Threading.Tasks;
+using PlaceholderYacht.Models.ViewModels;
+using PlaceholderYacht.Models.Entities;
 
 namespace PlaceholderYacht.Models
 {
@@ -8,5 +10,7 @@ namespace PlaceholderYacht.Models
         void InterpolateVpp(BoatPageVM boatVM);
         void SaveBoat(BoatPageVM model);
         BoatPageVM GetBoatPageVM(int BoatID);
+        Task<Boat> GetTwsByBoatId(int v);
+        int GetTime(double latitude, double longitude, double bearing, double ΔL, int minAngle);
     }
 }

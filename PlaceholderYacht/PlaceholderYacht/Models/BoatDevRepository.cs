@@ -110,5 +110,15 @@ namespace PlaceholderYacht.Models
                 }).ToArray()
             };
         }
+
+        public Task<Boat> GetTwsByBoatId(int v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int GetTime(double latitude, double longitude, double bearing, double ΔL, int minAngle)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

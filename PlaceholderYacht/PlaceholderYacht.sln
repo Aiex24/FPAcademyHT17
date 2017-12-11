@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2010
+VisualStudioVersion = 15.0.27004.2009
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlaceholderYacht", "PlaceholderYacht\PlaceholderYacht.csproj", "{F49FBC2E-00C6-4AC5-8419-86A3C893302E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindCatchersMathLibrary", "WindCatchersMathLibrary\WindCatchersMathLibrary.csproj", "{E5241C64-829A-47B2-B79B-DC5A354F9001}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WindCatchersMathLibrary", "WindCatchersMathLibrary\WindCatchersMathLibrary.csproj", "{E5241C64-829A-47B2-B79B-DC5A354F9001}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
