@@ -278,5 +278,10 @@ namespace PlaceholderYacht.Models
         {
             return valueToCast * 180 / Math.PI;
         }
+
+        public void UpdateBoat(BoatPageVM model)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

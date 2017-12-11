@@ -34,8 +34,17 @@
         followingSiblings.each((index, trElement) => {
             let row = trElement.dataset.row;
             let rowReplacing = row - 1;
-            let regExVar = new RegExp(row, "g");
-            trElement.outerHTML = trElement.outerHTML.replace(regExVar, rowReplacing);
+            //let regExVar = new RegExp(row, "g");
+
+            let regExVar = new RegExp(`data-row="${row}"`, "g");
+            let regExVar2 = new RegExp(`VppList_${row}`, "g");
+            let regExVar3 = new RegExp(`VppList\\[${row}`, "g");
+            let rowHtml = trElement.outerHTML;
+            rowHtml = rowHtml.replace(regExVar, `data-row="${rowReplacing}"`);
+            rowHtml = rowHtml.replace(regExVar2, `VppList_${rowReplacing}`);
+            rowHtml = rowHtml.replace(regExVar3, `VppList[${rowReplacing}`);
+            console.log(rowHtml);
+            trElement.outerHTML = rowHtml;
         });
         rowId--;
         validateBoatForm();
@@ -47,8 +56,6 @@
         $(form).removeData('validator');
         $(form).removeData('unobtrusiveValidation');
         $.validator.unobtrusive.parse(form);
-            //.removeData("validator") /* added by the raw jquery.validate plugin */
-            //.removeData("unobtrusiveValidation");  /* added by the jquery unobtrusive plugin*/
-        //$.validator.unobtrusive.parse(form);
+      
     }
 });
