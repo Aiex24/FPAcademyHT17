@@ -73,11 +73,12 @@
             //Plockar ut de element vi vill ha in i den nya raden
             //let inputsOfFirstRow = $(elementOfFirstRow + " .colUserInput");
 
-            let elementOfFirstRow = $(".RowToSelect:nth-child(2)").clone();
+            let elementOfFirstRow = $(".RowToSelect:first").clone();
             console.log($(elementOfFirstRow).find(".colUserInput"))
 
             $(elementOfFirstRow).find(".colUserInput").each((index, element) => { 
                 $(element).val(999);
+                console.log($(element).val());
             })
 
             let pureHTMLRow = $(elementOfFirstRow).prop('outerHTML');
