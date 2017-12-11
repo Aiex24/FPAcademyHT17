@@ -63,5 +63,15 @@ namespace PlaceholderYacht.Controllers
             repository.SaveBoat(model);
             return RedirectToAction(nameof(Route));
         }
+        [HttpPost]
+        public IActionResult UpdateBoat(BoatPageVM model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(nameof(BoatPage), model);
+            }
+            repository.UpdateBoat(model);
+            return RedirectToAction(nameof(Route));
+        }
     }
 }

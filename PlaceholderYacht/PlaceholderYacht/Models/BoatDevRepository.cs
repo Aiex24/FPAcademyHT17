@@ -10,17 +10,27 @@ namespace PlaceholderYacht.Models
 {
     public class BoatDevRepository : IBoatRepository
     {
+        static List<Vpp> vppList = new List<Vpp> {
+            new Vpp { Id = 1, Knot = 10, Tws = 2, WindDegree = 45 },
+            new Vpp{ Id = 2, Knot = 8, Tws = 2, WindDegree=90 }
+        };
+
         static List<Boat> boats = new List<Boat>
         {
             new Boat{Id = 1, Uid = "c835a93e-eee9-4c37-bb76-3b05d49d44f2", Modelname = "Nacra17", Manufacturer = "NACRA", Boatname = "Testbåt" },
-            new Boat{Id = 2, Uid = "c835a93e-eee9-4c37-bb76-3b05d49d44f2", Manufacturer = "Sigma", Modelname = "Nimbus2000", Boatname = "Testbåt2" }
+            new Boat{Id = 2, Uid = "c835a93e-eee9-4c37-bb76-3b05d49d44f2", Manufacturer = "Sigma", Modelname = "Nimbus2000", Boatname = "Testbåt2"}
         };
 
-        static List<Vpp> vpp = new List<Vpp>
+        static BoatDevRepository()
         {
-            new Vpp{ Id = 1, Boat = boats[0], BoatId = 1, Knot = 10, Tws = 2, WindDegree=45 },
-            new Vpp{ Id = 1, Boat = boats[0], BoatId = 1, Knot = 8, Tws = 2, WindDegree=90 }
-        };
+            vppList[0].Boat = boats[0];
+            vppList[0].BoatId = boats[0].Id;
+            vppList[1].Boat = boats[0];
+            vppList[1].BoatId = boats[0].Id;
+
+            boats[0].Vpp.Add(vppList[0]);
+            boats[0].Vpp.Add(vppList[1]);
+        }
 
         public AccountBoatItemVM[] GetUsersBoatsByUID(string UID)
         {
@@ -80,9 +90,10 @@ namespace PlaceholderYacht.Models
             //Ersätter den lista som skickades in med den nya som innehåller värden för alla grader vi behöver.
             viewModel.VppList = VppListAsList.ToArray();
         }
+
         public void SaveBoat(BoatPageVM model)
         {
-            var boat = new Boat { Boatname = model.Boatname, Manufacturer = model.Manufacturer, Modelname = model.Modelname};
+            var boat = new Boat { Boatname = model.Boatname, Manufacturer = model.Manufacturer, Modelname = model.Modelname };
             foreach (var vpp in model.VppList)
             {
                 boat.Vpp.Add(new Vpp
@@ -102,13 +113,37 @@ namespace PlaceholderYacht.Models
                 Boatname = boat.Boatname,
                 Manufacturer = boat.Manufacturer,
                 Modelname = boat.Modelname,
-                VppList = vpp.Select(v => new AngleTwsKnotVM
+                BoatID = boat.Id,
+                VppList = boat.Vpp.Select(v => new AngleTwsKnotVM
                 {
                     Knot = v.Knot,
                     TWS = v.Tws,
-                    WindDegree = v.WindDegree
+                    WindDegree = v.WindDegree,
+                    ID = v.Id
+
                 }).ToArray()
             };
+        }
+
+        public void UpdateBoat(BoatPageVM viewModel)
+        {
+            Boat boatToUpdate = boats.FirstOrDefault(b => b.Id == viewModel.BoatID);
+            boatToUpdate.Boatname = viewModel.Boatname;
+            boatToUpdate.Manufacturer = viewModel.Manufacturer;
+            boatToUpdate.Modelname = viewModel.Modelname;
+            var viewModelVPPs = viewModel.VppList;
+
+            //foreach (AngleTwsKnotVM item in viewModel.VppList)
+            //{
+            //    vpp.Add(new Vpp
+            //    {
+            //        Boat = boats.FirstOrDefault(b => b.Id == viewModel.BoatID),
+            //        BoatId = viewModel.BoatID,
+            //        Knot = item.Knot,
+            //        Tws = item.TWS,
+            //        WindDegree = item.WindDegree
+            //    });
+            //}
         }
     }
 }
