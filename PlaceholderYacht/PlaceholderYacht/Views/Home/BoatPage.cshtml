@@ -29,9 +29,9 @@
         </table>
         <table id="VppInputTable">
             <tr>
-                <td><label asp-for="VppList[0].TWS" />TWS: </td>
-                <td><label asp-for="VppList[0].WindDegree" />Wind Direction: </td>
-                <td><label asp-for="VppList[0].Knot" />Knots: </td>
+                <td>TWS: </td>
+                <td>Wind Direction: </td>
+                <td>Knots: </td>
             </tr>
             @if (Model != null)
             {
@@ -42,8 +42,8 @@
                         <td><input asp-for="VppList[i].WindDegree" class="colUserInput" data-row="@i" /><span asp-validation-for="VppList[i].WindDegree"></span></td>
                         <td><input asp-for="VppList[i].Knot" class="colUserInput" data-row="@i" /><span asp-validation-for="VppList[i].Knot"></span></td>
                         <td><input type="button" value="Remove row" class="RemoveRowButton" data-row="@i" /></td>
+                        <td><input asp-for="VppList[i].ID" hidden /></td>
                     </tr>
-                    <input asp-for="VppList[i].ID" hidden />
                 }
             }
             else
