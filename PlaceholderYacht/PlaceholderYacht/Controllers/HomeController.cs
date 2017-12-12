@@ -69,6 +69,8 @@ namespace PlaceholderYacht.Controllers
         {
             if (!ModelState.IsValid)
             {
+                ViewBag.SaveBtnName = "Add Boat";
+                ViewBag.ActionName = "AddBoatToDatabase";
                 return View(nameof(BoatPage), model);
             }
             repository.InterpolateVpp(model);
@@ -80,6 +82,8 @@ namespace PlaceholderYacht.Controllers
         {
             if (!ModelState.IsValid)
             {
+                ViewBag.ActionName = "UpdateBoat";
+                ViewBag.SaveBtnName = "Update Boat";
                 return View(nameof(BoatPage), model);
             }
             repository.UpdateBoat(model);
