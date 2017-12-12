@@ -201,7 +201,7 @@ namespace PlaceholderYacht.Models
             //    Console.WriteLine($"{method.ToUpper()} Distance: {Math.Round(distance[0], 3)} [{unit}] Bearing: {Math.Round(distance[1], 0)}°");
             return 1;
         }
-        private double[] CalcDistance(double latitude1, double longitude1, double latitude2, double longitude2, string unit, string method, int minAngle)
+        public double[] CalcDistance(double latitude1, double longitude1, double latitude2, double longitude2, string unit, string method, int minAngle)
         {
             double φ1 = Rad(latitude1);  //latitude starting point in radian
             double λ1 = Rad(longitude1); //longitude starting point in radian
@@ -248,7 +248,7 @@ namespace PlaceholderYacht.Models
             brng = (brng + 360) % 360;
 
             //If this value is set to 1, the resolution will be 1 km
-            double resolution = 1; //Distance the program approximates the calculations without retrieve new data for wind from SMHI API and speed from the VPP database
+            double resolution = 50; //Distance the program approximates the calculations without retrieve new data for wind from SMHI API and speed from the VPP database
             double Li = resolution;
             double Lrest = L % Li;
             double n = Math.Truncate(L / Li);
@@ -303,10 +303,8 @@ namespace PlaceholderYacht.Models
             double L = ΔL;
             double x0, x, x1, y0, y, y1, penalty;
             double θ = 0;
-            double θSMHI = 90;
-                //smhi.timeSeries[0].parameters[3].values[0];
-            double TwsAPI = 8;
-                //smhi.timeSeries[0].parameters[4].values[0];
+            double θSMHI = smhi.timeSeries[0].parameters[3].values[0];
+            double TwsAPI = smhi.timeSeries[0].parameters[4].values[0];
             
 
             double θrelative = Math.Abs(θSMHI - θ); //Difference in degrees between winddirection and bearing 
@@ -404,7 +402,9 @@ namespace PlaceholderYacht.Models
             else penalty = 1;
             tacking = false;
             vms = v * 1852 / 3600;
-            return (int)Math.Round((L * penalty * 1000 / vms), 0); //[s]
+            var i= (int)Math.Round((L * penalty * 1000 / vms), 0); //[s]
+            return i;
+
 
         }
 

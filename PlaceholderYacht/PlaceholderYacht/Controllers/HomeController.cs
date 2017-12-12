@@ -22,12 +22,21 @@ namespace PlaceholderYacht.Controllers
         // GET: /<controller>/
         public IActionResult Index()
         {
+
             
+            string unit = "km";
+            string method = "haversine";
             //Start coordinate 
             double latitude1 = 59.39496;
             double longitude1 = 19.33388;
-            
-            var i = repository.GetTime(latitude1, longitude1, 135, 1, 45);
+            //Goal coordinate
+            double latitude2 = 57.67185;
+            double longitude2 = 18.20489;
+            int minAngle = 45;
+
+             var tjena = repository.CalcDistance(latitude1, longitude1, latitude2, longitude2, unit, method, minAngle);
+
+
             return View();
         }
         public IActionResult Route()

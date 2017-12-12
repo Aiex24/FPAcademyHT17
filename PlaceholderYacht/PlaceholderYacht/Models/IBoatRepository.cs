@@ -14,5 +14,6 @@ namespace PlaceholderYacht.Models
         int GetTime(double latitude, double longitude, double bearing, double ΔL, int minAngle);
         BoatPageVM AddEmptyVPP(BoatPageVM boat);
         void UpdateBoat(BoatPageVM model);
+        double[] CalcDistance(double latitude1, double longitude1, double latitude2, double longitude2, string unit, string method, int minAngle);
     }
 }
