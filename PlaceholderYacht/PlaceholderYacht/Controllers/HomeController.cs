@@ -34,7 +34,7 @@ namespace PlaceholderYacht.Controllers
             double longitude2 = 18.20489;
             int minAngle =30;
 
-             var tjena = repository.CalcDistance(latitude1, longitude1, latitude2, longitude2, unit, method, minAngle);
+            var tjena = repository.CalcDistance(latitude1, longitude1, latitude2, longitude2, unit, method, minAngle);
 
 
             return View();
