@@ -22,7 +22,7 @@ namespace PlaceholderYacht.Models
         public BoatPageVM GetBoatPageVM(int BoatID)
         {
             Boat boat = context.Boat.Include(b => b.VppuserInput).FirstOrDefault(b => b.Id == BoatID);
-                
+
             var baten = new BoatPageVM
             {
                 Boatname = boat.Boatname,
@@ -62,7 +62,8 @@ namespace PlaceholderYacht.Models
 
             //Gör om VppList från array till lista för att enklare kunna lägga till värden.
             var VppListAsList = viewModel.VppList
-                .Select(v => new AngleTwsKnotDBVM {
+                .Select(v => new AngleTwsKnotDBVM
+                {
                     ID = v.ID,
                     TWS = v.TWS,
                     WindDegree = v.WindDegree,
@@ -302,9 +303,12 @@ namespace PlaceholderYacht.Models
             double L = ΔL;
             double x0, x, x1, y0, y, y1, penalty;
             double θ = 0;
-            double θSMHI = smhi.timeSeries[0].parameters[3].values[0];
-            double TwsAPI = 2.9; /*smhi.timeSeries[0].parameters[4].values[0];*/
-                
+            double θSMHI = 90;
+                //smhi.timeSeries[0].parameters[3].values[0];
+            double TwsAPI = 2.9;
+                //smhi.timeSeries[0].parameters[4].values[0];
+            
+
             double θrelative = Math.Abs(θSMHI - θ); //Difference in degrees between winddirection and bearing 
 
             θrelative = Math.Abs(θrelative - 2 * (θrelative % 180)); //Normalize the relative winddirection to fit the right side of the polardiagram
@@ -327,7 +331,7 @@ namespace PlaceholderYacht.Models
             }).GetAwaiter().GetResult();
 
             TWS = boat.Vpp
-                 .Select(t =>t.Tws)
+                 .Select(t => t.Tws)
                  .ToArray();
 
 
@@ -339,7 +343,7 @@ namespace PlaceholderYacht.Models
                 var knot = boat.Vpp
                     .Where(t => t.Tws == TwsAPI && t.WindDegree == θrelative)
                     .Select(t => t.Knot).SingleOrDefault();
-                    //█████Get v from table where TWS = TwsAPI at position θrelative
+                //█████Get v from table where TWS = TwsAPI at position θrelative
                 v = (double)knot;
             }
             else if (TwsAPI < TWS.Min()) //The actual windspeed is lower than the lowest defined VPP-diagram
@@ -348,10 +352,10 @@ namespace PlaceholderYacht.Models
                 x = TWS[0];
                 x1 = TWS[1];
 
-                var knotY = boat.Vpp
+                var knotY = boat.VppuserInput
                     .Where(t => t.Tws == x && t.WindDegree == θrelative)
                     .Select(t => t.Knot).SingleOrDefault();
-                var knotY1 = boat.Vpp
+                var knotY1 = boat.VppuserInput
                     .Where(t => t.Tws == x1 && t.WindDegree == θrelative)
                     .Select(t => t.Knot).SingleOrDefault();
 
@@ -393,7 +397,8 @@ namespace PlaceholderYacht.Models
         public async Task<Boat> GetTwsByBoatId(int boatId)
         {
             var boat = await context.Boat
-                .Include(b => b.Vpp)
+                .Include(b => b.VppuserInput)
+                .Include(b=>b.Vpp)
                 .FirstOrDefaultAsync(b => b.Id == boatId);
 
             //var tws = boat.Vpp
