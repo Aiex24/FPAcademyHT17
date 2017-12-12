@@ -18,6 +18,7 @@ namespace PlaceholderYacht.Controllers
         SignInManager<IdentityUser> signInManager;
         RoleManager<IdentityRole> roleManager;
         IdentityDbContext identityContext;
+        const string RoleName = "Admin";
 
         public AccountController(
         IBoatRepository repository,
@@ -153,9 +154,14 @@ namespace PlaceholderYacht.Controllers
                 if (!result.Succeeded)
                     return RedirectToAction(nameof(UserPage), new { title = "error" });
 
-                return RedirectToAction(nameof(UserPage), new{title = "Updated"});
+                return RedirectToAction(nameof(UserPage), new { title = "Updated" });
             }
             return RedirectToAction(nameof(UserPage), new { title = "error" });
+        }
+
+        public async Task<IActionResult> MakeAdmin(string id)
+        {
+            return Content($"Done!");
         }
     }
 }
