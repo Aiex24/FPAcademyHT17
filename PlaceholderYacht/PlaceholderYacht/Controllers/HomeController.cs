@@ -23,6 +23,7 @@ namespace PlaceholderYacht.Controllers
         public IActionResult Index()
         {
 
+            
             string unit = "km";
             string method = "haversine";
             //Start coordinate 
@@ -31,9 +32,11 @@ namespace PlaceholderYacht.Controllers
             //Goal coordinate
             double latitude2 = 57.67185;
             double longitude2 = 18.20489;
-            int minAngle = 45;
+            int minAngle =30;
 
-            var i = repository.CalcDistance(latitude1, longitude1, latitude2, longitude2, unit, method, minAngle);
+             var tjena = repository.CalcDistance(latitude1, longitude1, latitude2, longitude2, unit, method, minAngle);
+
+
             return View();
         }
         public IActionResult Route()
@@ -59,7 +62,7 @@ namespace PlaceholderYacht.Controllers
             {
                 BoatPageVM boat = repository.GetBoatPageVM(id);
                 if (boat.VppList.Count() < 1)
-                    
+
                     boat = repository.AddEmptyVPP(boat);
 
 
@@ -96,6 +99,19 @@ namespace PlaceholderYacht.Controllers
                 ViewBag.SaveBtnName = "Update Boat";
                 return View(nameof(BoatPage), model);
             }
+            //Fangar en bugg vi ännu inte lyckats återskapa, där modellen innehåller en rad med 0-värden.
+            var zeroValuesToRemove = model.VppList
+                .Where(v => v.TWS == 0);
+            if (zeroValuesToRemove.Count() > 0)
+            {
+                var vppListAsList = model.VppList.ToList();
+                foreach (var vpp in zeroValuesToRemove)
+                {
+                    vppListAsList.Remove(vpp);
+                }
+                model.VppList = vppListAsList.ToArray();
+            }
+
             repository.UpdateBoat(model);
             return RedirectToAction(nameof(BoatPage), new { id = model.BoatID });
         }

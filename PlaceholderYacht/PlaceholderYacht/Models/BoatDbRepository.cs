@@ -248,7 +248,7 @@ namespace PlaceholderYacht.Models
             brng = (brng + 360) % 360;
 
             //If this value is set to 1, the resolution will be 1 km
-            double resolution = 50; //Distance the program approximates the calculations without retrieve new data for wind from SMHI API and speed from the VPP database
+            double resolution = 100; //Distance the program approximates the calculations without retrieve new data for wind from SMHI API and speed from the VPP database
             double Li = resolution;
             double Lrest = L % Li;
             double n = Math.Truncate(L / Li);
@@ -305,7 +305,7 @@ namespace PlaceholderYacht.Models
             double θ = 0;
             double θSMHI = smhi.timeSeries[0].parameters[3].values[0];
             double TwsAPI = smhi.timeSeries[0].parameters[4].values[0];
-            
+
 
             double θrelative = Math.Abs(θSMHI - θ); //Difference in degrees between winddirection and bearing 
 
@@ -322,24 +322,23 @@ namespace PlaceholderYacht.Models
                 boat = await GetTwsByBoatId(2);
             }).GetAwaiter().GetResult();
 
+            // plocka ut tws:erna (int-array)
             TWS = boat.Vpp
                  .Select(t => t.Tws)
                  .ToArray();
+
+            var getMinAngle = boat.Vpp
+                .Where(d => d.Knot != 0)
+                .OrderBy(d => d.WindDegree)
+                .Select(d => d.WindDegree).FirstOrDefault();
+
+
             //Penalty for tacking
-
-            int minUpwindAngle = boat.Vpp
-                                    .Where(c => c.Knot != 0)
-                                    .OrderBy(c => c.WindDegree)
-                                    .Select(c => c.WindDegree).FirstOrDefault();
-
-
-            if (θrelative < minUpwindAngle)
+            if (θrelative <= getMinAngle)
             {
-                θrelative = θmin;
+                θrelative = getMinAngle;
                 tacking = true;
             }
-
-
 
             //new int[] { 5, 6, 8, 10 }; //Hämta in för vilka definierade TWS databasen har VPP-diagram för (i detta fall 5,6,8 och 10 m/s)
 
@@ -358,10 +357,10 @@ namespace PlaceholderYacht.Models
                 x = TWS[0];
                 x1 = TWS[1];
 
-                var knotY = boat.VppuserInput
+                var knotY = boat.Vpp
                     .Where(t => t.Tws == x && t.WindDegree == θrelative)
                     .Select(t => t.Knot).SingleOrDefault();
-                var knotY1 = boat.VppuserInput
+                var knotY1 = boat.Vpp
                     .Where(t => t.Tws == x1 && t.WindDegree == θrelative)
                     .Select(t => t.Knot).SingleOrDefault();
 
@@ -404,14 +403,17 @@ namespace PlaceholderYacht.Models
                 y0 = (double)knotY0; //█████ Replace 6.4 with value from database where ID = TWS[TWS.Length - 2] at position θrelative█████
                 y1 = (double)knotY1; //█████ Replace 8.4 with value from database where ID = TWS[TWS.Length - 1] at position θrelative█████
                 v = (x * y0 - x * y1 + x0 * y1 - x1 * y0) / (x0 - x1);
-
+            }            
+            if (tacking)
+            {
+                penalty = (L / (Math.Cos(Rad(θrelative))))/L;
+                //(1 / Math.Cos(Rad(θrelative)));
             }
-            if (tacking) penalty = (1 / Math.Cos(Math.PI / 4));
             else penalty = 1;
             tacking = false;
             vms = v * 1852 / 3600;
-            return (int)Math.Round((L * penalty * 1000 / vms), 0); //[s]
-
+            var i = (int)Math.Round((L * penalty * 1000 / vms), 0); //[s]
+            return i;
         }
 
         // måste vara async, databasen är hyfsat seg
@@ -419,7 +421,7 @@ namespace PlaceholderYacht.Models
         {
             var boat = await context.Boat
                 .Include(b => b.VppuserInput)
-                .Include(b=>b.Vpp)
+                .Include(b => b.Vpp)
                 .FirstOrDefaultAsync(b => b.Id == boatId);
 
             //var tws = boat.Vpp
