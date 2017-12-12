@@ -8,7 +8,7 @@ var arrows = []; // en array för att hålla koll på våra pilar
 var startSet = false;
 var clickStart = [];
 var clickEnd = [];
-var startEndMarkers = [];
+var startEndMarkers = []; //Data för anrop till backend kan med fördel hämtas härifrån.
 var lastLine;
 var time = 0;
 var hr = (new Date()).getHours();
@@ -392,8 +392,6 @@ function initiateMap() {
 function calcWindSpeed(lat, lng) {
     let latRound = Math.round(lat * 1000000) / 1000000;
     let lngRound = Math.round(lng * 1000000) / 1000000;
-    console.log(latRound);
-    console.log(lngRound);
 
     let jsonLinkSMHI = "http://opendata-download-metanalys.smhi.se/api/category/mesan1g/version/1/geotype/point/lon/" + lngRound + "/lat/" + latRound + "/data.json";
     let jsonLinkOpenWeather = "http://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lng + "&APPID=cdc3100be90cc854ac6f417f8bccc78b";
@@ -401,7 +399,7 @@ function calcWindSpeed(lat, lng) {
         url: jsonLinkSMHI,
         type: 'GET',
         success: function (result) {
-            console.log(result);
+
             var windSpeed = result.timeSeries[time].parameters[4].values[0];
             var windDegree = result.timeSeries[time].parameters[3].values[0];
             drawArrow(lat, lng, windDegree - 180, 15, windSpeed);
@@ -418,8 +416,6 @@ function calcWindSpeed(lat, lng) {
 function calcWindSpeedForPoint(lat, lng) {
     let latRound = Math.round(lat * 1000000) / 1000000;
     let lngRound = Math.round(lng * 1000000) / 1000000;
-    console.log(latRound);
-    console.log(lngRound);
     let windSpeed;
     let windDegree;
 
@@ -429,7 +425,6 @@ function calcWindSpeedForPoint(lat, lng) {
         url: jsonLinkSMHI,
         type: 'GET',
         success: function (result) {
-            console.log(result);
             windSpeed = result.timeSeries[time].parameters[4].values[0];
             windDegree = result.timeSeries[time].parameters[3].values[0];
 
@@ -498,7 +493,7 @@ function drawLine(latOrg, lngOrg, latEnd, lngEnd) {
 
     // 
     let lineSymbol = {
-        path: google.maps.SymbolPath.CIRCLE,
+        path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
         strokeOpacity: 1,
         scale: 2
     };
@@ -514,6 +509,7 @@ function drawLine(latOrg, lngOrg, latEnd, lngEnd) {
         }],
         map: map
     });
+    //Ser till så att det bara finns en linje på kartan.
     if (lastLine != null) {
         lastLine.setMap(null);
     }
@@ -523,6 +519,7 @@ function drawLine(latOrg, lngOrg, latEnd, lngEnd) {
         map: map,
         title: 'Starting point'
     });
+    //Sätter ut markeringar för start- och slutpunkterna. Tar bort gamla markeringar som ligger och skräpar.
     if (startEndMarkers.length < 1)
         startEndMarkers.push(startMarker);
     else {
@@ -538,7 +535,59 @@ function drawLine(latOrg, lngOrg, latEnd, lngEnd) {
         });
         startEndMarkers.push(endMarker);
     }
+    //let startLatLong = startEndMarkers[0].getPosition();
+    //TODO: Gör om från decimal till DMS
+    let dmsStrings = convertDegreesToDMS(startLatLng.lat, startLatLng.lng)
+    $("#latitudeInfo1").text(dmsStrings[0]);
+    $("#longitudeInfo1").text(dmsStrings[1]);
 
+}
+
+function convertDegreesToDMS(lat, lng) {
+    let calcuLat = lat;
+    let calcuLng = lng;
+    let latResult, lngResult;
+
+    calcuLat = parseFloat(lat);
+    calcuLng = parseFloat(lng);
+
+    latResult = (lat >= 0) ? 'N' : 'S';
+
+    // Call to getDms(lat) function for the coordinates of Latitude in DMS.
+    // The result is stored in latResult variable.
+    latResult += getDms(lat);
+
+    lngResult = (lng >= 0) ? 'E' : 'W';
+
+    // Call to getDms(lng) function for the coordinates of Longitude in DMS.
+    // The result is stored in lngResult variable.
+    lngResult += getDms(lng);
+
+    // Joining both variables and separate them with a space.
+    let dmsResult = [];
+    dmsResult[0] = latResult;
+    dmsResult[1] = lngResult;
+
+    // Return the resultant string
+    return dmsResult;
+}
+
+function getDms(val) {
+
+    let valDeg, valMin, valSec, result;
+
+    val = Math.abs(val);
+
+    valDeg = Math.floor(val);
+    result = valDeg + "º";
+
+    valMin = Math.floor((val - valDeg) * 60);
+    result += valMin + "'";
+
+    valSec = Math.round((val - valDeg - valMin / 60) * 3600 * 1000) / 1000;
+    result += valSec + '"';
+
+    return result;
 }
 
 // function for movig symbols along lines
