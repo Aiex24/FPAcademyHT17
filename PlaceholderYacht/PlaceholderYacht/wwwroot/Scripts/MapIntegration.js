@@ -534,6 +534,7 @@ function drawLine(latOrg, lngOrg, latEnd, lngEnd) {
             title: 'Destination'
         });
         startEndMarkers.push(endMarker);
+        calculateDistanceAndTime();
     }
     //let startLatLong = startEndMarkers[0].getPosition();
     //TODO: Gör om från decimal till DMS
@@ -541,6 +542,27 @@ function drawLine(latOrg, lngOrg, latEnd, lngEnd) {
     $("#latitudeInfo1").text(dmsStrings[0]);
     $("#longitudeInfo1").text(dmsStrings[1]);
 
+}
+
+function calculateDistanceAndTime() {
+    let jsonObject = JSON.stringify({
+        startLatitude: startEndMarkers[0].getPosition().lat(),
+        startLongitude: startEndMarkers[0].getPosition().lng(),
+        endLatitude: startEndMarkers[1].getPosition().lat(),
+        endLongitude: startEndMarkers[1].getPosition().lng(),
+        boatId: 2
+    });
+
+    console.log(jsonObject)
+
+    $.ajax({
+        url: "/Home/CalculateRoute",
+        type: "GET",
+        data: { 'calculateRouteJson': jsonObject },
+        success: function (result) {
+            console.log(result)
+        }
+    })
 }
 
 function convertDegreesToDMS(lat, lng) {

@@ -8,7 +8,7 @@ using WindCatchersMathLibrary;
 
 namespace PlaceholderYacht.Models
 {
-    public class BoatDevRepository : IBoatRepository
+    public class BoatDevRepository /*: IBoatRepository*/
     {
         static List<Vpp> vppList = new List<Vpp> {
             new Vpp { Id = 1, Knot = 10, Tws = 2, WindDegree = 45 },

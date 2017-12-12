@@ -175,20 +175,16 @@ namespace PlaceholderYacht.Models
         }
         //Här börjar Calcmetoderna. Insatta från sandbox2 måndag 11/12
 
-        public int RouteCalculation(int BoatID)
+        public DistanceAndTime RouteCalculation(RouteCalculationJson routeCalculationJson)
         {
-            string unit = "km";
-            string method = "haversine";
-            //Start coordinate 
-            double latitude1 = 59.39496;
-            double longitude1 = 19.33388;
-            //Goal coordinate
-            double latitude2 = 57.67185;
-            double longitude2 = 18.20489;
-            int minAngle = 45;
+            int boatId = routeCalculationJson.BoatID;
+            double startLatitude = routeCalculationJson.StartLatitude;
+            double startLongitude = routeCalculationJson.StartLongitude;
+            double endLatitude = routeCalculationJson.EndLatitude;
+            double endLongitude = routeCalculationJson.EndLongitude;
 
             //Call function 
-            double[] distance = CalcDistance(latitude1, longitude1, latitude2, longitude2, unit, method, minAngle); //45 equals minimum angle TWS is defined for
+            double[] distance = CalcDistanceAndTime(startLatitude, startLongitude, endLatitude, endLongitude, boatId); //45 equals minimum angle TWS is defined for
                                                                                                                     //Result
             double T = distance[2];
             DateTime departure = DateTime.Now;
@@ -199,23 +195,33 @@ namespace PlaceholderYacht.Models
             int minutes = (arrival - departure).Minutes;
             //Console.WriteLine($"This trip took {days}days, {hours}hours and {minutes}minutes");
             //    Console.WriteLine($"{method.ToUpper()} Distance: {Math.Round(distance[0], 3)} [{unit}] Bearing: {Math.Round(distance[1], 0)}°");
-            return 1;
+            DistanceAndTime distanceAndTime = new DistanceAndTime
+            {
+                TripDistanceKm = distance[0],
+                InitialBearing = distance[1],
+                ArrivalTime = arrival,
+                DepartureTime = departure,
+                TripDurationDays = days,
+                TripDurationHours = hours,
+                TripDurationMinutes = minutes
+            };
+            return distanceAndTime;
         }
-        public double[] CalcDistance(double latitude1, double longitude1, double latitude2, double longitude2, string unit, string method, int minAngle)
+        public double[] CalcDistanceAndTime(double startLatitude, double startLongitude, double endLatitude, double endLongitude, int boatId)
         {
-            double φ1 = Rad(latitude1);  //latitude starting point in radian
-            double λ1 = Rad(longitude1); //longitude starting point in radian
-            double φ2 = Rad(latitude2);  //latitude final point in radian
-            double λ2 = Rad(longitude2); //longitude final point in radian
+            double φ1 = Rad(startLatitude);  //latitude starting point in radian
+            double λ1 = Rad(startLongitude); //longitude starting point in radian
+            double φ2 = Rad(endLatitude);  //latitude final point in radian
+            double λ2 = Rad(endLongitude); //longitude final point in radian
             double Δφ = φ2 - φ1;         //Difference in latitude
             double Δλ = λ2 - λ1;         //Difference in longitude
-            string u = unit;             //Unit either [km] or [Nm]
-            string m = method;           //Haversine or tangential
+            string u = "km";             //Unit either [km] or [Nm]
+            string m = "haversine";           //Haversine or tangential
             double Ra = 6378.1370;       //Equatorial radius
             double Rb = 6356.7523;       //Polar radius
             double L = 0;                  //Total length to destination in km
             double θ = 0;                //Initial bearing
-            int θmin = minAngle;
+            //int θmin = minAngle;
 
             // Calculates radius R(φ) [km] where R is a function of the center of the latitudes of latitude1 and latitude2
             double Bx = Math.Cos(φ2) * Math.Cos(λ2 - λ1);
@@ -256,6 +262,7 @@ namespace PlaceholderYacht.Models
             int T = 0; // ΣTi , total time needed to reach the destination i = {1,2,3,...,n-1,n}
             double φ0 = φ1; //sets value to the initial starting point 
             double λ0 = λ1; //sets value to the initial starting point 
+            θ = InitialBearing(φ1, λ1, φ2, λ2);
             for (int i = 1; i < n + 1; i++)
             {
                 f = Li * i / L; //fraction of total distance
@@ -268,11 +275,11 @@ namespace PlaceholderYacht.Models
                 φi = Math.Atan2(z, Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2)));
                 λi = Math.Atan2(y, x);
                 θ = InitialBearing(φ0, λ0, φi, λi);
-                T += GetTime(Degree(φ0), Degree(λ0), θ, Li, θmin);
+                T += GetTime(Degree(φ0), Degree(λ0), θ, Li, boatId);
                 φ0 = φi;
                 λ0 = λi;
             }
-            T += GetTime(Degree(φ1), Degree(λ1), θ, Lrest, minAngle);
+            T += GetTime(Degree(φ1), Degree(λ1), θ, Lrest, boatId);
             return new double[3] { L, θ, T };
         }
 
@@ -288,21 +295,21 @@ namespace PlaceholderYacht.Models
             return θ;
         }
 
-        public int GetTime(double latitude, double longitude, double bearing, double ΔL, int minAngle)
+        public int GetTime(double latitude, double longitude, double bearing, double ΔL, int boatId)
         {
             SmhiApi smhi = new SmhiApi();
 
             // för att få async i .core än så länge
             Task.Run(async () =>
             {
-                smhi = await CallWebApi();
+                smhi = await CallWebApi(latitude, longitude);
             }).GetAwaiter().GetResult();
 
 
-            double θmin = (double)minAngle;
+            //double θmin = (double)minAngle;
             double L = ΔL;
             double x0, x, x1, y0, y, y1, penalty;
-            double θ = 0;
+            double θ = bearing;
             double θSMHI = smhi.timeSeries[0].parameters[3].values[0];
             double TwsAPI = smhi.timeSeries[0].parameters[4].values[0];
 
@@ -310,6 +317,7 @@ namespace PlaceholderYacht.Models
             double θrelative = Math.Abs(θSMHI - θ); //Difference in degrees between winddirection and bearing 
 
             θrelative = Math.Abs(θrelative - 2 * (θrelative % 180)); //Normalize the relative winddirection to fit the right side of the polardiagram
+            θrelative = Math.Round(θrelative, 0);
             double v; // v [knot]
             double vms; //v [m/s]
             bool tacking = false;
@@ -319,12 +327,12 @@ namespace PlaceholderYacht.Models
             // för att få async i .core än så länge
             Task.Run(async () =>
             {
-                boat = await GetTwsByBoatId(2);
+                boat = await GetTwsByBoatId(boatId);
             }).GetAwaiter().GetResult();
 
             // plocka ut tws:erna (int-array)
             TWS = boat.Vpp
-                 .Select(t => t.Tws)
+                 .Select(t => t.Tws).Distinct()
                  .ToArray();
 
             var getMinAngle = boat.Vpp
@@ -393,12 +401,13 @@ namespace PlaceholderYacht.Models
                 x = TwsAPI;
                 x1 = TWS.SkipWhile(p => p <= TwsAPI).First();
 
-                var knotY0 = boat.VppuserInput
+                var knotY0 = boat.Vpp
                     .Where(t => t.Tws == x0 && t.WindDegree == θrelative)
                     .Select(t => t.Knot).SingleOrDefault();
-                var knotY1 = boat.VppuserInput
+                var knotY1 = boat.Vpp
                     .Where(t => t.Tws == x1 && t.WindDegree == θrelative)
                     .Select(t => t.Knot).SingleOrDefault();
+
 
                 y0 = (double)knotY0; //█████ Replace 6.4 with value from database where ID = TWS[TWS.Length - 2] at position θrelative█████
                 y1 = (double)knotY1; //█████ Replace 8.4 with value from database where ID = TWS[TWS.Length - 1] at position θrelative█████
@@ -441,9 +450,9 @@ namespace PlaceholderYacht.Models
         }
 
         // en äkta skön api-metod
-        private async Task<SmhiApi> CallWebApi()
+        private async Task<SmhiApi> CallWebApi(double longitude, double latitude)
         {
-            var url = @"http://opendata-download-metanalys.smhi.se/api/category/mesan1g/version/1/geotype/point/lon/18.068581/lat/59.329323/data.json";
+            var url = @"http://opendata-download-metanalys.smhi.se/api/category/mesan1g/version/1/geotype/point/lon/"+ Math.Round(latitude, 6)+"/lat/"+Math.Round(longitude, 6)+"/data.json";
             var client = new HttpClient();
 
             var json = await client.GetStringAsync(url);

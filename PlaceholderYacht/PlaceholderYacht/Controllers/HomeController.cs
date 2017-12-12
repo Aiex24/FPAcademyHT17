@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using PlaceholderYacht.Models.ViewModels;
 using PlaceholderYacht.Models;
+using Newtonsoft.Json;
 
 
 namespace PlaceholderYacht.Controllers
@@ -22,21 +23,6 @@ namespace PlaceholderYacht.Controllers
         // GET: /<controller>/
         public IActionResult Index()
         {
-
-            
-            string unit = "km";
-            string method = "haversine";
-            //Start coordinate 
-            double latitude1 = 59.39496;
-            double longitude1 = 19.33388;
-            //Goal coordinate
-            double latitude2 = 57.67185;
-            double longitude2 = 18.20489;
-            int minAngle =30;
-
-            var tjena = repository.CalcDistance(latitude1, longitude1, latitude2, longitude2, unit, method, minAngle);
-
-
             return View();
         }
         public IActionResult Route()
@@ -46,6 +32,12 @@ namespace PlaceholderYacht.Controllers
         public IActionResult Vpp()
         {
             return View();
+        }
+        public IActionResult CalculateRoute(string calculateRouteJson)
+        {
+            RouteCalculationJson jsonObject = JsonConvert.DeserializeObject<RouteCalculationJson>(calculateRouteJson);
+            var result = repository.RouteCalculation(jsonObject);
+            return Json(result);
         }
         public IActionResult About()
         {
