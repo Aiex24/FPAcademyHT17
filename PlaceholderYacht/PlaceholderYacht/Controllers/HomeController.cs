@@ -22,9 +22,6 @@ namespace PlaceholderYacht.Controllers
         // GET: /<controller>/
         public IActionResult Index()
         {
-            double latitude1 = 59.39496;
-            double longitude1 = 19.33388;
-            repository.GetTime(latitude1, longitude1, 90, 1, 45);
             return View();
         }
         public IActionResult Route()
@@ -70,6 +67,8 @@ namespace PlaceholderYacht.Controllers
         {
             if (!ModelState.IsValid)
             {
+                ViewBag.SaveBtnName = "Add Boat";
+                ViewBag.ActionName = "AddBoatToDatabase";
                 return View(nameof(BoatPage), model);
             }
             repository.InterpolateVpp(model);
@@ -81,6 +80,8 @@ namespace PlaceholderYacht.Controllers
         {
             if (!ModelState.IsValid)
             {
+                ViewBag.ActionName = "UpdateBoat";
+                ViewBag.SaveBtnName = "Update Boat";
                 return View(nameof(BoatPage), model);
             }
             repository.UpdateBoat(model);
