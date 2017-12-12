@@ -305,7 +305,7 @@ namespace PlaceholderYacht.Models
             double θ = 0;
             double θSMHI = 90;
                 //smhi.timeSeries[0].parameters[3].values[0];
-            double TwsAPI = 2.9;
+            double TwsAPI = 8;
                 //smhi.timeSeries[0].parameters[4].values[0];
             
 
@@ -367,12 +367,19 @@ namespace PlaceholderYacht.Models
             }
             else if (TwsAPI > TWS.Max())//The actual windspeed is higher than the highest defined VPP-diagram
             {
-
                 x0 = TWS[TWS.Length - 2];
                 x = TWS[TWS.Length - 1];
                 x1 = TwsAPI;
-                y0 = 6.2; //█████ Replace 8.4 with value from database where ID = TWS[TWS.Length - 2] at position θrelative█████
-                y1 = 8.8; //█████ Replace 9.4 with value from database where ID = TWS[TWS.Length - 1] at position θrelative█████
+
+                var knotY0 = boat.VppuserInput
+                    .Where(t => t.Tws == x0 && t.WindDegree == θrelative)
+                    .Select(t => t.Knot).SingleOrDefault();
+                var knotY1 = boat.VppuserInput
+                    .Where(t => t.Tws == x && t.WindDegree == θrelative)
+                    .Select(t => t.Knot).SingleOrDefault();
+
+                y0 = (double)knotY0; //█████ Replace 8.4 with value from database where ID = TWS[TWS.Length - 2] at position θrelative█████
+                y1 = (double)knotY1; //█████ Replace 9.4 with value from database where ID = TWS[TWS.Length - 1] at position θrelative█████
                 v = (x * y0 - x * y1 + x0 * y1 - x1 * y0) / (x0 - x1);
             }
             else
@@ -380,8 +387,16 @@ namespace PlaceholderYacht.Models
                 x0 = TWS.TakeWhile(p => p < TwsAPI).Last();
                 x = TwsAPI;
                 x1 = TWS.SkipWhile(p => p <= TwsAPI).First();
-                y0 = 6.4; //█████ Replace 6.4 with value from database where ID = TWS[TWS.Length - 2] at position θrelative█████
-                y1 = 8.4; //█████ Replace 8.4 with value from database where ID = TWS[TWS.Length - 1] at position θrelative█████
+
+                var knotY0 = boat.VppuserInput
+                    .Where(t => t.Tws == x0 && t.WindDegree == θrelative)
+                    .Select(t => t.Knot).SingleOrDefault();
+                var knotY1 = boat.VppuserInput
+                    .Where(t => t.Tws == x1 && t.WindDegree == θrelative)
+                    .Select(t => t.Knot).SingleOrDefault();
+
+                y0 = (double)knotY0; //█████ Replace 6.4 with value from database where ID = TWS[TWS.Length - 2] at position θrelative█████
+                y1 = (double)knotY1; //█████ Replace 8.4 with value from database where ID = TWS[TWS.Length - 1] at position θrelative█████
                 v = (x * y0 - x * y1 + x0 * y1 - x1 * y0) / (x0 - x1);
 
             }

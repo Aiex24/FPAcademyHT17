@@ -27,7 +27,7 @@ namespace PlaceholderYacht.Controllers
             double latitude1 = 59.39496;
             double longitude1 = 19.33388;
             
-            repository.GetTime(latitude1, longitude1, 135, 1, 45);
+            var i = repository.GetTime(latitude1, longitude1, 135, 1, 45);
             return View();
         }
         public IActionResult Route()
