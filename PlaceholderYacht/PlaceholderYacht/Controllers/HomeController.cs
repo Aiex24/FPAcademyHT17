@@ -32,7 +32,7 @@ namespace PlaceholderYacht.Controllers
             //Goal coordinate
             double latitude2 = 57.67185;
             double longitude2 = 18.20489;
-            int minAngle = 45;
+            int minAngle =30;
 
              var tjena = repository.CalcDistance(latitude1, longitude1, latitude2, longitude2, unit, method, minAngle);
 
