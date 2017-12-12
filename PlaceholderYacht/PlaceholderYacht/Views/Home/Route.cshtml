@@ -6,9 +6,9 @@
     <div id="divdata">
         <div id="divdatatable">Route Data</div>
         <table>
-            <tr><th>Latitude</th><td>59° 10' 49.548'' N</td>
+            <tr><th>Latitude</th><td id="latitudeInfo1">59° 10' 49.548'' N</td>
             <tr>
-            <tr><th>Longitude</th><td>18° 59' 3.75'' E</td>
+            <tr><th>Longitude</th><td id="longitudeInfo1">18° 59' 3.75'' E</td>
             <tr>
             <tr><th>Map API</th><td>Google Maps</td>
             <tr>
@@ -25,6 +25,7 @@
 </div>
 
 @section scripts{
+    <script src="~/Scripts/RouteJavaScript.js"></script>
     <script src="~/Scripts/MapIntegration.js"></script>
     @*@*Utvecklingnyckel*@
     <script async defer
@@ -36,5 +37,4 @@
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA9rdRh5jniAD0TYjDIRhSqQP5ZLf6p5P4&callback=initiateMap">
     </script>*@
 
-    <script src="~/Scripts/RouteJavaScript.js"></script>
 }

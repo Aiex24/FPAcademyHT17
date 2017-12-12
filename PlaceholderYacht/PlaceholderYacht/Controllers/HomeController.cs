@@ -8,6 +8,7 @@ using PlaceholderYacht.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 
+
 namespace PlaceholderYacht.Controllers
 {
     public class HomeController : Controller
@@ -25,9 +26,21 @@ namespace PlaceholderYacht.Controllers
         // GET: /<controller>/
         public IActionResult Index()
         {
+
+            
+            string unit = "km";
+            string method = "haversine";
+            //Start coordinate 
             double latitude1 = 59.39496;
             double longitude1 = 19.33388;
-            repository.GetTime(latitude1, longitude1, 90, 1, 45);
+            //Goal coordinate
+            double latitude2 = 57.67185;
+            double longitude2 = 18.20489;
+            int minAngle =30;
+
+            var tjena = repository.CalcDistance(latitude1, longitude1, latitude2, longitude2, unit, method, minAngle);
+
+
             return View();
         }
         public IActionResult Route()
@@ -55,7 +68,7 @@ namespace PlaceholderYacht.Controllers
             {
                 BoatPageVM boat = repository.GetBoatPageVM(id);
                 if (boat.VppList.Count() < 1)
-                    
+
                     boat = repository.AddEmptyVPP(boat);
 
 
@@ -77,6 +90,8 @@ namespace PlaceholderYacht.Controllers
         {
             if (!ModelState.IsValid)
             {
+                ViewBag.SaveBtnName = "Add Boat";
+                ViewBag.ActionName = "AddBoatToDatabase";
                 return View(nameof(BoatPage), model);
             }
 
@@ -93,8 +108,23 @@ namespace PlaceholderYacht.Controllers
         {
             if (!ModelState.IsValid)
             {
+                ViewBag.ActionName = "UpdateBoat";
+                ViewBag.SaveBtnName = "Update Boat";
                 return View(nameof(BoatPage), model);
             }
+            //Fangar en bugg vi ännu inte lyckats återskapa, där modellen innehåller en rad med 0-värden.
+            var zeroValuesToRemove = model.VppList
+                .Where(v => v.TWS == 0);
+            if (zeroValuesToRemove.Count() > 0)
+            {
+                var vppListAsList = model.VppList.ToList();
+                foreach (var vpp in zeroValuesToRemove)
+                {
+                    vppListAsList.Remove(vpp);
+                }
+                model.VppList = vppListAsList.ToArray();
+            }
+
             repository.UpdateBoat(model);
             return RedirectToAction(nameof(BoatPage), new { id = model.BoatID });
         }

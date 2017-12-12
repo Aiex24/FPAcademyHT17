@@ -22,7 +22,7 @@ namespace PlaceholderYacht.Models
         public BoatPageVM GetBoatPageVM(int BoatID)
         {
             Boat boat = context.Boat.Include(b => b.VppuserInput).FirstOrDefault(b => b.Id == BoatID);
-                
+
             var baten = new BoatPageVM
             {
                 Boatname = boat.Boatname,
@@ -75,7 +75,8 @@ namespace PlaceholderYacht.Models
 
             //Gör om VppList från array till lista för att enklare kunna lägga till värden.
             var VppListAsList = viewModel.VppList
-                .Select(v => new AngleTwsKnotDBVM {
+                .Select(v => new AngleTwsKnotDBVM
+                {
                     ID = v.ID,
                     TWS = v.TWS,
                     WindDegree = v.WindDegree,
@@ -213,7 +214,7 @@ namespace PlaceholderYacht.Models
             //    Console.WriteLine($"{method.ToUpper()} Distance: {Math.Round(distance[0], 3)} [{unit}] Bearing: {Math.Round(distance[1], 0)}°");
             return 1;
         }
-        private double[] CalcDistance(double latitude1, double longitude1, double latitude2, double longitude2, string unit, string method, int minAngle)
+        public double[] CalcDistance(double latitude1, double longitude1, double latitude2, double longitude2, string unit, string method, int minAngle)
         {
             double φ1 = Rad(latitude1);  //latitude starting point in radian
             double λ1 = Rad(longitude1); //longitude starting point in radian
@@ -245,7 +246,7 @@ namespace PlaceholderYacht.Models
             // h = hav(L/R(φ)) where hav is the haversine formula => d = 2rsin^-1(√h)
             double h = Math.Pow(Math.Sin(Δφ / 2), 2) + Math.Cos(φ1) * Math.Cos(φ2) * Math.Pow(Math.Sin(Δλ / 2), 2);
 
-            if (m == "haversine") L = 2 * Rφ * Math.Sqrt(h);
+            if (m == "haversine") L = Math.Sqrt(h) > 1 ? 2 * Rφ * Math.Asin(Math.Sqrt(1)) : 2 * Rφ * Math.Asin(Math.Sqrt(h));
             else if (m == "tangential") { double c = 2 * Math.Atan2(Math.Sqrt(h), Math.Sqrt(1 - h)); L = Rφ * c; }
             //else Console.WriteLine("[Error] Wrong method requested");
 
@@ -260,7 +261,7 @@ namespace PlaceholderYacht.Models
             brng = (brng + 360) % 360;
 
             //If this value is set to 1, the resolution will be 1 km
-            double resolution = 1; //Distance the program approximates the calculations without retrieve new data for wind from SMHI API and speed from the VPP database
+            double resolution = 100; //Distance the program approximates the calculations without retrieve new data for wind from SMHI API and speed from the VPP database
             double Li = resolution;
             double Lrest = L % Li;
             double n = Math.Truncate(L / Li);
@@ -317,7 +318,8 @@ namespace PlaceholderYacht.Models
             double θ = 0;
             double θSMHI = smhi.timeSeries[0].parameters[3].values[0];
             double TwsAPI = smhi.timeSeries[0].parameters[4].values[0];
-                
+
+
             double θrelative = Math.Abs(θSMHI - θ); //Difference in degrees between winddirection and bearing 
 
             θrelative = Math.Abs(θrelative - 2 * (θrelative % 180)); //Normalize the relative winddirection to fit the right side of the polardiagram
@@ -326,23 +328,30 @@ namespace PlaceholderYacht.Models
             bool tacking = false;
             Boat boat = new Boat();
             int[] TWS = null;
-            //Penalty for tacking
-            if (θrelative < 0)
-            {
-                θrelative = θmin;
-                tacking = true;
-            }
 
             // för att få async i .core än så länge
             Task.Run(async () =>
             {
-                boat = await GetTwsByBoatId(1);
+                boat = await GetTwsByBoatId(2);
             }).GetAwaiter().GetResult();
 
+            // plocka ut tws:erna (int-array)
             TWS = boat.Vpp
-                 .Select(t =>t.Tws)
+                 .Select(t => t.Tws)
                  .ToArray();
 
+            var getMinAngle = boat.Vpp
+                .Where(d => d.Knot != 0)
+                .OrderBy(d => d.WindDegree)
+                .Select(d => d.WindDegree).FirstOrDefault();
+
+
+            //Penalty for tacking
+            if (θrelative <= getMinAngle)
+            {
+                θrelative = getMinAngle;
+                tacking = true;
+            }
 
             //new int[] { 5, 6, 8, 10 }; //Hämta in för vilka definierade TWS databasen har VPP-diagram för (i detta fall 5,6,8 och 10 m/s)
 
@@ -352,7 +361,7 @@ namespace PlaceholderYacht.Models
                 var knot = boat.Vpp
                     .Where(t => t.Tws == TwsAPI && t.WindDegree == θrelative)
                     .Select(t => t.Knot).SingleOrDefault();
-                    //█████Get v from table where TWS = TwsAPI at position θrelative
+                //█████Get v from table where TWS = TwsAPI at position θrelative
                 v = (double)knot;
             }
             else if (TwsAPI < TWS.Min()) //The actual windspeed is lower than the lowest defined VPP-diagram
@@ -376,12 +385,19 @@ namespace PlaceholderYacht.Models
             }
             else if (TwsAPI > TWS.Max())//The actual windspeed is higher than the highest defined VPP-diagram
             {
-
                 x0 = TWS[TWS.Length - 2];
                 x = TWS[TWS.Length - 1];
                 x1 = TwsAPI;
-                y0 = 6.2; //█████ Replace 8.4 with value from database where ID = TWS[TWS.Length - 2] at position θrelative█████
-                y1 = 8.8; //█████ Replace 9.4 with value from database where ID = TWS[TWS.Length - 1] at position θrelative█████
+
+                var knotY0 = boat.VppuserInput
+                    .Where(t => t.Tws == x0 && t.WindDegree == θrelative)
+                    .Select(t => t.Knot).SingleOrDefault();
+                var knotY1 = boat.VppuserInput
+                    .Where(t => t.Tws == x && t.WindDegree == θrelative)
+                    .Select(t => t.Knot).SingleOrDefault();
+
+                y0 = (double)knotY0; //█████ Replace 8.4 with value from database where ID = TWS[TWS.Length - 2] at position θrelative█████
+                y1 = (double)knotY1; //█████ Replace 9.4 with value from database where ID = TWS[TWS.Length - 1] at position θrelative█████
                 v = (x * y0 - x * y1 + x0 * y1 - x1 * y0) / (x0 - x1);
             }
             else
@@ -389,23 +405,35 @@ namespace PlaceholderYacht.Models
                 x0 = TWS.TakeWhile(p => p < TwsAPI).Last();
                 x = TwsAPI;
                 x1 = TWS.SkipWhile(p => p <= TwsAPI).First();
-                y0 = 6.4; //█████ Replace 6.4 with value from database where ID = TWS[TWS.Length - 2] at position θrelative█████
-                y1 = 8.4; //█████ Replace 8.4 with value from database where ID = TWS[TWS.Length - 1] at position θrelative█████
-                v = (x * y0 - x * y1 + x0 * y1 - x1 * y0) / (x0 - x1);
 
+                var knotY0 = boat.VppuserInput
+                    .Where(t => t.Tws == x0 && t.WindDegree == θrelative)
+                    .Select(t => t.Knot).SingleOrDefault();
+                var knotY1 = boat.VppuserInput
+                    .Where(t => t.Tws == x1 && t.WindDegree == θrelative)
+                    .Select(t => t.Knot).SingleOrDefault();
+
+                y0 = (double)knotY0; //█████ Replace 6.4 with value from database where ID = TWS[TWS.Length - 2] at position θrelative█████
+                y1 = (double)knotY1; //█████ Replace 8.4 with value from database where ID = TWS[TWS.Length - 1] at position θrelative█████
+                v = (x * y0 - x * y1 + x0 * y1 - x1 * y0) / (x0 - x1);
+            }            
+            if (tacking)
+            {
+                penalty = (L / (Math.Cos(Rad(θrelative))))/L;
+                //(1 / Math.Cos(Rad(θrelative)));
             }
-            if (tacking) penalty = (1 / Math.Cos(Math.PI / 4));
             else penalty = 1;
             tacking = false;
             vms = v * 1852 / 3600;
-            return (int)Math.Round((L * penalty * 1000 / vms), 0); //[s]
-
+            var i = (int)Math.Round((L * penalty * 1000 / vms), 0); //[s]
+            return i;
         }
 
         // måste vara async, databasen är hyfsat seg
         public async Task<Boat> GetTwsByBoatId(int boatId)
         {
             var boat = await context.Boat
+                .Include(b => b.VppuserInput)
                 .Include(b => b.Vpp)
                 .FirstOrDefaultAsync(b => b.Id == boatId);
 
