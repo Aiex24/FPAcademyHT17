@@ -13,5 +13,6 @@ namespace PlaceholderYacht.Models.ViewModels
         public string ModelName { get; set; }
         public string Manufacturer { get; set; }
         public string BoatName { get; set; }
+        public string Owner { get; set; }
     }
 }

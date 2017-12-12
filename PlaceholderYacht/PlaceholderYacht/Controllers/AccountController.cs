@@ -18,7 +18,7 @@ namespace PlaceholderYacht.Controllers
         SignInManager<IdentityUser> signInManager;
         RoleManager<IdentityRole> roleManager;
         IdentityDbContext identityContext;
-        const string RoleName = "Admin";
+        const string AdminRoleName = "Admin";
 
         public AccountController(
         IBoatRepository repository,
@@ -60,7 +60,7 @@ namespace PlaceholderYacht.Controllers
                 return View();
             };
 
-            return RedirectToAction(nameof(AccountController.UserPage), "Account", new { title = viewModel.UserName });
+            return RedirectToAction(nameof(AccountController.UserPage), "Account", new { title = $"Userpage {viewModel.UserName}" });
         }
 
         [Authorize]
@@ -113,23 +113,45 @@ namespace PlaceholderYacht.Controllers
         [Route("account/UserPage/{title}")]
         public async Task<IActionResult> UserPage(string title)
         {
+            List<AccountUserItemVM> userList = new List<AccountUserItemVM>();
+            AccountBoatItemVM[] boatList;
+
             //Hämta info om användaren som är inloggad
             string userID = userManager.GetUserId(HttpContext.User);
             IdentityUser user = await userManager.FindByIdAsync(userID);
 
-            if (title == "Updated")
-                title = $"{user.UserName} has been updated";
-            else if (title == user.UserName)
-                title = $"Userpage {user.UserName}";
-            else if (title == "error")
-                title = $"Something went wrong, {user.UserName} was not updated";
+            //Om användaren är Admin, hämta lista med alla båtar och alla användare
+            if (await userManager.IsInRoleAsync(user, AdminRoleName))
+            {
+                boatList = repository.GetAllBoats();
+                foreach (AccountBoatItemVM boat in boatList)
+                {
+                    if (boat.Owner != null)
+                    {
+                        user = await userManager.FindByIdAsync(boat.Owner);
+                        boat.Owner = user.UserName;
+                    }
+                }
+
+                foreach (var u in userManager.Users)
+                {
+                    bool isAdmin = false;
+                    if (await userManager.IsInRoleAsync(u, AdminRoleName))
+                        isAdmin = true;
+
+                    userList.Add(new AccountUserItemVM { UserID = u.Id, Email = u.Email, UserName = u.UserName, Admin = isAdmin });
+                }
+            }
+            else
+                boatList = repository.GetUsersBoatsByUID(userID);
 
             return View(new AccountUserpageVM
             {
-                BoatItem = repository.GetUsersBoatsByUID(userID),
+                BoatItem = boatList,
                 UserName = user.UserName,
                 Email = user.Email,
-                Title = title
+                Title = title,
+                UserItem = userList.ToArray()
             });
         }
 
@@ -137,8 +159,9 @@ namespace PlaceholderYacht.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateUser(AccountUserpageVM viewModel)
         {
+            string errorMess = $"Something went wrong, user was not updated";
             if (!ModelState.IsValid)
-                return RedirectToAction(nameof(UserPage), new { title = "error" });
+                return RedirectToAction(nameof(UserPage), new { title = errorMess });
 
             //Hämta info om användaren som är inloggad
             string userID = userManager.GetUserId(HttpContext.User);
@@ -152,16 +175,40 @@ namespace PlaceholderYacht.Controllers
 
                 var result = await userManager.UpdateAsync(user);
                 if (!result.Succeeded)
-                    return RedirectToAction(nameof(UserPage), new { title = "error" });
+                    return RedirectToAction(nameof(UserPage), new { title = errorMess });
 
-                return RedirectToAction(nameof(UserPage), new { title = "Updated" });
+                return RedirectToAction(nameof(UserPage), new { title = $"{user.UserName} has been updated" });
             }
-            return RedirectToAction(nameof(UserPage), new { title = "error" });
+            return RedirectToAction(nameof(UserPage), new { title = errorMess });
         }
 
-        public async Task<IActionResult> MakeAdmin(string id)
+        [Authorize]
+        [Route("account/MakeAdmin/{userId}")]
+        public async Task<IActionResult> MakeAdmin(string userId)
         {
-            return Content($"Done!");
+            IdentityUser user = await userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return Content($"Kunde inte hitta någon användare med ID: {userId}");
+            }
+
+            await userManager.AddToRoleAsync(user, AdminRoleName);
+            return RedirectToAction(nameof(UserPage), new { title = $"Userpage {user.UserName}" });
         }
+
+        [Authorize]
+        [Route("account/RemoveAdminRole/{userId}")]
+        public async Task<IActionResult> RemoveAdminRole(string userId)
+        {
+            IdentityUser user = await userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return Content($"Kunde inte hitta någon användare med ID: {userId}");
+            }
+
+            await userManager.RemoveFromRoleAsync(user, AdminRoleName);
+            return RedirectToAction(nameof(UserPage), new { title = $"Userpage {user.UserName}" });
+        }
+
     }
 }

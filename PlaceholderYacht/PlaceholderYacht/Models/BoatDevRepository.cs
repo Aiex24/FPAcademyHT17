@@ -173,5 +173,15 @@ namespace PlaceholderYacht.Models
         {
             throw new NotImplementedException();
         }
+
+        public AccountBoatItemVM[] GetAllBoats()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DeleteBoat(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

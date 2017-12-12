@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using PlaceholderYacht.Models.ViewModels;
 using PlaceholderYacht.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace PlaceholderYacht.Controllers
 {
@@ -12,9 +14,11 @@ namespace PlaceholderYacht.Controllers
     {
         // obs håll koll på reposen, den ska vara interface
         IBoatRepository repository;
+        UserManager<IdentityUser> userManager;
 
-        public HomeController(IBoatRepository repository)
+        public HomeController(IBoatRepository repository, UserManager<IdentityUser> userManager)
         {
+            this.userManager = userManager;
             this.repository = repository;
         }
 
@@ -42,6 +46,8 @@ namespace PlaceholderYacht.Controllers
         {
             return View();
         }
+
+        [Authorize]
         [HttpGet]
         public IActionResult BoatPage(int id)
         {
@@ -64,6 +70,8 @@ namespace PlaceholderYacht.Controllers
                 return View();
             }
         }
+
+        [Authorize]
         [HttpPost]
         public IActionResult AddBoatToDatabase(BoatPageVM model)
         {
@@ -71,10 +79,15 @@ namespace PlaceholderYacht.Controllers
             {
                 return View(nameof(BoatPage), model);
             }
+
+            model.Uid = userManager.GetUserId(HttpContext.User);
+
             repository.InterpolateVpp(model);
             repository.SaveBoat(model);
             return RedirectToAction(nameof(Route));
         }
+
+        [Authorize]
         [HttpPost]
         public IActionResult UpdateBoat(BoatPageVM model)
         {
@@ -84,6 +97,13 @@ namespace PlaceholderYacht.Controllers
             }
             repository.UpdateBoat(model);
             return RedirectToAction(nameof(BoatPage), new { id = model.BoatID });
+        }
+
+        [Authorize]
+        public IActionResult DeleteBoat(int id)
+        {
+            repository.DeleteBoat(id);
+            return RedirectToAction(nameof(AccountController.UserPage), "Account", new { title = "test" });
         }
     }
 }

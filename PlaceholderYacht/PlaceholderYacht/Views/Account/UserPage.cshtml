@@ -25,23 +25,64 @@
     </table>
 
     <br />
-    <table id="tablee">
-        <tr>
-            <th>BoatName</th>
-            <th>ModelName</th>
-            <th>Manufacturer</th>
-        </tr>
-        <form asp-action="UpdateBoats" asp-controller="Account">
-            @foreach (var boat in Model.BoatItem)
-            {
+    <h2>Boat list</h2>
+    @if (Model.BoatItem.Length < 1)
+     {
+        <p>You have no boats saved. <a asp-controller="Home" asp-action="BoatPage">Click here to add a boat.</a></p>
+     }
+    else
+    {
+        <table>
+            <tr>
+                <th>BoatName</th>
+                <th>ModelName</th>
+                <th>Manufacturer</th>
+                <th>Owner</th>
+            </tr>
+            <form asp-action="UpdateBoats" asp-controller="Account">
+                @foreach (var boat in Model.BoatItem)
+                {
+                    <tr>
+                        <td>@boat.BoatName</td>
+                        <td>@boat.ModelName</td>
+                        <td>@boat.Manufacturer</td>
+                        <td>@boat.Owner</td>
+                        <td><a asp-controller="Home" asp-action="BoatPage" asp-route-id="@boat.BoatID"><input type="button" value="edit" /> </a> </td>
+                        <td><a asp-controller="Home" asp-action="DeleteBoat" asp-route-id="@boat.BoatID"><input type="button" value="Delete" /></a></td>
+                    </tr>
+                }
+            </form>
+        </table>
+
+    }
+
+    <br />
+    @if (User.IsInRole("Admin"))
+    {
+        <h2>User list</h2>
+        <table>
+            <tr>
+                <th>Username</th>
+                <th>E-mail</th>
+                <th>Admin</th>
+            </tr>
+            @foreach (var user in Model.UserItem)
+                {
                 <tr>
-                    <td>@boat.BoatName</td>
-                    <td>@boat.ModelName</td>
-                    <td>@boat.Manufacturer</td>
-                    <td><a asp-controller="Home" asp-action="BoatPage" asp-route-id="@boat.BoatID"><input type="button" value="Edit" /></a> </td>
+                    <td>@user.UserName</td>
+                    <td>@user.Email</td>
+                    <td>@user.Admin</td>
+                    @if (@user.Admin)
+                    {
+                        <td><a asp-controller="Account" asp-action="RemoveAdminRole" asp-route-id="@user.UserID"><input type="button" value="Remove admin role" /></a> </td>
+                    }
+                    else
+                    {
+                        <td><a asp-controller="Account" asp-action="MakeAdmin" asp-route-id="@user.UserID"><input type="button" value="Make Admin" /></a> </td>
+                    }
                     <td><input type="button" value="Delete" /></td>
                 </tr>
             }
-        </form>
-    </table>
+        </table>
+    }
 </div>

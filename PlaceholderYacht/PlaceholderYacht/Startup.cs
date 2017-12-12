@@ -29,12 +29,12 @@ namespace PlaceholderYacht
             string connstring = conf.GetConnectionString("connstring");
             services.AddMvc();
             services.AddDbContext<WindCatchersContext>(o =>
-            o.UseSqlServer(connstring));
+                o.UseSqlServer(connstring));
             services.AddDbContext<IdentityDbContext>(o =>
-            o.UseSqlServer(connstring));
+                o.UseSqlServer(connstring));
             services.AddIdentity<IdentityUser, IdentityRole>()
-            .AddEntityFrameworkStores<IdentityDbContext>()
-            .AddDefaultTokenProviders();
+                .AddEntityFrameworkStores<IdentityDbContext>()
+                .AddDefaultTokenProviders();
 
             services.AddTransient<IBoatRepository, BoatDbRepository>();
             services.AddSession();
