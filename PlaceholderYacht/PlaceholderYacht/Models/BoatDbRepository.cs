@@ -232,7 +232,7 @@ namespace PlaceholderYacht.Models
             // h = hav(L/R(φ)) where hav is the haversine formula => d = 2rsin^-1(√h)
             double h = Math.Pow(Math.Sin(Δφ / 2), 2) + Math.Cos(φ1) * Math.Cos(φ2) * Math.Pow(Math.Sin(Δλ / 2), 2);
 
-            if (m == "haversine") L = 2 * Rφ * Math.Sqrt(h);
+            if (m == "haversine") L = Math.Sqrt(h) > 1 ? 2 * Rφ * Math.Asin(Math.Sqrt(1)) : 2 * Rφ * Math.Asin(Math.Sqrt(h));
             else if (m == "tangential") { double c = 2 * Math.Atan2(Math.Sqrt(h), Math.Sqrt(1 - h)); L = Rφ * c; }
             //else Console.WriteLine("[Error] Wrong method requested");
 
@@ -303,7 +303,7 @@ namespace PlaceholderYacht.Models
             double x0, x, x1, y0, y, y1, penalty;
             double θ = 0;
             double θSMHI = smhi.timeSeries[0].parameters[3].values[0];
-            double TwsAPI = smhi.timeSeries[0].parameters[4].values[0];
+            double TwsAPI = 2.9; /*smhi.timeSeries[0].parameters[4].values[0];*/
                 
             double θrelative = Math.Abs(θSMHI - θ); //Difference in degrees between winddirection and bearing 
 
@@ -323,7 +323,7 @@ namespace PlaceholderYacht.Models
             // för att få async i .core än så länge
             Task.Run(async () =>
             {
-                boat = await GetTwsByBoatId(1);
+                boat = await GetTwsByBoatId(2);
             }).GetAwaiter().GetResult();
 
             TWS = boat.Vpp
