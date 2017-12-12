@@ -62,7 +62,7 @@ namespace PlaceholderYacht.Controllers
             {
                 BoatPageVM boat = repository.GetBoatPageVM(id);
                 if (boat.VppList.Count() < 1)
-                    
+
                     boat = repository.AddEmptyVPP(boat);
 
 
@@ -99,6 +99,19 @@ namespace PlaceholderYacht.Controllers
                 ViewBag.SaveBtnName = "Update Boat";
                 return View(nameof(BoatPage), model);
             }
+            //Fangar en bugg vi ännu inte lyckats återskapa, där modellen innehåller en rad med 0-värden.
+            var zeroValuesToRemove = model.VppList
+                .Where(v => v.TWS == 0);
+            if (zeroValuesToRemove.Count() > 0)
+            {
+                var vppListAsList = model.VppList.ToList();
+                foreach (var vpp in zeroValuesToRemove)
+                {
+                    vppListAsList.Remove(vpp);
+                }
+                model.VppList = vppListAsList.ToArray();
+            }
+
             repository.UpdateBoat(model);
             return RedirectToAction(nameof(BoatPage), new { id = model.BoatID });
         }
