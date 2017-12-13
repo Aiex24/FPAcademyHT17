@@ -12,7 +12,7 @@ var startEndMarkers = []; //Data för anrop till backend kan med fördel hämtas
 var lastLine;
 var time = 0;
 var hr = (new Date()).getHours();
-var isDayTime = hr > 8 && hr < 10;
+var isDayTime = hr > 8 && hr < 18;
 
 
 function CenterControl(controlDiv, map) {
@@ -300,8 +300,8 @@ function initiateMap() {
         map.mapTypes.set('Dark map', darkMapType);
         map.setMapTypeId('Dark map');
     }
-    else
-        map.setMapTypeId('satellite');
+    //else
+    //    map.setMapTypeId('satellite');
 
     // skapa ny inforuta
     infoWindow = new google.maps.InfoWindow;
@@ -488,6 +488,11 @@ function drawArrow(latOrigin, longOrigin, windDegree, mapShareForRadius, windSpe
 // Drawing lines 
 function drawLine(latOrg, lngOrg, latEnd, lngEnd) {
 
+    let lineColor;
+    if (isDayTime)
+        lineColor = 'black'
+    else
+        lineColor = 'white'
 
     let startLatLng = { lat: latOrg, lng: lngOrg };
     let endLatLng = { lat: latEnd, lng: lngEnd };
@@ -496,8 +501,8 @@ function drawLine(latOrg, lngOrg, latEnd, lngEnd) {
     let lineSymbol = {
         path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
         strokeOpacity: 1,
-        strokeColor: 'green',
-        scale: 1
+        strokeColor: lineColor,
+        scale: 2
     };
 
     let startSymbol = {
@@ -528,7 +533,8 @@ function drawLine(latOrg, lngOrg, latEnd, lngEnd) {
     }
     lastLine = line;
     let startMarker = new google.maps.Marker({
-        icon: startSymbol,
+        draggable: false,
+        label: 'S',
         position: startLatLng,
         map: map,
         title: 'Starting point'
@@ -545,7 +551,8 @@ function drawLine(latOrg, lngOrg, latEnd, lngEnd) {
         endMarker = new google.maps.Marker({
             position: endLatLng,
             map: map,
-            icon: endSymbol,
+            draggable: false,
+            label: 'X',
             title: 'Destination'
         });
         startEndMarkers.push(endMarker);
