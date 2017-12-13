@@ -4,18 +4,23 @@
 }
 <img style="width:100% " src="~/Images/Login.jpg" />
 <div class="AddBoatDiv">
-    <h1>Login</h1>
-    <form asp-action="Login" asp-controller="Account">
-        <label asp-for="UserName"></label>
-        <input asp-for="UserName" />
-        <span asp-validation-for="UserName"></span>
-        <br />
+    <div class="CenterContent">
+        <h1>Login</h1>
+        <form asp-action="Login" asp-controller="Account">
+            <label asp-for="UserName"></label>
+            <br />
+            <input asp-for="UserName" />
+            <span asp-validation-for="UserName"></span>
+            <br />
 
-        <label asp-for="Password"></label>
-        <input asp-for="Password" />
-        <span asp-validation-for="Password"></span>
-        <br />
+            <label asp-for="Password"></label>
+            <br />
+            <input asp-for="Password" />
+            <span asp-validation-for="Password"></span>
+            <br />
 
-        <input type="submit" value="Login" />
-    </form>
+            <input type="submit" value="Login" />
+        </form>
+    </div>
+
 </div>
