@@ -299,8 +299,9 @@ function initiateMap() {
         //Associate the styled map with the MapTypeId and set it to display.
         map.mapTypes.set('Dark map', darkMapType);
         map.setMapTypeId('Dark map');
-
     }
+    else
+        map.setMapTypeId('satellite');
 
     // skapa ny inforuta
     infoWindow = new google.maps.InfoWindow;
@@ -494,10 +495,21 @@ function drawLine(latOrg, lngOrg, latEnd, lngEnd) {
     // 
     let lineSymbol = {
         path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-        strokeOpacity: 1,
-        scale: 2
+        strokeOpacity: 1 ,     
+        scale: 1
     };
 
+    let startSymbol = {
+        path: google.maps.SymbolPath.CIRCLE,
+        strokeColor: 'red',
+        scale: 6
+    };
+
+    let endSymbol = {
+        path: google.maps.SymbolPath.CIRCLE,
+        strokeColor: 'red',
+        scale: 6
+    };
 
     let line = new google.maps.Polyline({
         path: [{ lat: latOrg, lng: lngOrg }, { lat: latEnd, lng: lngEnd }],
@@ -515,6 +527,7 @@ function drawLine(latOrg, lngOrg, latEnd, lngEnd) {
     }
     lastLine = line;
     let startMarker = new google.maps.Marker({
+        icon: startSymbol,
         position: startLatLng,
         map: map,
         title: 'Starting point'
@@ -531,6 +544,7 @@ function drawLine(latOrg, lngOrg, latEnd, lngEnd) {
         endMarker = new google.maps.Marker({
             position: endLatLng,
             map: map,
+            icon: endSymbol,
             title: 'Destination'
         });
         startEndMarkers.push(endMarker);
@@ -554,7 +568,7 @@ function calculateDistanceAndTime() {
         endLongitude: startEndMarkers[1].getPosition().lng(),
         boatId: 2
     });
-    
+
 
     $.ajax({
         url: "/Home/CalculateRoute",
@@ -737,9 +751,6 @@ function deleteMarkersStartEnd() {
     clearMarkersStartEnd();
     startEndMarkers = [];
 }
-
-
-
 
 // Sets the map on all markers in the array.
 function setMapOnAllArrows(map) {
