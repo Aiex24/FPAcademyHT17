@@ -552,8 +552,7 @@ function calculateDistanceAndTime() {
         endLongitude: startEndMarkers[1].getPosition().lng(),
         boatId: 2
     });
-
-    console.log(jsonObject)
+    
 
     $.ajax({
         url: "/Home/CalculateRoute",
