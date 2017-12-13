@@ -577,12 +577,19 @@ function calculateDistanceAndTime() {
         data: { 'calculateRouteJson': jsonObject },
         success: function (result) {
             console.log(result)
-            let resultDistance = Math.round(result.tripDistanceKm * 10) / 10;
             //TODO: Fixa naughtymiles
+            let resultDistance = Math.round(result.tripDistanceKm * 10) / 10;
+            //Ser till att man kan skriva ut månadsnamn istället för siffror.
+            let monthShortNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+            ];
+
+            let departureDateTime = new Date(result.departureTime);
+            let arrivalDateTime = new Date(result.arrivalTime);
             $("#distanceInfo").text(`${resultDistance} km`);
-            $("#durationInfo").text(`${result.tripDurationDays}:${result.tripDurationHours}:${result.tripDurationMinutes}`);
-            $("#departureInfo").text(result.departureTime);
-            $("#etaInfo").text(result.arrivalTime);
+            $("#durationInfo").text(`${result.tripDurationDays} days ${result.tripDurationHours} h ${result.tripDurationMinutes} min`);
+            $("#departureInfo").text(`${departureDateTime.getDate()} ${monthShortNames[departureDateTime.getMonth()]} ${departureDateTime.getHours()}:${departureDateTime.getMinutes()}`);
+            $("#etaInfo").text(`${arrivalDateTime.getDate()} ${monthShortNames[arrivalDateTime.getMonth()]} ${arrivalDateTime.getHours()}:${arrivalDateTime.getMinutes()}`);
             //id="distanceInfo"
             //id="durationInfo"
             //id="departureInfo"
@@ -613,7 +620,7 @@ function calculateDistanceAndTime() {
         }
     })
 }
-//Snott det mesta från http://en.marnoto.com/2014/04/converter-coordenadas-gps.html
+//Snott (lånat) det mesta från http://en.marnoto.com/2014/04/converter-coordenadas-gps.html
 function convertDegreesToDMS(lat, lng) {
     let calcuLat = lat;
     let calcuLng = lng;

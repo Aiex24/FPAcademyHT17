@@ -51,6 +51,11 @@ namespace PlaceholderYacht.Controllers
             return View();
         }
 
+        public IActionResult Presentation()
+        {
+            return View();
+        }
+
         [Authorize]
         [HttpGet]
         public IActionResult BoatPage(int id)
