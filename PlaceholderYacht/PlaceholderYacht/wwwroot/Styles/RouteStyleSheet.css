@@ -9,13 +9,13 @@ body {
 .Map-container {
     height: 100%;
     background-color: yellow;
-    margin:0;
+    margin: 0;
     position: center;
     position: fixed;
     width: 100%;
     z-index: 2;
-
 }
+
 .Map {
     height: 100%;
     width: 100%;
@@ -31,7 +31,8 @@ body {
     background-color: rgba(0, 0, 0, 0.5);
     color: white;
     left: 70%;
-    font-size:24px;
+    font-size: 18px;
+    width: 300px;
 }
 
 #divdatatable {
@@ -40,9 +41,26 @@ body {
     z-index: 10;
     background-color: #1daee1;
     color: #fff;
-    width: 360px;
+    width: 300px;
 }
 
 /*#divdatatable table{
    
 }*/
+#routeDiv {
+    text-align: left;
+    padding: 4%;
+}
+
+.startDestHead {
+    padding-left: 3%;
+}
+
+.startDestHeadLine {
+    padding-left:10px; 
+    border-bottom: 2px solid #1daee1;
+}
+.bottomLine {
+    border-bottom: 2px solid #1daee1;
+}
+

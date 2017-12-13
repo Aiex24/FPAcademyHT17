@@ -481,7 +481,7 @@ function drawArrow(latOrigin, longOrigin, windDegree, mapShareForRadius, windSpe
         map: map
     });
     arrows.push(line); // lägg till pilar i arrayen
-    animateCircle(line);
+    animateCircle(line, 0.5);
 
 }
 
@@ -497,12 +497,13 @@ function drawLine(latOrg, lngOrg, latEnd, lngEnd) {
     let startLatLng = { lat: latOrg, lng: lngOrg };
     let endLatLng = { lat: latEnd, lng: lngEnd };
 
-    // 
+    
+
     let lineSymbol = {
-        path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+        path: google.maps.SymbolPath.CIRCLE,
         strokeOpacity: 1,
         strokeColor: lineColor,
-        scale: 2
+        scale: 1.5
     };
 
     let startSymbol = {
@@ -534,7 +535,7 @@ function drawLine(latOrg, lngOrg, latEnd, lngEnd) {
     lastLine = line;
     let startMarker = new google.maps.Marker({
         draggable: false,
-        label: 'S',
+        label: { text: 'S', color: 'white' },
         position: startLatLng,
         map: map,
         title: 'Starting point'
@@ -552,11 +553,15 @@ function drawLine(latOrg, lngOrg, latEnd, lngEnd) {
             position: endLatLng,
             map: map,
             draggable: false,
-            label: 'X',
+            label: {
+                text: 'X',
+                color: 'white',
+            },
             title: 'Destination'
         });
         startEndMarkers.push(endMarker);
         calculateDistanceAndTime();
+        animateCircle(line, 1.5);
     }
     //let startLatLong = startEndMarkers[0].getPosition();
     //TODO: Gör om från decimal till DMS
@@ -654,13 +659,13 @@ function getDms(val) {
 }
 
 // function for movig symbols along lines
-function animateCircle(line) {
+function animateCircle(line, speed) {
     let count = 0;
     window.setInterval(function () {
         count = (count + 1) % 100;
 
         let icons = line.get('icons');
-        icons[0].offset = (count / 0.5) + '%';
+        icons[0].offset = (count / speed) + '%';
         line.set('icons', icons);
     }, 20);
 }
