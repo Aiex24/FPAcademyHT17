@@ -1,0 +1,45 @@
+﻿@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+.Nav-Index {
+    background-color: black;
+}
+
+body {
+    background-color: white;
+    margin: 0;
+    top: 0;
+    padding: 0;
+}
+
+.contactimg {
+    width: 100%;
+}
+body {
+    background-color: white;
+}
+
+.imageContainer {
+    width: 100%;
+    background-color: blue;
+    left: 0;
+    margin: 0;
+    height: 300px;
+}
+
+.aboutDiv {
+    margin-left: 10%;
+    width: 80%;
+}
+
+.devs {
+    margin: 0;
+    list-style-type: none;
+    float: left;
+    font-family: 'Open Sans', sans-serif;
+    font-size:14px;
+}
+
+    .devs ul {
+        list-style-type: none;
+        float: left;
+        padding:10px;
+    }

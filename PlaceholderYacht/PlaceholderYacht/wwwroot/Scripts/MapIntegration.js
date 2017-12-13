@@ -612,7 +612,7 @@ function calculateDistanceAndTime() {
         }
     })
 }
-
+//Snott det mesta från http://en.marnoto.com/2014/04/converter-coordenadas-gps.html
 function convertDegreesToDMS(lat, lng) {
     let calcuLat = lat;
     let calcuLng = lng;
