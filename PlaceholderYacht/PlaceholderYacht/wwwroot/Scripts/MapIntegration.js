@@ -538,10 +538,12 @@ function drawLine(latOrg, lngOrg, latEnd, lngEnd) {
     }
     //let startLatLong = startEndMarkers[0].getPosition();
     //TODO: Gör om från decimal till DMS
-    let dmsStrings = convertDegreesToDMS(startLatLng.lat, startLatLng.lng)
-    $("#latitudeInfo1").text(dmsStrings[0]);
-    $("#longitudeInfo1").text(dmsStrings[1]);
-
+    let dmsStringsStart = convertDegreesToDMS(startLatLng.lat, startLatLng.lng)
+    $("#latitudeInfo1").text(dmsStringsStart[0]);
+    $("#longitudeInfo1").text(dmsStringsStart[1]);
+    let dmsStringsEnd = convertDegreesToDMS(endLatLng.lat, endLatLng.lng)
+    $("#latitudeInfo2").text(dmsStringsEnd[0]);
+    $("#longitudeInfo2").text(dmsStringsEnd[1]);
 }
 
 function calculateDistanceAndTime() {
@@ -560,6 +562,39 @@ function calculateDistanceAndTime() {
         data: { 'calculateRouteJson': jsonObject },
         success: function (result) {
             console.log(result)
+            let resultDistance = Math.round(result.tripDistanceKm * 10) / 10;
+            //TODO: Fixa naughtymiles
+            $("#distanceInfo").text(`${resultDistance} km`);
+            $("#durationInfo").text(`${result.tripDurationDays}:${result.tripDurationHours}:${result.tripDurationMinutes}`);
+            $("#departureInfo").text(result.departureTime);
+            $("#etaInfo").text(result.arrivalTime);
+            //id="distanceInfo"
+            //id="durationInfo"
+            //id="departureInfo"
+            //id="etaInfo"
+
+            //arrivalTime
+            //:
+            //"2017-12-13T13:47:16.4458125+01:00"
+            //departureTime
+            //:
+            //"2017-12-13T09:22:54.4458125+01:00"
+            //initialBearing
+            //:
+            //49.21298744349042
+            //tripDistanceKm
+            //:
+            //58.67293600336079
+            //tripDurationDays
+            //:
+            //0
+            //tripDurationHours
+            //:
+            //4
+            //tripDurationMinutes
+            //:
+            //24
+
         }
     })
 }

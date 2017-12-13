@@ -6,9 +6,13 @@
     <div id="divdata">
         <div id="divdatatable">Route Data</div>
         <table>
-            <tr><th>Latitude</th><td id="latitudeInfo1">59° 10' 49.548'' N</td>
+            <tr><th>Start Latitude</th><td id="latitudeInfo1"></td>
             <tr>
-            <tr><th>Longitude</th><td id="longitudeInfo1">18° 59' 3.75'' E</td>
+            <tr><th>Start Longitude</th><td id="longitudeInfo1"></td>
+            <tr>
+            <tr><th>Destination Latitude</th><td id="latitudeInfo2"></td>
+            <tr>
+            <tr><th>Destination Longitude</th><td id="longitudeInfo2"></td>
             <tr>
             <tr><th>Map API</th><td>Google Maps</td>
             <tr>
@@ -16,9 +20,13 @@
             <tr>
             <tr><th>VPP</th><td>Shipman 63</td>
             <tr>
-            <tr><th>Distance:</th><td></td>
+            <tr><th>Distance:</th><td id="distanceInfo"></td>
             <tr>
-            <tr><th>Time elapsed:</th><td></td>
+            <tr><th>Trip duration:</th><td id="durationInfo"></td>
+            <tr>
+            <tr><th>Departure:</th><td id="departureInfo"></td>
+            <tr>
+            <tr><th>ETA:</th><td id="etaInfo"></td>
             <tr>
         </table>
     </div>
@@ -33,8 +41,8 @@
     </script>
 
     @*Deploy nyckel - använd vid uppsmackning på webb*@
-@*<script async defer
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA9rdRh5jniAD0TYjDIRhSqQP5ZLf6p5P4&callback=initiateMap">
-    </script>*@
+    @*<script async defer
+                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA9rdRh5jniAD0TYjDIRhSqQP5ZLf6p5P4&callback=initiateMap">
+        </script>*@
 
 }
