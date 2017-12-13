@@ -61,13 +61,46 @@
             </tr>
         </table>
     </form>
+
+    <br />
+    <canvas id="vppChart"></canvas>
+
 </div>
+
+
 <div class="image-background">
     <img src="~/Images/Nauticalchart.jpg" style="width:100%" />
 </div>
 @section scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
     <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.14.0/jquery.validate.min.js"></script>
     <script src="http://ajax.aspnetcdn.com/ajax/mvc/5.2.3/jquery.validate.unobtrusive.min.js"></script>
     @*TODO: Lägg till unobtrusive-validering för de genererade elementen.*@
     <script src="~/Scripts/AddBoatJavaScript.js"></script>
+    
+    
+    <script>
+
+        var ctx = document.getElementById('vppChart').getContext('2d');
+        new Chart(ctx, {
+                data: {
+                    datasets: [{
+                        data: [10, 20, 30, 40]
+                    }],
+                    labels: [
+                        'Red',
+                        'Yellow',
+                        'Blue'
+                    ],
+
+                    // These labels appear in the legend and in the tooltips when hovering different arcs
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(255, 99, 132)',
+                },
+            type: 'polarArea',
+            options: {}
+        });
+
+
+    </script>
 }

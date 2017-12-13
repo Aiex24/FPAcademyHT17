@@ -21,7 +21,7 @@ namespace PlaceholderYacht.Models
 
         public BoatPageVM GetBoatPageVM(int BoatID)
         {
-            Boat boat = context.Boat.Include(b => b.VppuserInput).FirstOrDefault(b => b.Id == BoatID);
+            Boat boat = context.Boat.Include(b => b.VppuserInput).Include(b => b.Vpp).FirstOrDefault(b => b.Id == BoatID);
 
             var baten = new BoatPageVM
             {
@@ -30,6 +30,13 @@ namespace PlaceholderYacht.Models
                 Modelname = boat.Modelname,
                 BoatID = boat.Id,
                 VppList = boat.VppuserInput.Select(v => new AngleTwsKnotVM
+                {
+                    Knot = v.Knot,
+                    TWS = v.Tws,
+                    WindDegree = v.WindDegree,
+                    ID = v.Id
+                }).ToArray(),
+                VppDBList = boat.Vpp.Select(v => new AngleTwsKnotDBVM
                 {
                     Knot = v.Knot,
                     TWS = v.Tws,
@@ -397,10 +404,10 @@ namespace PlaceholderYacht.Models
                 x = TWS[TWS.Length - 1];
                 x1 = TwsAPI;
 
-                var knotY0 = boat.VppuserInput
+                var knotY0 = boat.Vpp
                     .Where(t => t.Tws == x0 && t.WindDegree == θrelative)
                     .Select(t => t.Knot).SingleOrDefault();
-                var knotY1 = boat.VppuserInput
+                var knotY1 = boat.Vpp
                     .Where(t => t.Tws == x && t.WindDegree == θrelative)
                     .Select(t => t.Knot).SingleOrDefault();
 

@@ -59,9 +59,7 @@ namespace PlaceholderYacht.Controllers
             {
                 BoatPageVM boat = repository.GetBoatPageVM(id);
                 if (boat.VppList.Count() < 1)
-
                     boat = repository.AddEmptyVPP(boat);
-
 
                 ViewBag.ActionName = "UpdateBoat";
                 ViewBag.SaveBtnName = "Update Boat";
