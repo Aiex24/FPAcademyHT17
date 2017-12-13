@@ -128,8 +128,8 @@ namespace PlaceholderYacht.Controllers
                 {
                     if (boat.Owner != null)
                     {
-                        user = await userManager.FindByIdAsync(boat.Owner);
-                        boat.Owner = user.UserName;
+                        IdentityUser boatOwner = await userManager.FindByIdAsync(boat.Owner);
+                        boat.Owner = boatOwner.UserName;
                     }
                 }
 
