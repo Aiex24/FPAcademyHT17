@@ -91,7 +91,7 @@
     <p>Academy is a part of the consulting company Academic Work with a concept to fulfil the competence needs of the market, using a concept of accelerated learning. One of those programs teaches programming with the object-oriented language C# on the .NET Framework during a 12-week time span. The program has the goal that the participants will become IT-consultants [1]. The course ends with a 2 week final project, where the knowledge obtained during the course is applied.</p>
 
     <h2>2. Purpose</h2>
-    <p>The purpose of the final project is to link together the techniques and subjects that the participants have been in touch with, in an aspect of Personal Development. Furthermore the consultant is supposed to apply those techniques and skills obtained during the course together within a project [2].</p>
+    <p>The purpose of the final project is to link together the techniques and subjects that the participants have been in touch with, in an aspect of Personal Development. Furthermore the consultant is supposed to apply those techniques and skills obtained during the course together within a group project [2].</p>
     <h2>3. Goal</h2>
     <p>This final project of Academy accelerated learning in C# HT17 was created between the fourth and fifteenth of December 2017, during the last two weeks of the course. The goal with WindCatchaz is to create a project dedicated to presenting the speeds and routes of sailboats by retrieving weather data from an external source like SMHI [3] and calculate how long this trip will take based on defined values from a VPP, Velocity Prediction Program, compared to the relative direction of the sailboat.</p>
 
@@ -112,7 +112,7 @@
         <li>Let the user create their own VPP and edit those based on experience</li>
         <li>Draw the polar diagram</li>
         <li>Option to show the VPP in a cartesian diagram instead of a polar diagram</li>
-        <li>Let the user only decide a few values in the VPP and use interpolation to fill in the gaps</li>
+        <li>Let the user decide only a few values in the VPP and use interpolation to fill in the gaps</li>
         <li>Let the user decide what interpolation method to be used</li>
         <li>404 page</li>
         <li>Suggest a better route that is faster than a straight line from A to B with some optimizing algorithm</li>
@@ -124,7 +124,7 @@
     <h3>4.1 API</h3>
     <p><b>Google Maps</b></p>
     <p>Google Maps is a web mapping service provided by Google.</p>
-    <p>The program retrievs an interactive map from the API which lets the user to choose a starting point and a destination point and store the coordinates for those two points.</p>
+    <p>The program retrieves an interactive map from the API which lets the user choose a starting point and a destination point and store the coordinates for those two points.</p>
     <p><b>SMHI</b></p>
     <p>The database PMP is SMHIs (Swedish Meteorological and Hydrological Institute) weather forecast made by meteorologist for the closest 24 hours.</p>
     <p>This API is here used to retrieve wind speed and direction for a coordinate.</p>
@@ -163,17 +163,17 @@
         \\d = 2R\arcsin\Biggl(\sqrt{\sin^2\biggl(\frac{\phi_2-\phi_1}{2}\biggr)+\cos(\phi_2)\cos(\phi_2)\sin^2\biggl(\frac{\lambda_2-\lambda_1}{2}\biggr)}\Biggr)
         \end{align}
     </p>
-    <p>Since sin<sup>-1</sup> is only defined in the range -1 to 1 alternatively the <span style="color:darkturquoise">Math</span>.Atan2(y,x) can be used which take two doubles and returns an angle in the Cartesian plane formed by the x-axis and a vector starting from the origin (0,0), and terminating at the point (x,y)  </p>
+    <p>Since sin<sup>-1</sup> is only defined in the range -1 to 1, alternatively the <span style="color:darkturquoise">Math</span>.Atan2(y,x) can be used which take two doubles and returns an angle in the Cartesian plane formed by the x-axis and a vector starting from the origin (0,0), and terminating at the point (x,y)  </p>
 
     <p>Step 4: When the distance is calculated for the entire route, the coordinates for a point on the orthodromic can be calculated as a fraction of the total distance with help from the angular distance &delta; = d / R&straightphi;. </p>
 
-    <p>Step 5: Calculate the bearing. This can be done either by calculating the loxodrome which means the compass will show the same degree for the entire route</p>
+    <p>Step 5: Calculate the bearing. This could be done by calculating the loxodrome, which would mean the compass would show the same degree for the entire route</p>
     <figure>
         <img id="midpoint" src="~/Images/Loxodrome.png" alt="Mid way point" style="width:20%">
         <figcaption>Figure.3 - Loxodrome with the same angle for the entire route [4].</figcaption>
     </figure>
-    <p>The issue with using the loxodrome is that it does not choose the shortest orthodromic distance instead the program calculates the intital angle for the orthodromic that has the shortest distance towards the goal, and approximates the calculations using this same angle for the resolution choosen.</p>
-    <p>Instead the inital angle that represent the shortest orthodromic is used as the direction for the entire fraction. This angle (bearing) is used to compare what relative angle towards the wind the yacht has. This value is collected from an API e.g. SMHI. When the relative angle is known the velocity for the yacht is retrieved from the database with predefined Velocity Prediction Program diagrams by interpolation to find an approximated value that fit the actual windspeed. Now when the velocity and the length is known the time it took to travel this journey section can be calculated which gives T<sub>i</sub>. By repeating this as long as the sum of all fractions do not exceed the total length and then add a calculation for the remaining section to calculate T<sub>rest</sub>, the total amount of time to travel distance <i>d</i> is calculated with T = &Sigma;(T<sub>i</sub>)+T<sub>rest</sub></p>
+    <p>The issue with using the loxodrome is that it does not choose the shortest orthodromic distance. Instead, the program calculates the intital angle for the orthodromic that has the shortest distance towards the goal, and approximates the calculations using this same angle for the resolution choosen.</p>
+    <p>The inital angle that represents the shortest orthodromic is used as the direction for the entire fraction. This angle (bearing) is used to compare what relative angle towards the wind the yacht has. This value is collected from an API e.g. SMHI. When the relative angle is known the velocity for the yacht is retrieved from the database with predefined Velocity Prediction Program diagrams by interpolation to find an approximated value that fits the actual windspeed. Now when the velocity and the length is known the time it took to travel this journey section can be calculated which gives T<sub>i</sub>. By repeating this as long as the sum of all fractions do not exceed the total length and then add a calculation for the remaining section to calculate T<sub>rest</sub>, the total amount of time to travel distance <i>d</i> is calculated with T = &Sigma;(T<sub>i</sub>)+T<sub>rest</sub></p>
 
     <h2>5. Result</h2>
     <ul>
@@ -181,7 +181,7 @@
         <li>Let the user choose a starting point and a destination point (and a departure time) and store coordinates for latitude and longitude </li>
         <li>Calculate the distance</li>
         <li>Retrievs real data from SMHI</li>
-        <li>Animated overlay of the winddirections</li>
+        <li>Animated overlay of the wind directions</li>
         <li>Create account</li>
         <li>Login</li>
         <li>Validation</li>

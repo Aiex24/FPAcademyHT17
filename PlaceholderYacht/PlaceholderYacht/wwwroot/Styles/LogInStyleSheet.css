@@ -1,0 +1,47 @@
+﻿.LoginDiv {
+    position: fixed;
+    left: 27%;
+    width: 46%;
+    top: 150px;
+    max-height: 70%;
+    justify-content:center;
+    text-align: center;
+    /*overflow-y: scroll;*/
+    background-color: white;
+    color: white;
+    box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.5);
+    /*font-family: 'Open Sans', sans-serif;*/
+    background-color: rgba(0, 0, 0, 0.3);
+    font-family: arial, sans-serif;
+    font-size: 18px;
+}
+
+.loginDiv {
+    text-align: center;
+    width: 50%;
+    margin: 0 auto;
+    padding-bottom: 5px;
+}
+loginTable {
+    margin: 0 auto;
+    text-align: center;
+}
+
+
+input[type=submit], input[type=button] {
+    border: none;
+    color: white;
+    width: 120px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 8px;
+    padding: 5px;
+    background-color: black;
+    color: white;
+}
+
+    input[type=submit]:hover, input[type=button]:hover {
+    }
