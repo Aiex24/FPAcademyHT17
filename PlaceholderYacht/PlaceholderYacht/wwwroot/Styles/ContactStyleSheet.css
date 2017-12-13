@@ -33,11 +33,13 @@ body {
 .devs {
     margin: 0;
     list-style-type: none;
-    float:left;
+    float: left;
+    font-family: 'Open Sans', sans-serif;
+    font-size:14px;
 }
 
     .devs ul {
         list-style-type: none;
         float: left;
-
+        padding:10px;
     }
