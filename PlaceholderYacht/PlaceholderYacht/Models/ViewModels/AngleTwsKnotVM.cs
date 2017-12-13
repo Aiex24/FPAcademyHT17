@@ -12,6 +12,7 @@ namespace PlaceholderYacht.Models.ViewModels
     {
         public int ID { get; set; }
         [Required(ErrorMessage = "Please enter the wind degree")]
+        [Range(0, 180)]
         public int WindDegree { get; set; }
         [Required(ErrorMessage = "Please enter the true wind speed")]
         public int TWS { get; set; }

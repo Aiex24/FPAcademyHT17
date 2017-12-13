@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using PlaceholderYacht.Models.ViewModels;
 using PlaceholderYacht.Models;
-
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Newtonsoft.Json;
 
 namespace PlaceholderYacht.Controllers
 {
@@ -13,30 +15,17 @@ namespace PlaceholderYacht.Controllers
     {
         // obs håll koll på reposen, den ska vara interface
         IBoatRepository repository;
+        UserManager<IdentityUser> userManager;
 
-        public HomeController(IBoatRepository repository)
+        public HomeController(IBoatRepository repository, UserManager<IdentityUser> userManager)
         {
+            this.userManager = userManager;
             this.repository = repository;
         }
 
         // GET: /<controller>/
         public IActionResult Index()
         {
-
-            
-            string unit = "km";
-            string method = "haversine";
-            //Start coordinate 
-            double latitude1 = 59.39496;
-            double longitude1 = 19.33388;
-            //Goal coordinate
-            double latitude2 = 57.67185;
-            double longitude2 = 18.20489;
-            int minAngle =30;
-
-             var tjena = repository.CalcDistance(latitude1, longitude1, latitude2, longitude2, unit, method, minAngle);
-
-
             return View();
         }
         public IActionResult Route()
@@ -47,6 +36,12 @@ namespace PlaceholderYacht.Controllers
         {
             return View();
         }
+        public IActionResult CalculateRoute(string calculateRouteJson)
+        {
+            RouteCalculationJson jsonObject = JsonConvert.DeserializeObject<RouteCalculationJson>(calculateRouteJson);
+            var result = repository.RouteCalculation(jsonObject);
+            return Json(result);
+        }
         public IActionResult About()
         {
             return View();
@@ -55,6 +50,8 @@ namespace PlaceholderYacht.Controllers
         {
             return View();
         }
+
+        [Authorize]
         [HttpGet]
         public IActionResult BoatPage(int id)
         {
@@ -77,6 +74,8 @@ namespace PlaceholderYacht.Controllers
                 return View();
             }
         }
+
+        [Authorize]
         [HttpPost]
         public IActionResult AddBoatToDatabase(BoatPageVM model)
         {
@@ -86,10 +85,15 @@ namespace PlaceholderYacht.Controllers
                 ViewBag.ActionName = "AddBoatToDatabase";
                 return View(nameof(BoatPage), model);
             }
+
+            model.Uid = userManager.GetUserId(HttpContext.User);
+
             repository.InterpolateVpp(model);
             repository.SaveBoat(model);
             return RedirectToAction(nameof(Route));
         }
+
+        [Authorize]
         [HttpPost]
         public IActionResult UpdateBoat(BoatPageVM model)
         {
@@ -114,6 +118,13 @@ namespace PlaceholderYacht.Controllers
 
             repository.UpdateBoat(model);
             return RedirectToAction(nameof(BoatPage), new { id = model.BoatID });
+        }
+
+        [Authorize]
+        public IActionResult DeleteBoat(int id)
+        {
+            repository.DeleteBoat(id);
+            return RedirectToAction(nameof(AccountController.UserPage), "Account", new { title = "test" });
         }
     }
 }

@@ -18,5 +18,6 @@ namespace PlaceholderYacht.Models.ViewModels
         public string NewPassword { get; set; }
         public string ConfirmPassword { get; set; }
         public AccountBoatItemVM[] BoatItem { get; set; }
+        public AccountUserItemVM[] UserItem { get; set; }
     }
 }

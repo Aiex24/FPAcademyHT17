@@ -5,61 +5,84 @@
 
 <div class="AddBoatDiv">
     <h1>@Model.Title</h1>
-    <form asp-action="UpdateUser" asp-controller="Account">
-        <label asp-for="UserName"></label>
-        <input asp-for="UserName" />
-        <span asp-validation-for="UserName"></span>
-        <br />
-
-        <label asp-for="Email"></label>
-        <input asp-for="Email" />
-        <br />
-
-        <input type="submit" value="Update User" />
-    </form>
+    <table>
+        <form asp-action="UpdateUser" asp-controller="Account">
+            <tr>
+                <td><label asp-for="UserName"></label></td>
+                <td><input asp-for="UserName" /></td>
+                <td><span asp-validation-for="UserName"></span></td>
+            </tr>
+            <tr>
+                <td><label asp-for="Email"></label></td>
+                <td><input asp-for="Email" /></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><input type="submit" value="Update User" /></td>
+            </tr>
+        </form>
+    </table>
 
     <br />
-
-    <table id="tablee">
-        <tr>
-            <th>BoatName</th>
-            <th>ModelName</th>
-            <th>Manufacturer</th>
-        </tr>
-        <tbody id="boatTableUpdate">
+    <h2>Boat list</h2>
+    @if (Model.BoatItem.Length < 1)
+     {
+        <p>You have no boats saved. <a asp-controller="Home" asp-action="BoatPage">Click here to add a boat.</a></p>
+     }
+    else
+    {
+        <table>
+            <tr>
+                <th>BoatName</th>
+                <th>ModelName</th>
+                <th>Manufacturer</th>
+                <th>Owner</th>
+            </tr>
             <form asp-action="UpdateBoats" asp-controller="Account">
                 @foreach (var boat in Model.BoatItem)
                 {
                     <tr>
-                        <td><input asp-for="@boat.BoatName" boatNameCell="@boat.BoatID" disabled></td>
-                        <td><input asp-for="@boat.ModelName" modelNameCell="@boat.BoatID" disabled></td>
-                        <td><input asp-for="@boat.Manufacturer" manufacturerCell="@boat.BoatID" disabled></td>
-                        <td btnUpdateCell="@boat.BoatID"><input type="button" value="Change" class="btnChangeBoat" btn-changeID="@boat.BoatID" /></td>
-                        <td><input type="button" value="Delete" /></td>
+                        <td>@boat.BoatName</td>
+                        <td>@boat.ModelName</td>
+                        <td>@boat.Manufacturer</td>
+                        <td>@boat.Owner</td>
+                        <td><a asp-controller="Home" asp-action="BoatPage" asp-route-id="@boat.BoatID"><input type="button" value="edit" /> </a> </td>
+                        <td><a asp-controller="Home" asp-action="DeleteBoat" asp-route-id="@boat.BoatID"><input type="button" value="Delete" /></a></td>
                     </tr>
                 }
-                <tr>
-                    <td><input type="button" value="Cancel" id="btnCancel" /></td>
-                </tr>
             </form>
-        </tbody>
-    </table>
+        </table>
+
+    }
+
+    <br />
+    @if (User.IsInRole("Admin"))
+    {
+        <h2>User list</h2>
+        <table>
+            <tr>
+                <th>Username</th>
+                <th>E-mail</th>
+                <th>Admin</th>
+            </tr>
+            @foreach (var user in Model.UserItem)
+                {
+                <tr>
+                    <td>@user.UserName</td>
+                    <td>@user.Email</td>
+                    <td>@user.Admin</td>
+                    @if (@user.Admin)
+                    {
+                        <td><a asp-controller="Account" asp-action="RemoveAdminRole" asp-route-id="@user.UserID"><input type="button" value="Remove admin role" /></a> </td>
+                    }
+                    else
+                    {
+                        <td><a asp-controller="Account" asp-action="MakeAdmin" asp-route-id="@user.UserID"><input type="button" value="Make Admin" /></a> </td>
+                    }
+                    <td><input type="button" value="Delete" /></td>
+                </tr>
+            }
+        </table>
+    }
 </div>
-
-<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
-<script>
-    $(document).ready(function () {
-
-        $(".btnChangeBoat").click(function () {
-            let tdBoatname = "*[boatNameCell =" + $(this).attr("btn-changeID") + "]";
-            let tdModelname = "*[modelNameCell =" + $(this).attr("btn-changeID") + "]";
-            let tdManufacturer = "*[manufacturerCell =" + $(this).attr("btn-changeID") + "]";
-            let tdBtnUpdate = "*[btnUpdateCell =" + $(this).attr("btn-changeID") + "]";
-
-            $(tdBoatname).prop('disabled', false);
-            $(tdModelname).prop('disabled', false);
-            $(tdManufacturer).prop('disabled', false);
-            $(tdBtnUpdate).html('<input type="submit" value="Update" />');
-        });
-    });
-</script>
