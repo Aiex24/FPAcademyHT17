@@ -39,5 +39,5 @@ body {
     .devs ul {
         list-style-type: none;
         float: left;
-
+        padding:10px;
     }
