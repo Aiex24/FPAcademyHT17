@@ -397,10 +397,10 @@ namespace PlaceholderYacht.Models
                 x = TWS[TWS.Length - 1];
                 x1 = TwsAPI;
 
-                var knotY0 = boat.VppuserInput
+                var knotY0 = boat.Vpp
                     .Where(t => t.Tws == x0 && t.WindDegree == θrelative)
                     .Select(t => t.Knot).SingleOrDefault();
-                var knotY1 = boat.VppuserInput
+                var knotY1 = boat.Vpp
                     .Where(t => t.Tws == x && t.WindDegree == θrelative)
                     .Select(t => t.Knot).SingleOrDefault();
 
