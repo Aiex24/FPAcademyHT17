@@ -595,40 +595,18 @@ function calculateDistanceAndTime() {
             let monthShortNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
                 "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
             ];
-
+            //Parsar json-infon till datetimes.
             let departureDateTime = new Date(result.departureTime);
             let arrivalDateTime = new Date(result.arrivalTime);
+            //Skapar snygga strängar som vi kan stoppa in i DOMen slicen används för att lägga till en nolla om funktionen bara returnerar en siffra.
+            let departureString = `${departureDateTime.getDate()} ${monthShortNames[departureDateTime.getMonth()]} ${("0" + departureDateTime.getHours()).slice(-2)}:${("0" + departureDateTime.getMinutes()).slice(-2)}`
+            let arrivalString = `${arrivalDateTime.getDate()} ${monthShortNames[arrivalDateTime.getMonth()]} ${("0" + arrivalDateTime.getHours()).slice(-2)}:${("0" + arrivalDateTime.getMinutes()).slice(-2)}`
+            let durationString = `${result.tripDurationDays} days ${result.tripDurationHours} h ${result.tripDurationMinutes} min`
+
             $("#distanceInfo").text(`${resultDistance} km`);
-            $("#durationInfo").text(`${result.tripDurationDays} days ${result.tripDurationHours} h ${result.tripDurationMinutes} min`);
-            $("#departureInfo").text(`${departureDateTime.getDate()} ${monthShortNames[departureDateTime.getMonth()]} ${departureDateTime.getHours()}:${departureDateTime.getMinutes()}`);
-            $("#etaInfo").text(`${arrivalDateTime.getDate()} ${monthShortNames[arrivalDateTime.getMonth()]} ${arrivalDateTime.getHours()}:${arrivalDateTime.getMinutes()}`);
-            //id="distanceInfo"
-            //id="durationInfo"
-            //id="departureInfo"
-            //id="etaInfo"
-
-            //arrivalTime
-            //:
-            //"2017-12-13T13:47:16.4458125+01:00"
-            //departureTime
-            //:
-            //"2017-12-13T09:22:54.4458125+01:00"
-            //initialBearing
-            //:
-            //49.21298744349042
-            //tripDistanceKm
-            //:
-            //58.67293600336079
-            //tripDurationDays
-            //:
-            //0
-            //tripDurationHours
-            //:
-            //4
-            //tripDurationMinutes
-            //:
-            //24
-
+            $("#durationInfo").text(durationString);
+            $("#departureInfo").text(departureString);
+            $("#etaInfo").text(arrivalString);
         }
     })
 }
