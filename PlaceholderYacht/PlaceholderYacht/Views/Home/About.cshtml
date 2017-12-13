@@ -4,20 +4,98 @@
     <img class="aboutimg" src="~/Images/About.png" />
 
 <div id="infoTextAbout">
-    <h2>1. Background</h2>
-    <p>Academy is a part of the consulting company Academic Work with a concept to fulfil the competence needs of the market, using a concept of accelerated learning. One of those programs teaches programming with the object-oriented language C# on the .NET Framework during a 12-week time span, with the goal that the participants will become IT-consultants [1]. The course bla bla bla and ends with a 2 week final project. And blab la bla this is the result something something</p>
-
-    <h2>2. Purpose</h2>
-    <p>The purpose of the final project is to link together the techniques and subjects that the participants have been in touch with, in an aspect of Personal Development. Furthermore … apply those techniques and skills obtained during the course together within a project [2].</p>
-    <h2>3. Goal</h2>
-    <p>The final project of Academy accelerated learning in C# HT17 was created between the fourth and fifteenth of December 2017, during the last two weeks of the course. The goal with WindCatchaz is to create a project dedicated to presenting the speeds and routes of sailboats by retrieving weather data from an external source like SMHI [3] and calculate how long this trip will take based on defined values from a VPP, Velocity Prediction Program, compared to the relative direction of the sailboat.</p>
-
+    <br />
+    <br />
+   
+    <center><h1>Wind Catchers</h1></center>
+    <center><h3 style="color:black";>An MVC project for calculating the time for a yacht to sail a distance</h3></center>
+    <br />
+    <br />
+    <center><img style="width:30%;" src="~/Images/Frontpage.png" /></center>
+    <br />
+    <center><span class="spanlogo" style="color:white;"><span>WIND</span><span style="color:red;">CATCHAHZ</span><span>™</span></span></center>
+    <br />
+    <center>Robin Lundqvist, Mattias Lij, Tobias Rondin, Mikael Angelstam, Alexander Krasse</center>
+    <center>Academy Final Project Stockholm 2017-12-15</center>
+    <br />
+    <br />
+    <br />
+    <h2>Abstract</h2>
     <span><b>Project name: </b>WindCatchers</span><br />
     <span><b>Development team: </b>Robin Lundqvist, Mattias Lij, Tobias Rondin, Mikael Angelstam, Alexander Krasse</span><br />
     <span><b>Framework: </b>ASP.NET Core 2.0</span><br />
     <span><b>Language: </b>C#, JavaScript, SQL, HTML, CSS</span><br />
     <span><b>Methodologies: </b>Scrum</span><br />
     <span><b>Architectural pattern: </b>Model-View-Controller</span>
+    <p>Academy is a part of the consulting company Academic Work with a concept to fulfil the competence needs of the market, using a concept of accelerated learning. One of those programs teaches programming with the object-oriented language C# on the .NET Framework during a 12-week time span. The program has the goal that the participants will become IT-consultants [1]. The course ends with a 2 week final project, where the knowledge obtained during the course is applied.</p>
+    <p>The purpose of the final project is to link together the techniques and subjects that the participants have been in touch with, in an aspect of Personal Development. Furthermore the consultant is supposed to apply those techniques and skills obtained during the course together within a project [2].</p>
+    <p>This final project of Academy accelerated learning in C# HT17 was created between the fourth and fifteenth of December 2017, during the last two weeks of the course. The goal with WindCatchaz is to create a project dedicated to presenting the speeds and routes of sailboats by retrieving weather data from an external source like SMHI [3] and calculate how long this trip will take based on defined values from a VPP, Velocity Prediction Program, compared to the relative direction of the sailboat.</p>
+    <p>
+        <ul>
+            <li>Create a map and load weather data (and show wind directions)</li>
+            <li>Let the user choose a starting point and a destination point (and a departure time) and store coordinates for latitude and longitude </li>
+            <li>Calculate the distance</li>
+            <li>Retrievs real data from SMHI</li>
+            <li>Animated overlay of the winddirections</li>
+            <li>Create account</li>
+            <li>Login</li>
+            <li>Validation</li>
+            <li>Use some simple interpolation to calculate the velocity for those wind speeds that are not in the VPP</li>
+            <li>Calculate the time it will take to go from the starting point to the goal (with penalty for tacking)</li>
+            <li>Let the user create their own VPP and edit those based on experience</li>
+            <li>Let the user only decide a few values in the VPP and use interpolation to fill in the gaps</li>
+            <li>About view page with information of the project</li>
+        </ul>
+    </p>
+    <h2>Nomenclature</h2>
+    <table>
+        <tr><th>Symbol</th><th>Description</th></tr>
+        <tr><td>&theta;</td><td>Bearing [degree]</td></tr>
+        <tr><td>&theta;<sub>relative</sub></td><td>Bearing relative winddirection, in a Cartesian system [degree]</td></tr>
+        <tr><td>&theta;<sub>initial</sub></td><td>The initial bearing [degree]</td></tr>
+        <tr><td>&theta;<sub>SMHI</sub></td><td>wind direction from SMHI API [degree]</td></tr>
+        <tr><td>&straightphi;</td><td>Latitude [rad]</td></tr>
+        <tr><td>&Delta;&straightphi;</td><td>Difference in latitude between two points [rad]</td></tr>
+        <tr><td>&lambda;</td><td>Longitude [rad]</td></tr>
+        <tr><td>&Delta;&lambda;</td><td>Difference in longitude between two points [rad]</td></tr>
+        <tr><td>&delta;</td><td>Angular distance [degree]</td></tr>
+        <tr><td>R<sub>a</sub></td><td>Equatorial radius [km]</td></tr>
+        <tr><td>R<sub>b</sub></td><td>Polar radius [km]</td></tr>
+        <tr><td>Hav</td><td>Haversine [km]</td></tr>
+        <tr><td>L</td><td>Total length [km]</td></tr>
+        <tr><td>L<sub>i</sub></td><td>Partial distance there all data is approximated as constant [km]</td></tr>
+        <tr><td>f</td><td>Distance to a point <i>i</i> [km]</td></tr>
+        <tr><td>T</td><td>Total time [s]</td></tr>
+        <tr><td>v</td><td>velocity [knot]</td></tr>
+        <tr><td>vms</td><td>velocity [m/s]</td></tr>
+        @*<tr><td></td><td></td></tr>*@
+    </table>
+    <h2>Abbrevations</h2>
+    <table>
+        <tr><td>HTML</td><td>Hypertext Transfer Protocol</td></tr>
+        <tr><td>CSS</td><td>Cascade Style Sheet</td></tr>
+        <tr><td>MVC</td><td>Model-View-Controller</td></tr>
+        <tr><td>SQL</td><td>Structured Query Language</td></tr>
+        <tr><td>SMHI</td><td>Swedish Meteorological and Hydrological Institute</td></tr>
+        <tr><td>TWS</td><td>True Wind Speed</td></tr>
+        <tr><td>VPP</td><td>Velocity Prediction Program</td></tr>
+    </table>
+    <h2>Programs</h2>
+    <table>
+        <tr><th>Name</th><th>Area of use</th></tr>
+        <tr><td>C#.NET</td><td>Backend</td></tr>
+        <tr><td>Javascript</td><td>Frontend</td></tr>
+        <tr><td>SQL</td><td>Data storage</td></tr>
+        <tr><td>HTML</td><td>Frontend</td></tr>
+        <tr><td>CSS</td><td>Frontend</td></tr>
+    </table>
+    <h2>1. Background</h2>
+    <p>Academy is a part of the consulting company Academic Work with a concept to fulfil the competence needs of the market, using a concept of accelerated learning. One of those programs teaches programming with the object-oriented language C# on the .NET Framework during a 12-week time span. The program has the goal that the participants will become IT-consultants [1]. The course ends with a 2 week final project, where the knowledge obtained during the course is applied.</p>
+
+    <h2>2. Purpose</h2>
+    <p>The purpose of the final project is to link together the techniques and subjects that the participants have been in touch with, in an aspect of Personal Development. Furthermore the consultant is supposed to apply those techniques and skills obtained during the course together within a project [2].</p>
+    <h2>3. Goal</h2>
+    <p>This final project of Academy accelerated learning in C# HT17 was created between the fourth and fifteenth of December 2017, during the last two weeks of the course. The goal with WindCatchaz is to create a project dedicated to presenting the speeds and routes of sailboats by retrieving weather data from an external source like SMHI [3] and calculate how long this trip will take based on defined values from a VPP, Velocity Prediction Program, compared to the relative direction of the sailboat.</p>
 
     <h3>3.1 Minimum Viable Product</h3>
     <ul>
@@ -45,15 +123,18 @@
         <li>More details of the data retrieved from the API. min max, date valid, time to update</li>
     </ul>
     <h2>4. Method</h2>
-    <h3>4.1 Framework</h3>
-    <h3>4.2 Language</h3>
-    <h3>4.3 Methodologies</h3>
-    <h3>4.4 Architectural pattern</h3>
-    <h3>4.5 API</h3>
-    <h3>4.6 Scripts</h3>
-    <h2>5. Result</h2>
-    <h3>5.1 Calculating the route</h3>
-
+    <h3>4.1 API</h3>
+    <p><b>Google Maps</b></p>
+    <p>Google Maps is a web mapping service provided by Google.</p>
+    <p>The program retrievs an interactive map from the API which lets the user to choose a starting point and a destination point and store the coordinates for those two points.</p>
+    <p><b>SMHI</b></p>
+    <p>The database PMP is SMHIs (Swedish Meteorological and Hydrological Institute) weather forecast made by meteorologist for the closest 24 hours.</p>
+    <p>This API is here used to retrieve wind speed and direction for a coordinate.</p>
+    <h3>4.2 Third party scripts</h3>
+    <p>jQuery</p>
+    <p>MathJax</p>
+    <p>Font Awesome</p>
+    <h3>4.3 Calculating the route</h3>
     <p>Step 1. Find the latitude for the midway point between the starting point and destination point by using the spherical version of the inverse geodesic problem</p>
     <figure>
         <img id="midpoint" src="~/Images/Midpoint.png" alt="Mid way point" style="width:20%">
@@ -96,10 +177,34 @@
     <p>The issue with using the loxodrome is that it does not choose the shortest orthodromic distance instead the program calculates the intital angle for the orthodromic that has the shortest distance towards the goal, and approximates the calculations using this same angle for the resolution choosen.</p>
     <p>Instead the inital angle that represent the shortest orthodromic is used as the direction for the entire fraction. This angle (bearing) is used to compare what relative angle towards the wind the yacht has. This value is collected from an API e.g. SMHI. When the relative angle is known the velocity for the yacht is retrieved from the database with predefined Velocity Prediction Program diagrams by interpolation to find an approximated value that fit the actual windspeed. Now when the velocity and the length is known the time it took to travel this journey section can be calculated which gives T<sub>i</sub>. By repeating this as long as the sum of all fractions do not exceed the total length and then add a calculation for the remaining section to calculate T<sub>rest</sub>, the total amount of time to travel distance <i>d</i> is calculated with T = &Sigma;(T<sub>i</sub>)+T<sub>rest</sub></p>
 
-
+    <h2>5. Result</h2>
+    <ul>
+        <li>Create a map and load weather data (and show wind directions)</li>
+        <li>Let the user choose a starting point and a destination point (and a departure time) and store coordinates for latitude and longitude </li>
+        <li>Calculate the distance</li>
+        <li>Retrievs real data from SMHI</li>
+        <li>Animated overlay of the winddirections</li>
+        <li>Create account</li>
+        <li>Login</li>
+        <li>Validation</li>
+        <li>Use some simple interpolation to calculate the velocity for those wind speeds that are not in the VPP</li>
+        <li>Calculate the time it will take to go from the starting point to the goal (with penalty for tacking)</li>
+        <li>Let the user create their own VPP and edit those based on experience</li>
+        <li>Let the user only decide a few values in the VPP and use interpolation to fill in the gaps</li>
+        <li>About view page with information of the project</li>
+    </ul>
     <h2>Thanks</h2>
     <h2>References</h2>
-    https://en.wikipedia.org/wiki/Great-circle_navigation
+    <ul>
+        <li>[1] About Academy, Retrieved from https://www.academy.se. (2017-12-11)</li>
+        <li>[2] Slutprojekt_Academy.pdf. (2017). 1st ed. Stockholm: Sissel Gade, p.2.</li>
+        <li>[3] https://en.wikipedia.org/wiki/Great-circle_navigation (2017-12-11)</li>
+        <li>[4] https://www.movable-type.co.uk/scripts/latlong.html (2017-12-11)</li>
+
+    </ul>
+
+
+
     <h2>Appendix</h2>
 </div>
 

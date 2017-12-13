@@ -1,12 +1,15 @@
-﻿.Nav-Index {
+﻿@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+.Nav-Index {
 
     background-color: black;
 }
 body {
     background-color: white;
-    margin:0;
-    top:0;
-    padding:0;
+    margin: 0;
+    top: 0;
+    padding: 0;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
 }
 .aboutimg {
     width: 100%;
@@ -33,4 +36,9 @@ figure {
 }
 #midpoint{
     width:80%;
+}
+.spanlogo {
+    background-color: black;
+    border-radius: 8px;
+    padding: 4px;
 }
