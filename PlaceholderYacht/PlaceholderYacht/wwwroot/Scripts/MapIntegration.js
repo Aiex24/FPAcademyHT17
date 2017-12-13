@@ -12,7 +12,7 @@ var startEndMarkers = []; //Data för anrop till backend kan med fördel hämtas
 var lastLine;
 var time = 0;
 var hr = (new Date()).getHours();
-var isDayTime = hr > 8 && hr < 15;
+var isDayTime = hr > 8 && hr < 10;
 
 
 function CenterControl(controlDiv, map) {
@@ -384,7 +384,7 @@ function initiateMap() {
         startSet = !startSet;
 
         drawLine(clickStart[0], clickStart[1], clickEnd[0], clickEnd[1]);
-        calcWindSpeedForPoint(lat, lng);
+        //calcWindSpeedForPoint(lat, lng);
     });
 
 };
@@ -495,19 +495,20 @@ function drawLine(latOrg, lngOrg, latEnd, lngEnd) {
     // 
     let lineSymbol = {
         path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-        strokeOpacity: 1 ,     
+        strokeOpacity: 1,
+        strokeColor: 'green',
         scale: 1
     };
 
     let startSymbol = {
         path: google.maps.SymbolPath.CIRCLE,
-        strokeColor: 'red',
+        strokeColor: 'yellow',
         scale: 6
     };
 
     let endSymbol = {
         path: google.maps.SymbolPath.CIRCLE,
-        strokeColor: 'red',
+        strokeColor: 'yellow',
         scale: 6
     };
 
