@@ -53,6 +53,19 @@ namespace PlaceholderYacht.Models
                 }).ToArray();
         }
 
+        public AccountBoatItemVM[] GetAllBoats()
+        {
+            return context.Boat
+                .Select(b => new AccountBoatItemVM
+                {
+                    BoatID = b.Id,
+                    BoatName = b.Boatname,
+                    Manufacturer = b.Manufacturer,
+                    ModelName = b.Modelname,
+                    Owner = b.Uid
+                }).ToArray();
+        }
+
         public void InterpolateVpp(BoatPageVM viewModel)
         {
             //Plockar ut alla distinkta tws-värden.
@@ -150,14 +163,14 @@ namespace PlaceholderYacht.Models
 
         public void SaveBoat(BoatPageVM model)
         {
-            var boat = new Boat { Boatname = model.Boatname, Manufacturer = model.Manufacturer, Modelname = model.Modelname };
+            var boat = new Boat { Boatname = model.Boatname, Manufacturer = model.Manufacturer, Modelname = model.Modelname, Uid = model.Uid };
             foreach (var vpp in model.VppList)
             {
                 boat.VppuserInput.Add(new VppuserInput
                 {
                     Tws = vpp.TWS,
                     WindDegree = vpp.WindDegree,
-                    Knot = vpp.Knot
+                    Knot = vpp.Knot,
                 });
             }
 
@@ -460,5 +473,17 @@ namespace PlaceholderYacht.Models
             return smhi;
         }
 
+        public void DeleteBoat(int boatID)
+        {
+            //Ta bort alla rader i tabellerna VPP, VPPuserinput och boats med boatID
+            VppuserInput[] vppsUser = context.VppuserInput.Where(v => v.BoatId == boatID).ToArray();
+            context.VppuserInput.RemoveRange(vppsUser);
+
+            Vpp[] vpps = context.Vpp.Where(v => v.BoatId == boatID).ToArray();
+            context.Vpp.RemoveRange(vpps);
+
+            context.Boat.Remove(context.Boat.FirstOrDefault(b => b.Id == boatID));
+            context.SaveChanges();
+        }
     }
 }

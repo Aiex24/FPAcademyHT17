@@ -10,7 +10,6 @@ drop table Sai.VPP
 GO
 drop table Sai.Boat
 
-insert into Sai.Boat ([UID], Modelname, Manufacturer) values ('c835a93e-eee9-4c37-bb76-3b05d49d44f2', 'Nacra17', 'NACRA')
 GO
 create table Sai.Boat
 (
@@ -43,7 +42,12 @@ create table Sai.VPP
 	constraint vpp_uq unique nonclustered(BoatID, TWS, WindDegree)
 )
 
+insert into Sai.Boat ([UID], Modelname, Manufacturer) values ('c835a93e-eee9-4c37-bb76-3b05d49d44f2', 'Nacra17', 'NACRA')
+
 select * from AspNetUsers
+select * from AspNetUserRoles
+select * from AspNetRoles
+
 select * from sai.Boat
-select * from sai.VPP
 select * from sai.VPPUserInput
+select * from sai.VPP
