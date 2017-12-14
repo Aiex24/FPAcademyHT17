@@ -19,14 +19,15 @@
                     <a href="/home/index"><i class="fa fa-home fa-2x"></i></a>
                     <a href="/home/Route"><i class="fa fa-bar-chart fa-2x"></i></a>
                     <a href="/home/Vpp"><i class="fa fa-globe fa-2x"></i></a>
+                    <a href="/home/Presentation"><i class="fa fa-file-powerpoint-o fa-2x" aria-hidden="true"></i></a>
                     <a href="/home/contact"><i class="fa fa-address-card-o fa-2x"></i></a>
-                    <a href="/home/about"><i class="fa fa-info-circle fa-2x"></i></a>
+                    <a href="/home/About"><i class="fa fa-info-circle fa-2x"></i></a>
                     <a href="/home/newuser"><i class="fa fa-user-plus fa-2x"></i></a>
                     <a href="/account/login"><i class="fa fa-user fa-2x"></i></a>
-                    <a href="https://www.linkedin.com/"><i class="fa fa-linkedin-square fa-2x" aria-hidden="true"></i></a>
+                    @*<a href="https://www.linkedin.com/"><i class="fa fa-linkedin-square fa-2x" aria-hidden="true"></i></a>
                     <a href="https://www.facebook.com/"><i class="fa fa-facebook-square fa-2x" aria-hidden="true"></i></a>
                     <a href="https://www.twitter.com/"><i class="fa fa-twitter-square fa-2x" aria-hidden="true"></i></a>
-                    <a href="https://www.youtube.com/"><i class="fa fa-youtube-square fa-2x" aria-hidden="true"></i></a>
+                    <a href="https://www.youtube.com/"><i class="fa fa-youtube-square fa-2x" aria-hidden="true"></i></a>*@
                 </div>
             </div>
 
@@ -39,8 +40,9 @@
                 <li class="Route"><a href="/home/Route" id="Route">Route</a></li>
                 @if (User.Identity.IsAuthenticated){<li class="AddBoat"><a href="/home/BoatPage" id="BoatPage">Add Boat</a></li>}
                 <li class="Vpp"><a href="/home/Vpp" id="Vpp">VPP</a></li>
+                <li class="Presentation"><a href="/home/presentation"><i class="fa fa-file-powerpoint-o" aria-hidden="true"></i> PowerPoint</a></li>
                 <li class="contact"><a href="/home/contact" id="Contact">Contact</a></li>
-                <li class="about"><a href="/home/About" id="About">About</a></li>
+                <li class="about"><a href="/home/about" id="About">About</a></li>
             </ul>
             @if (User.Identity.IsAuthenticated)
             {

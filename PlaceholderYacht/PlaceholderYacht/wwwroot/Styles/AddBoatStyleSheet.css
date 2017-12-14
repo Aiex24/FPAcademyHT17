@@ -23,6 +23,7 @@
     background-color: rgba(255, 255, 255, 0.8);
     font-family: arial, sans-serif;
     font-size: 18px;
+    display: inline;
 }
 #VppInputTable {
     font-family: arial, sans-serif;
@@ -53,6 +54,13 @@ input[type=submit], input[type=button] {
     input[type=submit]:hover, input[type=button]:hover {
         
     }
+
+.CenterContent {
+    margin: 150px auto;
+    position: relative;
+}
+
+
 
 /*#VppInputTable tr:nth-child(even) {
     background-color: #1daee1;

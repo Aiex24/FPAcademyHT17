@@ -12,7 +12,7 @@ var startEndMarkers = []; //Data för anrop till backend kan med fördel hämtas
 var lastLine;
 var time = 0;
 var hr = (new Date()).getHours();
-var isDayTime = hr > 8 && hr < 10;
+var isDayTime = hr > 8 && hr < 18;
 
 
 function CenterControl(controlDiv, map) {
@@ -300,8 +300,8 @@ function initiateMap() {
         map.mapTypes.set('Dark map', darkMapType);
         map.setMapTypeId('Dark map');
     }
-    else
-        map.setMapTypeId('satellite');
+    //else
+    //    map.setMapTypeId('satellite');
 
     // skapa ny inforuta
     infoWindow = new google.maps.InfoWindow;
@@ -481,23 +481,29 @@ function drawArrow(latOrigin, longOrigin, windDegree, mapShareForRadius, windSpe
         map: map
     });
     arrows.push(line); // lägg till pilar i arrayen
-    animateCircle(line);
+    animateCircle(line, 0.5);
 
 }
 
 // Drawing lines 
 function drawLine(latOrg, lngOrg, latEnd, lngEnd) {
 
+    let lineColor;
+    if (isDayTime)
+        lineColor = 'black'
+    else
+        lineColor = 'white'
 
     let startLatLng = { lat: latOrg, lng: lngOrg };
     let endLatLng = { lat: latEnd, lng: lngEnd };
 
-    // 
+    
+
     let lineSymbol = {
-        path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+        path: google.maps.SymbolPath.CIRCLE,
         strokeOpacity: 1,
-        strokeColor: 'green',
-        scale: 1
+        strokeColor: lineColor,
+        scale: 1.5
     };
 
     let startSymbol = {
@@ -528,7 +534,8 @@ function drawLine(latOrg, lngOrg, latEnd, lngEnd) {
     }
     lastLine = line;
     let startMarker = new google.maps.Marker({
-        icon: startSymbol,
+        draggable: false,
+        label: { text: 'S', color: 'white' },
         position: startLatLng,
         map: map,
         title: 'Starting point'
@@ -545,11 +552,16 @@ function drawLine(latOrg, lngOrg, latEnd, lngEnd) {
         endMarker = new google.maps.Marker({
             position: endLatLng,
             map: map,
-            icon: endSymbol,
+            draggable: false,
+            label: {
+                text: 'X',
+                color: 'white',
+            },
             title: 'Destination'
         });
         startEndMarkers.push(endMarker);
         calculateDistanceAndTime();
+        animateCircle(line, 1.5);
     }
     //let startLatLong = startEndMarkers[0].getPosition();
     //TODO: Gör om från decimal till DMS
@@ -577,43 +589,28 @@ function calculateDistanceAndTime() {
         data: { 'calculateRouteJson': jsonObject },
         success: function (result) {
             console.log(result)
-            let resultDistance = Math.round(result.tripDistanceKm * 10) / 10;
             //TODO: Fixa naughtymiles
+            let resultDistance = Math.round(result.tripDistanceKm * 10) / 10;
+            //Ser till att man kan skriva ut månadsnamn istället för siffror.
+            let monthShortNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+            ];
+            //Parsar json-infon till datetimes.
+            let departureDateTime = new Date(result.departureTime);
+            let arrivalDateTime = new Date(result.arrivalTime);
+            //Skapar snygga strängar som vi kan stoppa in i DOMen slicen används för att lägga till en nolla om funktionen bara returnerar en siffra.
+            let departureString = `${departureDateTime.getDate()} ${monthShortNames[departureDateTime.getMonth()]} ${("0" + departureDateTime.getHours()).slice(-2)}:${("0" + departureDateTime.getMinutes()).slice(-2)}`
+            let arrivalString = `${arrivalDateTime.getDate()} ${monthShortNames[arrivalDateTime.getMonth()]} ${("0" + arrivalDateTime.getHours()).slice(-2)}:${("0" + arrivalDateTime.getMinutes()).slice(-2)}`
+            let durationString = `${result.tripDurationDays} days ${result.tripDurationHours} h ${result.tripDurationMinutes} min`
+
             $("#distanceInfo").text(`${resultDistance} km`);
-            $("#durationInfo").text(`${result.tripDurationDays}:${result.tripDurationHours}:${result.tripDurationMinutes}`);
-            $("#departureInfo").text(result.departureTime);
-            $("#etaInfo").text(result.arrivalTime);
-            //id="distanceInfo"
-            //id="durationInfo"
-            //id="departureInfo"
-            //id="etaInfo"
-
-            //arrivalTime
-            //:
-            //"2017-12-13T13:47:16.4458125+01:00"
-            //departureTime
-            //:
-            //"2017-12-13T09:22:54.4458125+01:00"
-            //initialBearing
-            //:
-            //49.21298744349042
-            //tripDistanceKm
-            //:
-            //58.67293600336079
-            //tripDurationDays
-            //:
-            //0
-            //tripDurationHours
-            //:
-            //4
-            //tripDurationMinutes
-            //:
-            //24
-
+            $("#durationInfo").text(durationString);
+            $("#departureInfo").text(departureString);
+            $("#etaInfo").text(arrivalString);
         }
     })
 }
-//Snott det mesta från http://en.marnoto.com/2014/04/converter-coordenadas-gps.html
+//Snott (lånat) det mesta från http://en.marnoto.com/2014/04/converter-coordenadas-gps.html
 function convertDegreesToDMS(lat, lng) {
     let calcuLat = lat;
     let calcuLng = lng;
@@ -662,13 +659,13 @@ function getDms(val) {
 }
 
 // function for movig symbols along lines
-function animateCircle(line) {
+function animateCircle(line, speed) {
     let count = 0;
     window.setInterval(function () {
         count = (count + 1) % 100;
 
         let icons = line.get('icons');
-        icons[0].offset = (count / 0.5) + '%';
+        icons[0].offset = (count / speed) + '%';
         line.set('icons', icons);
     }, 20);
 }
