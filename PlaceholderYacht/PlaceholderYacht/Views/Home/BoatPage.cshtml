@@ -4,6 +4,7 @@
 }
 
 <div class="AddBoatDiv">
+
     <form asp-controller="Home" asp-action="@ViewBag.ActionName" id="boatForm">
         <table id="AddBoatTable">
             <tr>
@@ -62,9 +63,24 @@
         </table>
     </form>
 
-    <br />
-    <canvas id="vppChart"></canvas>
-
+    @if (Model != null)
+    {
+        <br />
+        <span id="BoatIDSpan" hidden>@Model.BoatID</span>
+        <div id="chartDiv" style="width: 90%; margin: 0 auto;">
+            <h3 style="text-align:center">Boats speed for 0-180° wind direction</h3>
+            <canvas id="vppLineChart"></canvas>
+        </div>
+        <div style="width: 60%; margin: 0 auto;">
+            <h3 style="text-align:center">VPP chart</h3>
+            <canvas id="vppChart"></canvas>
+            <p style="font-size: 13px;"><i>The vpp chart shows the speed of the boat for every angle in 360 degrees.</i></p>
+        </div>
+    }
+    else
+    {
+        <span id="BoatIDSpan" hidden>0</span>
+    }
 </div>
 
 
@@ -77,30 +93,90 @@
     <script src="http://ajax.aspnetcdn.com/ajax/mvc/5.2.3/jquery.validate.unobtrusive.min.js"></script>
     @*TODO: Lägg till unobtrusive-validering för de genererade elementen.*@
     <script src="~/Scripts/AddBoatJavaScript.js"></script>
-    
-    
+
     <script>
 
-        var ctx = document.getElementById('vppChart').getContext('2d');
-        new Chart(ctx, {
-                data: {
-                    datasets: [{
-                        data: [10, 20, 30, 40]
-                    }],
-                    labels: [
-                        'Red',
-                        'Yellow',
-                        'Blue'
-                    ],
+        if (document.getElementById("chartDiv") !== null) {
+            $.ajax({
+                url: '/Home/GetVppData',
+                type: 'GET',
+                data: { "id": document.getElementById('BoatIDSpan').innerHTML },
+                success: function (result) {
 
-                    // These labels appear in the legend and in the tooltips when hovering different arcs
-                    backgroundColor: 'rgb(255, 99, 132)',
-                    borderColor: 'rgb(255, 99, 132)',
-                },
-            type: 'polarArea',
-            options: {}
-        });
+                    let vppArray = [];
+                    for (var i = 0; i < result.length; i++) {
+                        vppArray[i] = result[i].knot;
+                        vppArray[2 * result.length - i] = result[i].knot;
+                    }
 
+                    var ctx = document.getElementById('vppChart').getContext('2d');
+                    new Chart(ctx, {
+                        data: {
+                            datasets: [{
+                                data: vppArray,
+                                borderColor: 'rgba(0, 0, 100, 0.1)',
+                                backgroundColor: 'rgba(0, 0, 100, 0.4)'
+                            }]
+                        },
+                        type: 'polarArea',
+                        options: {}
+                    });
+
+                    
+                    let vppArrayLine = [];
+                    let vppArrayLineString = [];
+                    for (var i = 0; i < result.length; i++) {
+                        vppArrayLine[i] = result[i].knot;
+                        if (i % 10 == 0) {
+                            vppArrayLineString[i] = String(result[i].windDegree);
+                        }
+                        else {
+                            vppArrayLineString[i] = '';
+                        }
+                    }
+
+                    var ctx2 = document.getElementById('vppLineChart').getContext('2d');
+                    new Chart(ctx2, {
+                        // The type of chart we want to create
+                        type: 'line',
+
+                        // The data for our dataset
+                        data: {
+                            labels: vppArrayLineString,
+                            datasets: [{
+                                label: "Knots",
+                                borderColor: 'rgba(0, 0, 100, 0.8)',
+                                backgroundColor: 'rgba(0, 0, 100, 0)',
+                                data: vppArrayLine,
+                            }]
+                        },
+                        options: {
+                            elements: { point: { radius: 0 } },
+                            scales: {
+                                xAxes: [{
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'Degrees°',
+                                        fontSize: 15,
+                                        //fontColor: "black"
+                                    }
+                                }],
+                                yAxes: [{
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'Speed (knots)',
+                                        fontSize: 15,
+                                        //fontColor: "black"
+                                    }
+                                }]
+                            }
+                        }
+                    });
+
+                }
+                })
+
+            }
 
     </script>
 }
