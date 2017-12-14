@@ -579,7 +579,7 @@ function calculateDistanceAndTime() {
         startLongitude: startEndMarkers[0].getPosition().lng(),
         endLatitude: startEndMarkers[1].getPosition().lat(),
         endLongitude: startEndMarkers[1].getPosition().lng(),
-        boatId: 2
+        boatId: 9
     });
 
 

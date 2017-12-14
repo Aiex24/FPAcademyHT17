@@ -154,5 +154,9 @@ namespace WindCatchersMathLibrary
 
             return resArr;
         }
+
+       
     }
+
+    
 }
