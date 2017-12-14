@@ -274,7 +274,7 @@ namespace PlaceholderYacht.Models
             brng = (brng + 360) % 360;
 
             //If this value is set to 1, the resolution will be 1 km
-            double resolution = 100; //Distance the program approximates the calculations without retrieve new data for wind from SMHI API and speed from the VPP database
+            double resolution = 10; //Distance the program approximates the calculations without retrieve new data for wind from SMHI API and speed from the VPP database
             double Li = resolution;
             double Lrest = L % Li;
             double n = Math.Truncate(L / Li);
