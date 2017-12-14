@@ -105,7 +105,7 @@ namespace PlaceholderYacht.Controllers
                 newUser.Email = viewModel.Email;
                 await userManager.UpdateAsync(newUser);
             }
-            return RedirectToAction(nameof(Index), new { userName = viewModel.UserName });
+            return RedirectToAction(nameof(UserPage), new { title = $"Userpage viewModel.UserName" });
         }
 
         [Authorize]

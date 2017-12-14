@@ -1,25 +1,29 @@
 ﻿@model AccountNewuserVM
 @section styles{
-    <link href="~/Styles/AddBoatStyleSheet.css" rel="stylesheet" />
+    <link href="~/Styles/LogInStyleSheet.css" rel="stylesheet" />
 }
-<img style="width:100% " src="~/Images/Login.jpg" />
-<div class="AddBoatDiv">
+<div class="LoginDiv">
     <h1>New Sailor</h1>
-    <form asp-action="NewUser" asp-controller="Account">
-        <label asp-for="UserName"></label>
-        <input asp-for="UserName" />
-        <span asp-validation-for="UserName"></span>
-        <br />
-
-        <label asp-for="Password"></label>
-        <input asp-for="Password" />
-        <span asp-validation-for="Password"></span>
-        <br />
-
-        <label asp-for="Email"></label>
-        <input asp-for="Email" />
-        <br />
-
-        <input type="submit" value="Create user" />
-    </form>
+    <div id="loginTable">
+        <form asp-action="NewUser" asp-controller="Account">
+            <label asp-for="UserName"></label>
+            <br />
+            <input asp-for="UserName" />
+            <br />
+            <span asp-validation-for="UserName"></span>
+            <br />
+            <label asp-for="Password"></label>
+            <br />
+            <input asp-for="Password" />
+            <br />
+            <span asp-validation-for="Password"></span>
+            <br />
+            <label asp-for="Email"></label>
+            <br />
+            <input asp-for="Email" />
+            <br />
+            <br />
+            <input type="submit" value="Create user" />
+        </form>
+    </div>
 </div>
