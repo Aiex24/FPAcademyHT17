@@ -35,13 +35,6 @@ namespace PlaceholderYacht.Models
                     TWS = v.Tws,
                     WindDegree = v.WindDegree,
                     ID = v.Id
-                }).ToArray(),
-                VppDBList = boat.Vpp.Select(v => new AngleTwsKnotDBVM
-                {
-                    Knot = v.Knot,
-                    TWS = v.Tws,
-                    WindDegree = v.WindDegree,
-                    ID = v.Id
                 }).ToArray()
             };
             return baten;
@@ -491,6 +484,21 @@ namespace PlaceholderYacht.Models
 
             context.Boat.Remove(context.Boat.FirstOrDefault(b => b.Id == boatID));
             context.SaveChanges();
+        }
+
+        public AngleTwsKnotDBVM[] GetVppDB(int boatID)
+        {
+            Boat boat = context.Boat.Include(b => b.Vpp).FirstOrDefault(b => b.Id == boatID);
+
+            return boat.Vpp.Select(v => new AngleTwsKnotDBVM
+            {
+                Knot = v.Knot,
+                TWS = v.Tws,
+                WindDegree = v.WindDegree,
+                ID = v.Id
+            })
+            .OrderBy(v=> v.WindDegree)
+            .ToArray();
         }
     }
 }

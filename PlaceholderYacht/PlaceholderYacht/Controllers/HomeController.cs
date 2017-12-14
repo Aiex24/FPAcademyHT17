@@ -124,5 +124,11 @@ namespace PlaceholderYacht.Controllers
             repository.DeleteBoat(id);
             return RedirectToAction(nameof(AccountController.UserPage), "Account", new { title = "test" });
         }
+
+        [Authorize]
+        public IActionResult GetVppData(int id)
+        {
+            return Json(repository.GetVppDB(id));
+        }
     }
 }
