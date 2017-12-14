@@ -35,7 +35,10 @@ namespace PlaceholderYacht.Models
                     TWS = v.Tws,
                     WindDegree = v.WindDegree,
                     ID = v.Id
-                }).ToArray()
+                })
+                .OrderBy(v => v.TWS)
+                .ThenBy(v => v.WindDegree)
+                .ToArray()
             };
             return baten;
         }
@@ -198,7 +201,7 @@ namespace PlaceholderYacht.Models
 
             //Call function 
             double[] distance = CalcDistanceAndTime(startLatitude, startLongitude, endLatitude, endLongitude, boatId); //45 equals minimum angle TWS is defined for
-                                                                                                                    //Result
+                                                                                                                       //Result
             double T = distance[2];
             DateTime departure = DateTime.Now;
             DateTime arrival = departure.AddSeconds(T);
@@ -425,10 +428,10 @@ namespace PlaceholderYacht.Models
                 y0 = (double)knotY0; //█████ Replace 6.4 with value from database where ID = TWS[TWS.Length - 2] at position θrelative█████
                 y1 = (double)knotY1; //█████ Replace 8.4 with value from database where ID = TWS[TWS.Length - 1] at position θrelative█████
                 v = (x * y0 - x * y1 + x0 * y1 - x1 * y0) / (x0 - x1);
-            }            
+            }
             if (tacking)
             {
-                penalty = (L / (Math.Cos(Rad(θrelative))))/L;
+                penalty = (L / (Math.Cos(Rad(θrelative)))) / L;
                 //(1 / Math.Cos(Rad(θrelative)));
             }
             else penalty = 1;
@@ -457,6 +460,7 @@ namespace PlaceholderYacht.Models
         {
             return valueToCast * Math.PI / 180;
         }
+
         private double Degree(double valueToCast)
         {
             return valueToCast * 180 / Math.PI;
@@ -465,7 +469,7 @@ namespace PlaceholderYacht.Models
         // en äkta skön api-metod
         private async Task<SmhiApi> CallWebApi(double longitude, double latitude)
         {
-            var url = @"http://opendata-download-metanalys.smhi.se/api/category/mesan1g/version/1/geotype/point/lon/"+ Math.Round(latitude, 6)+"/lat/"+Math.Round(longitude, 6)+"/data.json";
+            var url = @"http://opendata-download-metanalys.smhi.se/api/category/mesan1g/version/1/geotype/point/lon/" + Math.Round(latitude, 6) + "/lat/" + Math.Round(longitude, 6) + "/data.json";
             var client = new HttpClient();
 
             var json = await client.GetStringAsync(url);
@@ -486,19 +490,32 @@ namespace PlaceholderYacht.Models
             context.SaveChanges();
         }
 
-        public AngleTwsKnotDBVM[] GetVppDB(int boatID)
+        public AngleTwsKnotDBVM[][] GetVppDB(int boatID)
         {
             Boat boat = context.Boat.Include(b => b.Vpp).FirstOrDefault(b => b.Id == boatID);
+            List<AngleTwsKnotDBVM[]> vppList = new List<AngleTwsKnotDBVM[]>();
 
-            return boat.Vpp.Select(v => new AngleTwsKnotDBVM
+            var distinctTWS = boat.Vpp
+                 .Select(t => t.Tws).Distinct()
+                 .ToArray();
+
+
+            for (int i = 0; i < distinctTWS.Length; i++)
             {
-                Knot = v.Knot,
-                TWS = v.Tws,
-                WindDegree = v.WindDegree,
-                ID = v.Id
-            })
-            .OrderBy(v=> v.WindDegree)
-            .ToArray();
+                var vppArr = boat.Vpp.Where(b => b.Tws == distinctTWS[i]).Select(v => new AngleTwsKnotDBVM
+                {
+                    Knot = v.Knot,
+                    TWS = v.Tws,
+                    WindDegree = v.WindDegree,
+                    ID = v.Id
+                })
+                .OrderBy(v => v.WindDegree)
+                .ToArray();
+
+                vppList.Add(vppArr);
+            }
+
+            return vppList.ToArray();
         }
     }
 }
