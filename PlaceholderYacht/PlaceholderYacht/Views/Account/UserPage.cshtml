@@ -1,9 +1,10 @@
 ﻿@model AccountUserpageVM
 @section styles{
-    <link href="~/Styles/AddBoatStyleSheet.css" rel="stylesheet" />
+    <link href="~/Styles/UserPageStyleSheet.css" rel="stylesheet" />
 }
+<img style="width:100% " src="~/Images/Login.jpg" />
 
-<div class="AddBoatDiv">
+<div class="UserPageDiv">
     <h1>@Model.Title</h1>
     <table>
         <form asp-action="UpdateUser" asp-controller="Account">
@@ -32,7 +33,7 @@
      }
     else
     {
-        <table>
+        <table class="userPageTableClass">
             <tr>
                 <th>BoatName</th>
                 <th>ModelName</th>
@@ -55,12 +56,12 @@
         </table>
 
     }
-
     <br />
+    <hr>
     @if (User.IsInRole("Admin"))
     {
         <h2>User list</h2>
-        <table>
+        <table class="userPageTableClass">
             <tr>
                 <th>Username</th>
                 <th>E-mail</th>
@@ -85,4 +86,7 @@
             }
         </table>
     }
+    <br />
+    <hr>
+
 </div>
