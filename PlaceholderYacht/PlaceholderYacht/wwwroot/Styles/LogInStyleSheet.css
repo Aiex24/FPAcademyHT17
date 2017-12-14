@@ -1,10 +1,10 @@
 ﻿.LoginDiv {
     position: fixed;
-    left: 27%;
-    width: 46%;
+    left: 32%;
+    width: 30%;
     top: 150px;
     max-height: 70%;
-    justify-content:center;
+    justify-content: center;
     text-align: center;
     /*overflow-y: scroll;*/
     background-color: white;
@@ -14,13 +14,13 @@
     background-color: rgba(0, 0, 0, 0.3);
     font-family: arial, sans-serif;
     font-size: 18px;
+    padding-bottom: 30px;
 }
 
 .loginDiv {
     text-align: center;
     width: 50%;
     margin: 0 auto;
-    padding-bottom: 5px;
 }
 loginTable {
     margin: 0 auto;
@@ -45,3 +45,7 @@ input[type=submit], input[type=button] {
 
     input[type=submit]:hover, input[type=button]:hover {
     }
+
+body {
+    background-image: url("/Images/Login.jpg");
+}
