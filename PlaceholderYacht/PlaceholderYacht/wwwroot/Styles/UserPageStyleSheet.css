@@ -2,7 +2,7 @@
 .UserPageDiv {
     position: fixed;
     left: 20%;
-    width: 55%;
+    /*width: 55%;*/
     top: 100px;
     max-height: 80%;
     overflow-y: scroll;
@@ -54,8 +54,8 @@ input[type=submit], input[type=button] {
     color: white;
 }
 
-input[type=submit]:hover, input[type=button]:hover {
-    }
+/*input[type=submit]:hover, input[type=button]:hover {
+    }*/
 
 .CenterContent {
     margin: 150px auto;
