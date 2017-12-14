@@ -42,3 +42,8 @@ figure {
     border-radius: 8px;
     padding: 4px;
 }
+th, td{
+    text-align: left;
+    padding-right: 5px;
+}
+
