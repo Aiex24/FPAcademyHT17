@@ -12,7 +12,7 @@ var startEndMarkers = []; //Data för anrop till backend kan med fördel hämtas
 var lastLine;
 var time = 0;
 var hr = (new Date()).getHours();
-var isDayTime = hr > 8 && hr < 10;
+var isDayTime = hr > 8 && hr < 9;
 
 
 function CenterControl(controlDiv, map) {
@@ -307,30 +307,30 @@ function initiateMap() {
     infoWindow = new google.maps.InfoWindow;
 
     // Hitta användarens position (kräver att användaren godkänner geolokalisering)
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function (position) {
-            // sparar positionen i en variabel
-            let pos = {
-                lat: position.coords.latitude,
-                lng: position.coords.longitude
-            };
+    //if (navigator.geolocation) {
+    //    navigator.geolocation.getCurrentPosition(function (position) {
+    //        // sparar positionen i en variabel
+    //        let pos = {
+    //            lat: position.coords.latitude,
+    //            lng: position.coords.longitude
+    //        };
 
-            // sätter ut en markör på användarens position
-            infoWindow.setPosition(pos);
-            infoWindow.setContent('This is your position');
-            infoWindow.open(map);
+    //        // sätter ut en markör på användarens position
+    //        infoWindow.setPosition(pos);
+    //        infoWindow.setContent('This is your position');
+    //        infoWindow.open(map);
 
-            // centrerar kartan på denna position
-            //map.setCenter(pos);
-        }, function () {
+    //        // centrerar kartan på denna position
+    //        //map.setCenter(pos);
+    //    }, function () {
 
-            // anropar metoden som hanterar geolokaliseringfel
-            handleLocationError(true, infoWindow, map.getCenter());
-        });
-    } else {
-        // Om servern ej kan hantera geolokalisering
-        //handleLocationError(false, infoWindow, map.getCenter());
-    }
+    //        // anropar metoden som hanterar geolokaliseringfel
+    //        handleLocationError(true, infoWindow, map.getCenter());
+    //    });
+    //} else {
+    //    // Om servern ej kan hantera geolokalisering
+    //    //handleLocationError(false, infoWindow, map.getCenter());
+    //}
 
     //Rita pilar när kartan är laddad
     google.maps.event.addListener(map, 'tilesloaded', function (event) {
