@@ -35,6 +35,13 @@ namespace PlaceholderYacht.Models
                     TWS = v.Tws,
                     WindDegree = v.WindDegree,
                     ID = v.Id
+                }).ToArray(),
+                VppDBList = boat.Vpp.Select(v => new AngleTwsKnotDBVM
+                {
+                    Knot = v.Knot,
+                    TWS = v.Tws,
+                    WindDegree = v.WindDegree,
+                    ID = v.Id
                 }).ToArray()
             };
             return baten;
@@ -267,7 +274,7 @@ namespace PlaceholderYacht.Models
             brng = (brng + 360) % 360;
 
             //If this value is set to 1, the resolution will be 1 km
-            double resolution = 10; //Distance the program approximates the calculations without retrieve new data for wind from SMHI API and speed from the VPP database
+            double resolution = 100; //Distance the program approximates the calculations without retrieve new data for wind from SMHI API and speed from the VPP database
             double Li = resolution;
             double Lrest = L % Li;
             double n = Math.Truncate(L / Li);
@@ -486,19 +493,9 @@ namespace PlaceholderYacht.Models
             context.SaveChanges();
         }
 
-        public AngleTwsKnotDBVM[] GetVppDB(int boatID)
+        public AngleTwsKnotDBVM[] GetVppDB(int id)
         {
-            Boat boat = context.Boat.Include(b => b.Vpp).FirstOrDefault(b => b.Id == boatID);
-
-            return boat.Vpp.Select(v => new AngleTwsKnotDBVM
-            {
-                Knot = v.Knot,
-                TWS = v.Tws,
-                WindDegree = v.WindDegree,
-                ID = v.Id
-            })
-            .OrderBy(v=> v.WindDegree)
-            .ToArray();
+            throw new NotImplementedException();
         }
     }
 }

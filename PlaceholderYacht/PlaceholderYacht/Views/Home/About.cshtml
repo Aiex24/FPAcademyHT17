@@ -31,20 +31,20 @@
     <p>The purpose of the final project is to link together the techniques and subjects that the participants have been in touch with, in an aspect of Personal Development. Furthermore, the consultant is supposed to apply those techniques and skills obtained during the course together within a project [2].</p>
     <p>This final project of Academy accelerated learning in C# HT17 was created between the fourth and fifteenth of December 2017, during the last two weeks of the course. The goal with WindCatchers is to create a project dedicated to presenting the speeds and routes of sailboats by retrieving weather data from an external source like SMHI [3] and calculate how long this trip will take based on defined values from a Velocity Prediction Program, compared to the relative direction of the sailboat.</p>
     <p>
-        The result is an MVC with the following features:
+        The result is an MVC application with the following features:
         <ul>
-            <li>Create a map and load weather data (and show wind directions)</li>
-            <li>Let the user choose a starting point and a destination point (and a departure time) and store coordinates for latitude and longitude </li>
-            <li>Calculate the distance</li>
-            <li>Retrievs real data from SMHI</li>
-            <li>Animated overlay of the winddirections</li>
+            <li>Map view using Google Maps API </li>
+            <li>Animated map overlay of the wind directions based on data from SMHI API</li>
+            <li>Let the user choose a starting point and a destination point </li>
+            <li>Calculate the distance between start and destination</li>
+            <li>Calculate the time it will take to go from the starting point to the goal (with penalty for tacking)</li>
+            <li></li>
             <li>Create account</li>
             <li>Login</li>
             <li>Validation</li>
+            <li>Let the user create their own Velocity Performance Prediction or VPP diagrams and edit those based on experience</li>
+            <li>Let the user input only a few values for true wind speed, wind direction and boat speed in the VPP and use interpolation to fill in the gaps</li>
             <li>Use some simple interpolation to calculate the velocity for those wind speeds that are not in the VPP</li>
-            <li>Calculate the time it will take to go from the starting point to the goal (with penalty for tacking)</li>
-            <li>Let the user create their own VPP and edit those based on experience</li>
-            <li>Let the user only decide a few values in the VPP and use interpolation to fill in the gaps</li>
             <li>About view page with information of the project</li>
         </ul>
     </p>
