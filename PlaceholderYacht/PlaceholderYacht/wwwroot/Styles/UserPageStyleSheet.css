@@ -1,43 +1,50 @@
-﻿
+﻿.userInfoTable td{
+    padding: 5px;
+}
+
 .UserPageDiv {
     position: fixed;
-    left: 20%;
-    /*width: 55%;*/
+    left: 18%;
+    width: 60%;
     top: 100px;
     max-height: 80%;
     overflow-y: scroll;
     color: white;
     box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.5);
     /*font-family: 'Open Sans', sans-serif;*/
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.7);
     font-family: arial, sans-serif;
     font-size: 18px;
     display: inline;
+    padding: 30px;
+}
+
+.userPageTableClass td:hover {
+    background-color: rgba(0, 0, 0, 0.2);
 }
 
 .userPageTableClass {
-    width: 90%;
+    width: 95%;
+    padding-left: 20px;
 }
 
 .userPageTableClass td {
-    font-size: 13px;
+    font-size: 15px;
+    padding: 10px;
+}
+
+.userPageTableClass th {
+    text-align: center;
+    padding: 10px;
+}
+
+.userPageTableClass th{
+    border-bottom: 1px solid #ddd;
 }
 
 .userPageTableClass tr:nth-child(even) {
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(0, 0, 0, 0.4);
 }
-
-/*#VppInputTable {
-    font-family: arial, sans-serif;
-    width: 70%;
-    color: white;
-    border-collapse: collapse;
-    border-spacing: 0;
-    max-height: 200px;
-    overflow-y: scroll;
-    color: black;
-    font-size: 14px;
-}*/
 
 input[type=submit], input[type=button] {
     border: none;
@@ -54,19 +61,12 @@ input[type=submit], input[type=button] {
     color: white;
 }
 
-/*input[type=submit]:hover, input[type=button]:hover {
-    }*/
-
 .CenterContent {
     margin: 150px auto;
     position: relative;
 }
 
-
-
-/*#VppInputTable tr:nth-child(even) {
-    background-color: #1daee1;
+body {
+    background-image: url("/Images/Login.jpg");
 }
-#VppInputTable tr:nth-child(odd) {
-    background-color: #123c9e;
-}*/
+

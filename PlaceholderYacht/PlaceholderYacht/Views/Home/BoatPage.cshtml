@@ -28,6 +28,8 @@
                 }
             </tr>
         </table>
+        <br />
+
         <table id="VppInputTable">
             <tr>
                 <td>TWS: </td>
@@ -83,10 +85,6 @@
     }
 </div>
 
-
-<div class="image-background">
-    <img src="~/Images/Nauticalchart.jpg" style="width:100%" />
-</div>
 @section scripts{
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
     <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.14.0/jquery.validate.min.js"></script>
@@ -103,36 +101,38 @@
                 data: { "id": document.getElementById('BoatIDSpan').innerHTML },
                 success: function (result) {
 
-                    let vppArray = [];
-                    for (var i = 0; i < result.length; i++) {
-                        vppArray[i] = result[i].knot;
-                        vppArray[2 * result.length - i] = result[i].knot;
-                    }
+                    let rgbColorArray = [];
+                    rgbColorArray[0] = 'green';
+                    rgbColorArray[1] = 'blue';
+                    rgbColorArray[2] = 'red';
+                    rgbColorArray[3] = 'purple';
+                    rgbColorArray[4] = 'pink';
+                    rgbColorArray[5] = 'blue';
+                    rgbColorArray[6] = 'black';
 
-                    var ctx = document.getElementById('vppChart').getContext('2d');
-                    new Chart(ctx, {
-                        data: {
-                            datasets: [{
-                                data: vppArray,
-                                borderColor: 'rgba(0, 0, 100, 0.1)',
-                                backgroundColor: 'rgba(0, 0, 100, 0.4)'
-                            }]
-                        },
-                        type: 'polarArea',
-                        options: {}
-                    });
-
-                    
-                    let vppArrayLine = [];
-                    let vppArrayLineString = [];
+                    let vppArray = [[], []];
+                    let vppArrayLine = [[], []];
+                    let vppDirection = [];
+                    let vpptwS = [];
+                    var vppDataSets = [];
                     for (var i = 0; i < result.length; i++) {
-                        vppArrayLine[i] = result[i].knot;
-                        if (i % 10 == 0) {
-                            vppArrayLineString[i] = String(result[i].windDegree);
+                        vpptwS[i] = result[i][0].tws;
+                        for (var j = 0; j < result[i].length; j++) {
+                            vppArrayLine[i][j] = result[i][j].knot;
+
+                            if (j % 10 == 0) {
+                                vppDirection[j] = result[i][j].windDegree;
+                            }
+                            else {
+                                vppDirection[j] = '';
+                            }
                         }
-                        else {
-                            vppArrayLineString[i] = '';
-                        }
+                        vppDataSets[i] = {
+                            label: 'TWS: ' + vpptwS[i] + ' m/s',
+                            borderColor: rgbColorArray[i],
+                            backgroundColor: 'rgba(0, 0, 100, 0)',
+                            data: vppArrayLine[i],
+                        };
                     }
 
                     var ctx2 = document.getElementById('vppLineChart').getContext('2d');
@@ -142,13 +142,8 @@
 
                         // The data for our dataset
                         data: {
-                            labels: vppArrayLineString,
-                            datasets: [{
-                                label: "Knots",
-                                borderColor: 'rgba(0, 0, 100, 0.8)',
-                                backgroundColor: 'rgba(0, 0, 100, 0)',
-                                data: vppArrayLine,
-                            }]
+                            labels: vppDirection,
+                            datasets: vppDataSets
                         },
                         options: {
                             elements: { point: { radius: 0 } },
@@ -173,10 +168,39 @@
                         }
                     });
 
-                }
-                })
 
-            }
+                    let vppArrayPolar = [[], []];
+                    let vpptwSPolar = [];
+                    var vppDataSetsPolar = [];
+
+                    for (var i = 0; i < result.length; i++) {
+                        vpptwSPolar[i] = 'TWS: ' + result[i][0].tws + ' m/s';
+                        for (var j = 0; j < result[i].length; j++) {
+                            vppArrayPolar[i][j] = result[i][j].knot;
+                            vppArrayPolar[i][result[i].length * 2 - j] = result[i][j].knot;
+                        }
+                        vppDataSetsPolar[i] = {
+                            label: 'TWS: ' + vpptwS[i] + ' m/s',
+                            borderColor: rgbColorArray[i],
+                            backgroundColor: 'rgba(0, 0, 100, 0)',
+                            data: vppArrayPolar[i],
+                        };
+                    }
+                    console.log(vppArrayPolar);
+
+                    var ctx = document.getElementById('vppChart').getContext('2d');
+                    new Chart(ctx, {
+                        data: {
+                            datasets: vppDataSetsPolar,
+                            labels: vpptwSPolar
+                        },
+                        type: 'polarArea',
+                        options: {}
+                    });
+                }
+            })
+
+        }
 
     </script>
 }

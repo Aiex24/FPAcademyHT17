@@ -2,11 +2,10 @@
 @section styles{
     <link href="~/Styles/UserPageStyleSheet.css" rel="stylesheet" />
 }
-<img style="width:100% " src="~/Images/Login.jpg" />
 
 <div class="UserPageDiv">
     <h1>@Model.Title</h1>
-    <table>
+    <table class="userInfoTable">
         <form asp-action="UpdateUser" asp-controller="Account">
             <tr>
                 <td><label asp-for="UserName"></label></td>
@@ -39,6 +38,8 @@
                 <th>ModelName</th>
                 <th>Manufacturer</th>
                 <th>Owner</th>
+                <th>&nbsp</th>
+                <th>&nbsp</th>
             </tr>
             <form asp-action="UpdateBoats" asp-controller="Account">
                 @foreach (var boat in Model.BoatItem)
@@ -48,16 +49,15 @@
                         <td>@boat.ModelName</td>
                         <td>@boat.Manufacturer</td>
                         <td>@boat.Owner</td>
-                        <td><a asp-controller="Home" asp-action="BoatPage" asp-route-id="@boat.BoatID"><input type="button" value="edit" /> </a> </td>
+                        <td><a asp-controller="Home" asp-action="BoatPage" asp-route-id="@boat.BoatID"><input type="button" value="Edit" /> </a> </td>
                         <td><a asp-controller="Home" asp-action="DeleteBoat" asp-route-id="@boat.BoatID"><input type="button" value="Delete" /></a></td>
                     </tr>
                 }
             </form>
         </table>
 
-    }
     <br />
-    <hr>
+    }
     @if (User.IsInRole("Admin"))
     {
         <h2>User list</h2>
@@ -65,17 +65,17 @@
             <tr>
                 <th>Username</th>
                 <th>E-mail</th>
-                <th>Admin</th>
+                <th>&nbsp</th>
+                <th>&nbsp</th>
             </tr>
             @foreach (var user in Model.UserItem)
                 {
                 <tr>
                     <td>@user.UserName</td>
                     <td>@user.Email</td>
-                    <td>@user.Admin</td>
                     @if (@user.Admin)
                     {
-                        <td><a asp-controller="Account" asp-action="RemoveAdminRole" asp-route-id="@user.UserID"><input type="button" value="Remove admin role" /></a> </td>
+                        <td><a asp-controller="Account" asp-action="RemoveAdminRole" asp-route-id="@user.UserID"><input type="button" value="Remove Admin" /></a> </td>
                     }
                     else
                     {
@@ -85,8 +85,7 @@
                 </tr>
             }
         </table>
-    }
     <br />
-    <hr>
+    }
 
 </div>

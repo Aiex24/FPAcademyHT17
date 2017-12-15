@@ -9,7 +9,7 @@ namespace PlaceholderYacht.Models.ViewModels
     public class AccountLoginVM
     {
         [Required]
-        [Display (Name = "User Name")]
+        [Display (Name = "Username")]
         public string UserName { get; set; }
         [Required]
         [DataType(DataType.Password)]

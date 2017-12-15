@@ -18,6 +18,6 @@ namespace PlaceholderYacht.Models
         double[] CalcDistanceAndTime(double latitude1, double longitude1, double latitude2, double longitude2, int boatId);
         DistanceAndTime RouteCalculation(RouteCalculationJson jsonObject);
         int GetTime(double latitude, double longitude, double bearing, double ΔL, int boatId);
-        AngleTwsKnotDBVM[] GetVppDB(int id);
+        AngleTwsKnotDBVM[][] GetVppDB(int id);
     }
 }

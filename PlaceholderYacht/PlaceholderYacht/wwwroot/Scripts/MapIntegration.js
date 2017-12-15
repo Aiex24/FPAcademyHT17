@@ -12,7 +12,7 @@ var startEndMarkers = []; //Data för anrop till backend kan med fördel hämtas
 var lastLine;
 var time = 0;
 var hr = (new Date()).getHours();
-var isDayTime = hr > 8 && hr < 18;
+var isDayTime = hr > 8 && hr < 10;
 
 
 function CenterControl(controlDiv, map) {
@@ -271,12 +271,12 @@ function initiateMap() {
         { name: 'Dark map' });
 
     map = new google.maps.Map(document.getElementById('Map'), {
-        center: { lat: 59.2, lng: 19.1 },
-        zoom: 9,
+        center: { lat: 58.2, lng: 19.1 },
+        zoom: 7,
         //gestureHandling: 'none',
         zoomControl: false,
         streetViewControl: false,
-        mapTypeControl: false,
+        mapTypeControl: true,
         //disableDefaultUI: true,
         mapTypeControlOptions: {
             mapTypeIds: ['roadmap',
@@ -321,7 +321,7 @@ function initiateMap() {
             infoWindow.open(map);
 
             // centrerar kartan på denna position
-            map.setCenter(pos);
+            //map.setCenter(pos);
         }, function () {
 
             // anropar metoden som hanterar geolokaliseringfel
@@ -329,7 +329,7 @@ function initiateMap() {
         });
     } else {
         // Om servern ej kan hantera geolokalisering
-        handleLocationError(false, infoWindow, map.getCenter());
+        //handleLocationError(false, infoWindow, map.getCenter());
     }
 
     //Rita pilar när kartan är laddad
@@ -579,7 +579,7 @@ function calculateDistanceAndTime() {
         startLongitude: startEndMarkers[0].getPosition().lng(),
         endLatitude: startEndMarkers[1].getPosition().lat(),
         endLongitude: startEndMarkers[1].getPosition().lng(),
-        boatId: 2
+        boatId: 9
     });
 
 
